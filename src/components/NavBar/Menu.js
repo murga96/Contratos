@@ -1,4 +1,4 @@
-import { onClickTipoContratos } from '../../Database/dbOps';
+import { onClickTipoContratos } from '../../database/dbOps';
 
 export const MenuModel = [
         {
