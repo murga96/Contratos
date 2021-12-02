@@ -5,6 +5,7 @@ import 'primeicons/primeicons.css'
 import { SignIn } from './components/Login/SignIn';
 import 'primeflex/primeflex.css'
 import {Routes, BrowserRouter as Router, Route} from "react-router-dom"
+import { Home } from './components/Home/Home';
 import { Navbar } from './components/NavBar/Navbar';
  
 
@@ -14,7 +15,12 @@ function App() {
     <div className="App">
     <Router>  
         <Routes>
-            <Route path="/home" element={<Navbar/>}/>
+            <Route path="/home" element={
+              <div>
+                <Navbar/>
+                {/* <Home/> */}
+              </div>
+            }/>
             <Route path="/" element={<SignIn/>}/>
         </Routes>
     </Router>

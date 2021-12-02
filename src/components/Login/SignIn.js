@@ -1,5 +1,4 @@
 import { InputText } from 'primereact/inputtext'
-import { Avatar } from 'primereact/avatar'
 import { Checkbox } from 'primereact/checkbox'
 import { Button } from 'primereact/button'
 import { Password } from 'primereact/password'
