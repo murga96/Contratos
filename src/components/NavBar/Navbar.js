@@ -1,8 +1,8 @@
 import React from 'react';
 import { Menubar } from 'primereact/menubar';
-import { InputText } from 'primereact/inputtext';
-import { MenuModel } from './Menu';
 import logo from "../../assets/images/contrato.png"
+import { Link } from 'react-router-dom';
+import { useHistory } from 'react-router';
 
 const end = () => {
     return(
@@ -14,12 +14,78 @@ const end = () => {
     )
 } 
 
-export const Navbar = () => {    
-    
-    const start = <img alt="logo" src={logo} onError={(e) => e.target.src='https://www.primefaces.org/wp-content/uploads/2020/05/placeholder.png'} height="40" className="p-mr-2"></img>;
+export const Navbar = (url) => {
+    const navigate = useHistory()
+    const MenuModel = [
+        {
+            label: 'Bases Generales',
+            icon: 'pi pi-fw pi-bookmark',
+        },
+        {
+            label: 'Contratos',
+            icon: 'pi pi-fw pi-bookmark',
+        },
+        {
+            label: 'Facturas',
+            icon: 'pi pi-fw pi-bookmark',
+        },
+        {
+            label: 'Nomencladores',
+            icon: 'pi pi-fw pi-bookmark',
+            items: [
+                {
+                    label: 'Tipos de Contratos',
+                    icon: 'pi pi-fw pi-bookmark',
+                    command: () => {navigate.push(`/TiposContratos`)},
+                },
+                {
+                    label: 'Tipos de Clausulas',
+                    icon: 'pi pi-fw pi-bookmark',
+                    command: () => {navigate.push(`${url}/TiposContratos`)},
+                },
+                {
+                    label: 'Tipos de Documentos',
+                    icon: 'pi pi-fw pi-bookmark'
+                },
+                {
+                    label: 'Cargos',
+                    icon: 'pi pi-fw pi-bookmark'
+                },
+                {
+                    label: 'Ejecutivos',
+                    icon: 'pi pi-fw pi-bookmark'
+                },
+                {
+                    label: 'Incoterms',
+                    icon: 'pi pi-fw pi-bookmark'
+                },
+                {
+                    label: 'Monedas',
+                    icon: 'pi pi-fw pi-bookmark'
+                },
+                {
+                    label: 'Puertos',
+                    icon: 'pi pi-fw pi-bookmark'
+                },
+                {
+                    label: 'Clasificación de documentos',
+                    icon: 'pi pi-fw pi-bookmark'
+                },
+            ]
+        },
+        {
+            label: 'Configuración',
+            icon: 'pi pi-fw pi-cog',
+        },
+    ];
+
+    // let start = null;
+    // <Link to="/home">
+    const start = <img alt="logo" src={logo} height="40" className="mr-2"></img>;
+    // </Link>   
     return (
         <div>
-            <div className="card">
+            <div className="card mb-6">
                 <Menubar model={MenuModel} start={start} end={end}/>
             </div>
         </div>

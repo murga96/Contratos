@@ -4,28 +4,75 @@ import 'primereact/resources/primereact.min.css'
 import 'primeicons/primeicons.css'
 import { SignIn } from './components/Login/SignIn';
 import 'primeflex/primeflex.css'
-import {Routes, BrowserRouter as Router, Route} from "react-router-dom"
+import {Switch, BrowserRouter as Router, Route} from "react-router-dom"
 import { Home } from './components/Home/Home';
-import { Navbar } from './components/NavBar/Navbar';
+import { ContractTypes } from './components/ContractTypes/ContractTypes';
+import {addLocale, locale} from "primereact/api"
+
  
 
 function App() {
+  addLocale('es', {
+    accept: "Si",
+    addRule: "Agregar regla",
+    apply: "Aplicar",
+    cancel: "Cancelar",
+    choose: "Elegir",
+    clear: "Limpiar",
+    contains: "Contiene",
+    custom: "Defecto",
+    dateAfter: "Fecha anterior a",
+    dateBefore: "Fecha después de",
+    dateFormat: "dd/mm/yy",
+    dateIs: "Fecha igual",
+    dateIsNot: "Fecha no es igual",
+    dayNames: ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'],
+    dayNamesMin:  ['D', 'L', 'M', 'X', 'J', 'V', 'S'],
+    dayNamesShort:  ['dom', 'lun', 'mar', 'mié', 'jue', 'vie', 'sáb'],
+    emptyFilterMessage: "No se encontraron resultados",
+    emptyMessage: "No hay elementos disponibles",
+    endsWith: "Termina con",
+    equals: "Igual",
+    firstDayOfWeek: 1,
+    gt: "Mayor que",
+    gte: "Mayor igual que",
+    lt: "Menor que",
+    lte: "Menor igual que",
+    matchAll: "Coinciden todos",
+    matchAny: "Coinciden algunos",
+    medium: "Medio",
+    monthNames: ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'],
+    monthNamesShort:['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'],
+    noFilter: "Sin filtros",
+    notContains: "No contiene",
+    notEquals: "No igual a",
+    passwordPrompt: "Teclee una contraseña",
+    reject: "No",
+    removeRule: "Elimina regla",
+    startsWith: "Comienza con",
+    strong: "Fuerte",
+    today: "Hoy",
+    upload: "Subida",
+    weak: "Débil",
+    weekHeader: "Semana",
+  });
 
+  locale('es');
   return (
     <div className="App">
-    <Router>  
-        <Routes>
-            <Route path="/home" element={
-              <div>
-                <Navbar/>
-                {/* <Home/> */}
-              </div>
-            }/>
-            <Route path="/" element={<SignIn/>}/>
-        </Routes>
-    </Router>
-       {/* <Navbar/> */}
-       
+    <Router>
+        <Switch>
+          <Route exact path="/">
+            <Home/>
+          </Route>
+          <Route path="/TiposContratos">
+            <ContractTypes/>
+          </Route>
+          <Route path="/Inicio">
+            <SignIn/>
+          </Route>
+        </Switch>
+    </Router>       
        {/* <DataTable value={contracts} responsiveLayout="scroll">
           <Column field="TipoContrato" header="Tipo de Contrato"></Column>
         </DataTable> */}

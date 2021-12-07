@@ -1,10 +1,20 @@
 import React from 'react'
-import { SideMenu } from '../SideMenu/SideMenu'
+import {Switch, Route} from "react-router-dom"
+import { ContractTypes } from '../ContractTypes/ContractTypes'
+import { Navbar } from '../NavBar/Navbar'
 
 export const Home = () => {
     return (
-        <div>      
-            <SideMenu/>
+        <div>
+            <Navbar/>
+            <Switch>
+            <Route exact path="/">
+                <div></div>
+            </Route>
+            <Route path="/TiposContratos">
+                <ContractTypes/>
+            </Route>
+            </Switch>
         </div>
     )
 }

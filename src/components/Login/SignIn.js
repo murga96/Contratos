@@ -9,12 +9,12 @@ import * as yup from 'yup'
 import {yupResolver} from '@hookform/resolvers/yup'
 import { Controller, useForm } from 'react-hook-form'
 import { classNames } from 'primereact/utils';
-import {useNavigate} from 'react-router-dom'
+import {useHistory} from 'react-router-dom'
 import { Toast } from "primereact/toast"
 
 export const SignIn = () => {
     const [checked1, setChecked1] = useState(false)
-    const navigate = useNavigate()
+    const navigate = useHistory()
     const toast = useRef(null)
 
     //React-hook-form
@@ -28,7 +28,7 @@ export const SignIn = () => {
 
     const handle = ({email, password}) => {
         if(email==="gustavo.murga1996@gmail.com" && password==="1"){
-            navigate("/home")
+            navigate.push("/")
         }else{
             showError("Credenciales inválidas.")
         }
