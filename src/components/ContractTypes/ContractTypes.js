@@ -1,27 +1,22 @@
 import React, { useEffect, useState } from 'react'
 import { Navbar } from '../NavBar/Navbar'
-import { DataTable } from "primereact/datatable"
-import { Column } from 'primereact/column'
 import { useQuery, gql } from "@apollo/client"
-import { Dropdown} from "primereact/dropdown"
-import {FilterMatchMode, FilterOperator, locale, addLocale} from "primereact/api"
-import { InputText } from 'primereact/inputtext'
+import { Table } from '../ui/Table'
+import { InputText}  from 'primereact/inputtext'
+import { FilterMatchMode}  from 'primereact/api'
 
 export const ContractTypes = () => {
-    const [contractTypes, setContractTypes] = useState([])
-    const [selectedProduct, setSelectedProduct] = useState(null)
-    const [filters, setFilters] = useState({
-        'global': { value: null, matchMode: FilterMatchMode.CONTAINS },
-        'tipoContrato': { value: null, matchMode: FilterMatchMode.CONTAINS },
-        'ambasPartes': { value: null, matchMode: FilterMatchMode.CONTAINS },
-        'encabezado': { value: null, matchMode: FilterMatchMode.CONTAINS },
-    })
-    const textEditor = (options) => {
-        return <InputText type="text" className="w-full" value={options.value} onChange={(e) => options.editorCallback(e.target.value)} />
+    const filters = {
+      global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+      tipoContrato: { value: null, matchMode: FilterMatchMode.CONTAINS },
+      ambasPartes: { value: null, matchMode: FilterMatchMode.CONTAINS },
+      encabezado: { value: null, matchMode: FilterMatchMode.CONTAINS },
     }
-    const onRowEditComplete1 = (e) => {
-        console.log("object")
-    }
+    let c = [
+        {field: "tipoContrato", header: "Tipo Contrato"},
+        {field: "ambasPartes", header: "Ambas partes"},
+        {field: "encabezado", header: "Encabezado"},
+    ]
     const {data, error, loading} = useQuery(gql`
       query {
         findAllTipoContrato{
@@ -32,7 +27,18 @@ export const ContractTypes = () => {
           visible
         }
     }`)
-    const header = (<div className="table-header">Tipos de Contratos</div>)
+    const Form = () => {
+        return (
+            <div>
+                <span className="p-float-label">
+                    <InputText id="username" /* value={value2} onChange={(e) => setValue2(e.target.value)} */ />
+                    <label htmlFor="username">Username</label>
+                </span>
+                <h5>Form</h5>
+            </div>
+        )
+    }
+
     return (
         <div>
             <Navbar/>
@@ -45,27 +51,12 @@ export const ContractTypes = () => {
             }
             {
                 !(loading || error) ? (
-                    <div className="card mx-3">
-                    <DataTable
-                     value={data.findAllTipoContrato} /* dataKey="idTipoContrato" */ /* size="small"  */ responsiveLayout="scroll"
-                     paginator paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-                     currentPageReportTemplate={`{first} - {last} of {totalRecords}`}  className="p-mt-6" 
-                     rows={10} rowsPerPageOptions={[10, 20, 30]} 
-                     header={header} footer={`Filas: ${data.findAllTipoContrato ? data.findAllTipoContrato.length : 0}`}
-                     /* selectionMode="checkbox" */ selection={selectedProduct} onSelectionChange={e => setSelectedProduct(e.value)}
-                     removableSort sortField="tipoContrato" sortOrder={1} filterDisplay="row" filters={filters}
-                    editMode="row" onRowEditComplete={onRowEditComplete1}>
-                    {/* <Column selectionMode="multiple"/> */}
-                    {/* <Column field="idTipoContrato" header="idTipoContrato" hidden={true}/> */}
-                    <Column field="tipoContrato" header="TipoContrato" /* sortable filter */ editor={(options) => textEditor(options)} />
-                    <Column field="encabezado" header="Encabezado" /* sortable filter  */ editor={(options) => textEditor(options)}/>
-                    <Column field="ambasPartes" header="Ambas Partes" /* sortable filter */ editor={(options) => textEditor(options)}/>
-                    <Column rowEditor headerStyle={{ width: '10%', minWidth: '8rem' }} bodyStyle={{ textAlign: 'center' }}/>
-                    </DataTable>
-                    </div>
+                    <Table value={data.findAllTipoContrato} header="Tipos de Contratos" size="small"
+                     columns={c} pagination={true} rowNumbers={[10, 20, 30]} selectionType="multiple"
+                     sortRemove orderSort={1} fieldSort="tipoContrato" filterDplay="row" filtersValues={filters}
+                     edit={true} Form={Form} exportData={true}/>
                 ) : console.log("object")
-            }
-            
+            }        
         </div>
     )
 }
