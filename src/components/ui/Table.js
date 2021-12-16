@@ -6,7 +6,7 @@ import { Dialog } from "primereact/dialog";
 import { Toolbar } from "primereact/toolbar";
 
 export const Table = ({value, header, size, columns, pagination, rowNumbers, selectionType, sortRemove,
-   fieldSort, orderSort, filterDplay, filtersValues, edit, Form, exportData}) => {
+   fieldSort, orderSort, filterDplay, filtersValues, edit, ElementDialog, exportData, h1}) => {
   const dt = useRef(null)
   const [selectedElement, setSelectedElement] = useState(null);
   const [elements, setElements] = useState(null);
@@ -61,8 +61,8 @@ export const Table = ({value, header, size, columns, pagination, rowNumbers, sel
 
   //editing elements
   const editElement = (product) => {
-    console.log(product,"EditProduct")
-    setElementDialog(true)
+    h1 = true    
+    //setElementDialog(true)
   }
 
   //exporting
@@ -190,9 +190,6 @@ export const Table = ({value, header, size, columns, pagination, rowNumbers, sel
                     <i className="pi pi-exclamation-triangle p-mr-3" style={{ fontSize: '2rem'}} />
                     {element && <span>¿Está seguro que desea eliminar los elementos seleccionados?</span>}
                 </div>
-        </Dialog>
-        <Dialog visible={elementDialog} style={{ width: '450px' }} header="Detalles" modal className="p-fluid" footer={elementDialogFooter} onHide={hideElementDialog}>
-          <Form/>
         </Dialog>
       </div>
     </div>

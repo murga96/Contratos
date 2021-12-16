@@ -41,7 +41,6 @@ export const SignIn = () => {
     const showError = (message) => {
         toast.current.show({severity:'error', summary: 'Error', detail: message, life: 3000});
     }
-
     return (
         <div className="flex flex-column align-items-center justify-content-center m-8">
             <Toast ref={toast} position="bottom-center"/>
@@ -59,7 +58,7 @@ export const SignIn = () => {
                          render={({ field, fieldState }) => (
                             <InputText id={field.name} {...field}
                              className={classNames({ 'p-invalid': fieldState.invalid}, "w-full")} />
-                        )} 
+                        )}
                         />
                         {getFormErrorMessage('email')}
                         <label htmlFor="password" className={classNames({ 'p-error': errors.password }, "block text-900 font-medium my-2")}>Contraseña*</label>
