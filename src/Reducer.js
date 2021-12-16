@@ -1,5 +1,5 @@
 export const initialState = {
-    editDialog: false,
+    editDialog: [],
 }
 
 export const actionTypes = {
