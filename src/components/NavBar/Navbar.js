@@ -1,7 +1,6 @@
 import React from 'react';
 import { Menubar } from 'primereact/menubar';
 import logo from "../../assets/images/contrato.png"
-import { Link } from 'react-router-dom';
 import { useHistory } from 'react-router';
 
 const end = () => {
@@ -78,10 +77,10 @@ export const Navbar = (url) => {
             icon: 'pi pi-fw pi-cog',
         },
     ];
-
+    //TODO
     // let start = null;
-    // <Link to="/home">
-    const start = <img alt="logo" src={logo} height="40" className="mr-2"></img>;
+    // <Link to="/">
+        const start = <img alt="logo" src={logo} height="40" className="mr-2"></img>;
     // </Link>   
     return (
         <div>

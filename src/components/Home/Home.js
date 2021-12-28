@@ -11,7 +11,7 @@ export const Home = () => {
             <Route exact path="/">
                 <div></div>
             </Route>
-            <Route path="/TiposContratos">
+            <Route exact path="/TiposContratos">
                 <ContractTypes/>
             </Route>
             </Switch>

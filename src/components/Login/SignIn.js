@@ -77,7 +77,7 @@ export const SignIn = () => {
                                 <Checkbox id="rememberme" binary className="mr-2" checked={checked1} onChange={(e) => setChecked1(e.checked)} />
                                 <label htmlFor="rememberme">Guardar credenciales</label>
                             </div>
-                            <a className="font-medium no-underline ml-2 text-blue-500 text-right cursor-pointer">¿Olvidaste tu contraseña?</a>
+                            <a href="/#" className="font-medium no-underline ml-2 text-blue-500 text-right cursor-pointer">¿Olvidaste tu contraseña?</a>
                         </div>
                         <Button type="submit" label="Aceptar" className="w-full" />
                     </form>

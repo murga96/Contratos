@@ -1,22 +1,40 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
-import {ApolloClient, InMemoryCache, ApolloProvider} from "@apollo/client";
+import {ApolloClient, InMemoryCache, ApolloProvider, from, HttpLink} from "@apollo/client";
+import { onError } from "@apollo/client/link/error";
 import reducer, { initialState } from './Reducer';
 import { StateProvider } from './StateProvider';
 
-const client = new ApolloClient({
+const httpLink = new HttpLink({
   uri: 'http://localhost:3001/graphql',
-  cache: new InMemoryCache()
+})
+const errorLink = onError( ({graphQLErrors, networkError, response}) => {
+  if(graphQLErrors)
+    graphQLErrors.map( ({message/* , locations, path */}) => alert(`[GraphQL error]: Message: ${message}`) )
+  if(networkError)
+    alert(`[Network error]: ${networkError}`)
+  //no salte el error en la página
+  console.log(response.errors,"response")
+  if(response)
+    response.errors = null;
+})
+const client = new ApolloClient({
+  
+  link: from([errorLink, httpLink]),
+  cache: new InMemoryCache(),
+//   onError: (e) => {
+//     console.log(JSON.stringify(e, null, 2))
+//  },
 });
 
 ReactDOM.render(
-  <React.StrictMode>
+  // <React.StrictMode>
     <ApolloProvider client={client}>
     <StateProvider initialState= { initialState } reducer= { reducer }>
       <App />
     </StateProvider>
     </ApolloProvider>
-  </React.StrictMode>,
-  document.getElementById('root')
+  // </React.StrictMode>,
+  ,document.getElementById('root')
 );
