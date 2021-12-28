@@ -70,8 +70,8 @@ export const ContractTypes = () => {
     temp.tipoContrato = tipoContrato;
     temp.encabezado = encabezado;
     temp.ambasPartes = ambasPartes;
-    Object.keys(elementDialog).length === 0 ? temp.visible= true : console.log("object")
-    delete temp.__typename;
+    // Object.keys(elementDialog).length === 0 ? temp.visible= true : console.log("object")
+    temp.visible= true
     try {
       updateTC({ variables: { tipoContrato: temp } })
       dispatch({type: actionTypes.SET_EDIT_DIALOG, editDialog: false})

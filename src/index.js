@@ -15,14 +15,20 @@ const errorLink = onError( ({graphQLErrors, networkError, response}) => {
   if(networkError)
     alert(`[Network error]: ${networkError}`)
   //no salte el error en la página
-  console.log(response.errors,"response")
-  if(response)
+  console.log(networkError,"response")
+  console.log(graphQLErrors,"response1")
+  if(typeof response !== 'undefined' ){
+    console.log("ddsdsds")
     response.errors = null;
+  }/* else if(typeof networkError !== 'undefined' ){
+    networkError = null
+  }
+ */
 })
 const client = new ApolloClient({
   
   link: from([errorLink, httpLink]),
-  cache: new InMemoryCache(),
+  cache: new InMemoryCache({addTypename: false}),
 //   onError: (e) => {
 //     console.log(JSON.stringify(e, null, 2))
 //  },

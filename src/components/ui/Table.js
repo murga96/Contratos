@@ -4,6 +4,7 @@ import { Column } from "primereact/column";
 import { Button } from "primereact/button";
 import { Dialog } from "primereact/dialog";
 import { Toolbar } from "primereact/toolbar";
+import { Tooltip } from "primereact/tooltip";
 import { useStateValue } from "../../StateProvider";
 import { actionTypes } from "../../Reducer";
 
@@ -23,6 +24,8 @@ export const Table = ({value, header, size, columns, pagination, rowNumbers, sel
     return <Column key={col.field} field={col.field} header={col.header} sortable={fieldSort === null ? false : true}
     filter={filterDplay === null ? false : true} />;
   });
+
+  const exportColumns = columns.map(col => ({ title: col.header, dataKey: col.field }));
 
   const hideDeleteElementDialog = () => {
     setDeleteDialog(false);
@@ -60,47 +63,43 @@ export const Table = ({value, header, size, columns, pagination, rowNumbers, sel
     })
   }
 
-  //exporting
-  const exportCSV = () => {
-    dt.current.exportCSV();
+  const exportPdf = () => {
+    import('jspdf').then(jsPDF => {
+        import('jspdf-autotable').then(() => {
+            const doc = new jsPDF.default(0, 0);
+            doc.autoTable(exportColumns, value);
+            doc.save(`${header}.pdf`);
+        })
+    })
   }
 
-  // const exportPdf = () => {
-  //   import('jspdf').then(jsPDF => {
-  //       import('jspdf-autotable').then(() => {
-  //           const doc = new jsPDF.default(0, 0);
-  //           doc.autoTable(exportColumns, value);
-  //           doc.save('products.pdf');
-  //       })
-  //   })
-  // }
+  const exportExcel = () => {
+      import('xlsx').then(xlsx => {
+          const worksheet = xlsx.utils.json_to_sheet(value);
+          const workbook = { Sheets: { 'data': worksheet }, SheetNames: ['data'] };
+          const excelBuffer = xlsx.write(workbook, { bookType: 'xlsx', type: 'array' });
+          saveAsExcelFile(excelBuffer, header);
+      });
+  }
 
-  // const exportExcel = () => {
-  //     import('xlsx').then(xlsx => {
-  //         const worksheet = xlsx.utils.json_to_sheet(products);
-  //         const workbook = { Sheets: { 'data': worksheet }, SheetNames: ['data'] };
-  //         const excelBuffer = xlsx.write(workbook, { bookType: 'xlsx', type: 'array' });
-  //         saveAsExcelFile(excelBuffer, 'products');
-  //     });
-  // }
-
-  // const saveAsExcelFile = (buffer, fileName) => {
-  //     import('file-saver').then(FileSaver => {
-  //         let EXCEL_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
-  //         let EXCEL_EXTENSION = '.xlsx';
-  //         const data = new Blob([buffer], {
-  //             type: EXCEL_TYPE
-  //         });
-  //         FileSaver.saveAs(data, fileName + '_export_' + new Date().getTime() + EXCEL_EXTENSION);
-  //     });
-  // }
+  const saveAsExcelFile = (buffer, fileName) => {
+      import('file-saver').then(FileSaver => {
+          let EXCEL_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
+          let EXCEL_EXTENSION = '.xlsx';
+          console.log(fileName)
+          const data = new Blob([buffer], {
+              type: EXCEL_TYPE
+          });
+          FileSaver.saveAs(data, fileName + EXCEL_EXTENSION);
+      });
+  }
 
   const actionBodyTemplate = (rowData) => {
     return (
-        <React.Fragment>
-            <Button icon="pi pi-pencil" className="p-button-rounded p-button-success mr-2" onClick={() => editElement(rowData)} />
-            <Button icon="pi pi-trash" className="p-button-rounded p-button-warning" onClick={() => confirmDeleteElement(rowData)} />
-        </React.Fragment>
+        <div className="action-table">
+            <Button icon="pi pi-pencil" className="p-button-rounded p-button-success mr-2" data-pr-tooltip="Editar" onClick={() => editElement(rowData)} />
+            <Button icon="pi pi-trash" className="p-button-rounded p-button-warning" data-pr-tooltip="Eliminar" onClick={() => confirmDeleteElement(rowData)} />
+        </div>
     );
   }
 
@@ -124,10 +123,12 @@ export const Table = ({value, header, size, columns, pagination, rowNumbers, sel
   const rightToolbarTemplate = () => {
     if(exportData)
       return (
-          <div>
-              {/* <FileUpload mode="basic" name="demo[]" auto url="https://primefaces.org/primereact/showcase/upload.php" accept=".csv" chooseLabel="Import" className="p-mr-2 p-d-inline-block" onUpload={importCSV} /> */}
-              <Button label="Export" icon="pi pi-upload" className="p-button-help" onClick={exportCSV} />
-          </div>
+        <div className="p-d-flex p-ai-center export-buttons">
+          <Button type="button" icon="pi pi-file" onClick={() => dt.current.exportCSV()} className="mr-2" data-pr-tooltip="CSV" />
+          <Button type="button" icon="pi pi-file-excel" onClick={exportExcel} className="p-button-success mr-2" data-pr-tooltip="XLS" />
+          <Button type="button" icon="pi pi-file-pdf" onClick={exportPdf} className="p-button-warning p-mr-2" data-pr-tooltip="PDF" />
+          {/* <Button type="button" icon="pi pi-filter" onClick={() => exportCSV(true)} className="p-button-info ml-auto" data-pr-tooltip="Selection Only" /> */}
+        </div>
       )
     else
         return undefined
@@ -147,12 +148,15 @@ export const Table = ({value, header, size, columns, pagination, rowNumbers, sel
           <Button label="No" icon="pi pi-times" className="p-button-text" onClick={hideDeleteElementsDialog} />
       </React.Fragment>
   );
+
   return (
     <div>
       <div className="card mx-3">
+        <Tooltip target=".export-buttons>button" position="bottom" />
+        <Tooltip target=".action-table>button" position="bottom" />
         {exportData || edit ? <Toolbar className="mb-4" left={leftToolbarTemplate} right={rightToolbarTemplate}></Toolbar> : undefined}
         <DataTable
-          value={value} ref={dt} size={size}
+          value={value} ref={dt} size={size} exportFilename={header}
           responsiveLayout="scroll"
           paginator={value.length < rowNumbers[0] ? false : pagination} paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
           currentPageReportTemplate={`{first} - {last} of {totalRecords}`}  className="p-mt-6"
@@ -162,7 +166,6 @@ export const Table = ({value, header, size, columns, pagination, rowNumbers, sel
           removableSort={sortRemove} sortField={fieldSort} sortOrder={orderSort} filterDisplay={filterDplay} filters={filtersValues}
         >
           {selectionType === "multiple" ? <Column selectionMode="multiple" exportable={false}/> : undefined}
-          {/* <Column field="idTipoContrato" header="idTipoContrato" hidden={true}/> */}
           {dynamicColumns}
           {edit ? <Column body={actionBodyTemplate} exportable={false} style={{ minWidth: '8rem' }}></Column> : undefined}
         </DataTable>
@@ -180,7 +183,6 @@ export const Table = ({value, header, size, columns, pagination, rowNumbers, sel
                     {elementDialog && <span>¿Está seguro que desea eliminar los elementos seleccionados?</span>}
                 </div>
             </Dialog>
-        {/* <ElementDialog></ElementDialog> */}
       </div>
     </div>
   );

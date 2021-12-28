@@ -7,7 +7,7 @@ export const selectAllTipoContrato = gql`
       tipoContrato
       encabezado
       ambasPartes
-      visible
+      # visible
     }
   }
 `;
