@@ -2,23 +2,23 @@ import React, { useEffect } from "react";
 import { Navbar } from "../NavBar/Navbar";
 import { useQuery, useMutation } from "@apollo/client";
 import { Table } from "../ui/Table";
-import { InputText } from "primereact/inputtext";
 import { Dialog } from "primereact/dialog";
 import { FilterMatchMode } from "primereact/api";
-import { classNames } from "primereact/utils";
 import * as yup from "yup";
-import { yupResolver } from "@hookform/resolvers/yup";
-import { Controller, useForm } from "react-hook-form";
-import { Button } from "primereact/button";
 import { useStateValue } from "../../StateProvider";
 import { actionTypes } from "../../Reducer";
-import { removeTipoContrato, selectAllTipoContrato, updateTipoContrato } from "../../database/GraphQLStatements";
+import {
+  removeTipoContrato,
+  selectAllTipoContrato,
+  updateTipoContrato,
+} from "../../database/GraphQLStatements";
+import { Form } from "../ui/Form";
 
 export const ContractTypes = () => {
   const [{ editDialog, elementDialog }, dispatch] = useStateValue();
 
   useEffect(() => {
-    reset();
+    // reset();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [editDialog]);
 
@@ -36,16 +36,20 @@ export const ContractTypes = () => {
 
   //graphQL
   const { data, error, loading } = useQuery(selectAllTipoContrato);
-  const [updateTC, { loadingU, errorU }] = useMutation(updateTipoContrato, { refetchQueries: ["findAllTipoContrato"] });
-  const [removeTC] = useMutation(removeTipoContrato, { refetchQueries: ["findAllTipoContrato"] });
+  const [updateTC, { loadingU, errorU }] = useMutation(updateTipoContrato, {
+    refetchQueries: ["findAllTipoContrato"],
+  });
+  const [removeTC] = useMutation(removeTipoContrato, {
+    refetchQueries: ["findAllTipoContrato"],
+  });
 
   const deleteOne = () => {
     try {
-      removeTC({ variables: { id: elementDialog.idTipoContrato } })
+      removeTC({ variables: { id: elementDialog.idTipoContrato } });
     } catch (error) {
-      alert(error)
+      alert(error);
     }
-  }
+  };
 
   //Form
   //React-hook-form
@@ -55,15 +59,6 @@ export const ContractTypes = () => {
     ambasPartes: yup.string().required("Ambas partes es requerido"),
   });
 
-  const {
-    handleSubmit,
-    control,
-    formState: { errors },
-    reset,
-  } = useForm({
-    resolver: yupResolver(schema)
-  });
-
   const handle = ({ tipoContrato, encabezado, ambasPartes }) => {
     let temp = {};
     Object.assign(temp, elementDialog);
@@ -71,20 +66,52 @@ export const ContractTypes = () => {
     temp.encabezado = encabezado;
     temp.ambasPartes = ambasPartes;
     // Object.keys(elementDialog).length === 0 ? temp.visible= true : console.log("object")
-    temp.visible= true
+    temp.visible = true;
     try {
-      updateTC({ variables: { tipoContrato: temp } })
-      dispatch({type: actionTypes.SET_EDIT_DIALOG, editDialog: false})
+      updateTC({ variables: { tipoContrato: temp } });
+      dispatch({ type: actionTypes.SET_EDIT_DIALOG, editDialog: false });
     } catch (error) {
-      alert(error)
+      alert(error);
     }
   };
-
-  const getFormErrorMessage = (name) => {
-    return (
-      errors[name] && <small className="p-error">{errors[name].message}</small>
-    );
+  const cancel = () => {
+    dispatch({
+      type: actionTypes.SET_EDIT_DIALOG,
+      editDialog: false,
+    });
   };
+  const dataStruct = [
+    {
+      component: "label",
+      name: "tipoContrato",
+      defaultValue: "Tipo de contrato*",
+    },
+    {
+      component: "InputText",
+      name: "tipoContrato",
+      defaultValue: elementDialog.tipoContrato,
+    },
+    {
+      component: "label",
+      name: "ambasPartes",
+      defaultValue: "Ambas partes*",
+    },
+    {
+      component: "InputText",
+      name: "ambasPartes",
+      defaultValue: elementDialog.ambasPartes,
+    },
+    {
+      component: "label",
+      name: "encabezado",
+      defaultValue: "Encabezado*",
+    },
+    {
+      component: "InputText",
+      name: "encabezado",
+      defaultValue: elementDialog.encabezado,
+    },
+  ];
 
   return (
     <div>
@@ -108,7 +135,7 @@ export const ContractTypes = () => {
             filtersValues={filters}
             edit={true}
             exportData={true}
-            deleteOne= {deleteOne}
+            deleteOne={deleteOne}
           />
           <Dialog
             visible={editDialog}
@@ -127,102 +154,42 @@ export const ContractTypes = () => {
               });
             }}
           >
-            <form onSubmit={handleSubmit(handle)}>
-              <label
-                htmlFor="tipoContrato"
-                className={classNames(
-                  { "p-error": errors.email },
-                  "block text-900 font-medium mb-2"
-                )}
-              >
-                Tipo de contrato*
-              </label>
-              <Controller
-                name="tipoContrato"
-                defaultValue={elementDialog.tipoContrato}
-                control={control}
-                render={({ field, fieldState }) => (
-                  <InputText
-                    id={field.name}
-                    {...field}
-                    className={classNames(
-                      { "p-invalid": fieldState.invalid },
-                      "w-full mb-2"
-                    )}
+            <Form
+              data={dataStruct}
+              schema={schema}
+              handle={handle}
+              cancel={cancel}
+              buttonsNames={["Guardar", "Cancelar"]}
+            />
+            {/* <FormProvider {...methods}>
+              <form onSubmit={handleSubmit(handle)}>
+                <Field type="label" name="tipoContrato" defaultValue="Tipo de contrato*"/>
+                <Field type="InputText" name="tipoContrato" defaultValue={elementDialog.tipoContrato}/>
+                <Field type="label" name="ambasPartes" defaultValue="Ambas partes*"/>
+                <Field type="InputText" name="ambasPartes" defaultValue={elementDialog.ambasPartes}/>
+                <Field type="label" name="encabezado" defaultValue="Encabezado*"/>
+                <Field type="InputText" name="encabezado" defaultValue={elementDialog.encabezado}/>               
+                <div className="flex justify-content-end mt-3">
+                  <Button
+                    label="Guardar"
+                    icon="pi pi-check"
+                    className="p-button-text"
+                    type="submit"
                   />
-                )}
-              />
-              {getFormErrorMessage("tipoContrato")}
-              <label
-                htmlFor="ambasPartes"
-                className={classNames(
-                  { "p-error": errors.email },
-                  "block text-900 font-medium mb-2"
-                )}
-              >
-                Ambas partes*
-              </label>
-              <Controller
-                name="ambasPartes"
-                defaultValue={elementDialog.ambasPartes}
-                control={control}
-                render={({ field, fieldState }) => (
-                  <InputText
-                    id={field.name}
-                    {...field}
-                    className={classNames(
-                      { "p-invalid": fieldState.invalid },
-                      "w-full mb-2"
-                    )}
+                  <Button
+                    label="Cancelar"
+                    icon="pi pi-times"
+                    className="p-button-text"
+                    onClick={() =>
+                      dispatch({
+                        type: actionTypes.SET_EDIT_DIALOG,
+                        editDialog: false,
+                      })
+                    }
                   />
-                )}
-              />
-              {getFormErrorMessage("ambasPartes")}
-              <label
-                htmlFor="encabezado"
-                className={classNames(
-                  { "p-error": errors.email },
-                  "block text-900 font-medium mb-2"
-                )}
-              >
-                Encabezado*
-              </label>
-              <Controller
-                name="encabezado"
-                defaultValue={elementDialog.encabezado}
-                control={control}
-                render={({ field, fieldState }) => (
-                  <InputText
-                    id={field.name}
-                    {...field}
-                    className={classNames(
-                      { "p-invalid": fieldState.invalid },
-                      "w-full mb-2"
-                    )}
-                  />
-                )}
-              />
-              {getFormErrorMessage("encabezado")}
-              <div className="flex justify-content-end mt-3">
-                <Button
-                  label="Guardar"
-                  icon="pi pi-check"
-                  className="p-button-text"
-                  type="submit"
-                />
-                <Button
-                  label="Cancelar"
-                  icon="pi pi-times"
-                  className="p-button-text"
-                  onClick={() =>
-                    dispatch({
-                      type: actionTypes.SET_EDIT_DIALOG,
-                      editDialog: false,
-                    })
-                  }
-                />
-              </div>
-            </form>
+                </div>
+              </form>
+            </FormProvider> */}
           </Dialog>
         </div>
       ) : (
