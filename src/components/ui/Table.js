@@ -128,7 +128,7 @@ console.log(dynamicColumns)
     return (
         <div className="action-table">
             <Button icon="pi pi-pencil" className="p-button-rounded p-button-success mr-2" data-pr-tooltip="Editar" onClick={() => editElement(rowData)} />
-            <Button icon="pi pi-trash" className="p-button-rounded p-button-danger" data-pr-tooltip="Eliminar" onClick={() => confirmDeleteElement(rowData)} />
+            <Button icon="pi pi-trash" className="p-button-rounded p-button-warning" data-pr-tooltip="Eliminar" onClick={() => confirmDeleteElement(rowData)} />
         </div>
     );
   }

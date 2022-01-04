@@ -4,7 +4,6 @@ import { useQuery, useMutation } from "@apollo/client";
 import { Table } from "../ui/Table";
 import { FilterMatchMode } from "primereact/api";
 import * as yup from "yup";
-import { useStateValue } from "../../StateProvider";
 import {
   removeTipoContrato,
   selectAllTipoContrato,
@@ -13,12 +12,6 @@ import {
 import { Checkbox } from "primereact/checkbox";
 
 export const ContractTypes = () => {
-  const [{ editDialog, elementDialog }, dispatch] = useStateValue();
-
-  useEffect(() => {
-    // reset();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [editDialog]);
 
   const filters = {
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
