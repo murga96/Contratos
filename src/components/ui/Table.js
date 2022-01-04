@@ -5,27 +5,41 @@ import { Button } from "primereact/button";
 import { Dialog } from "primereact/dialog";
 import { Toolbar } from "primereact/toolbar";
 import { Tooltip } from "primereact/tooltip";
-import { useStateValue } from "../../StateProvider";
-import { actionTypes } from "../../Reducer";
+import { Form } from "./Form";
 
-export const Table = ({value, header, size, columns, pagination, rowNumbers, selectionType, sortRemove,
-   fieldSort, orderSort, filterDplay, filtersValues, edit, exportData, deleteOne}) => {
+export const Table = ({value, bodies, header, size, columns, pagination, rowNumbers, selectionType, sortRemove,
+   fieldSort, orderSort, filterDplay, filtersValues, edit, exportData, removeOne, formProps, emptyElement}) => {
   const dt = useRef(null)
   const [selectedElement, setSelectedElement] = useState(null);
-  const [{elementDialog}, dispatch] = useStateValue()
+  const [element, setElement] = useState({})
+  const [editDialog, setEditDialog] = useState(false);
   const [deleteDialog, setDeleteDialog] = useState(false);
   const [deleteMultipleDialog, setDeleteMultipleDialog] = useState(false);
   // const [product, setProduct] = useState(emptyProduct);
 
   //header and columns
   const h = <div className="table-header">{header}</div>;
-
-  const dynamicColumns = columns.map((col,i) => {
-    return <Column key={col.field} field={col.field} header={col.header} sortable={fieldSort === null ? false : true}
-    filter={filterDplay === null ? false : true} />;
+  const dynamicColumns = columns.map((col,i = 0) => {
+      return <Column key={col.field} field={col.field} header={col.header} sortable={fieldSort === null ? false : true}
+      body={bodies[col.field]}
+     filter={filterDplay === null ? false : true} />;
   });
-
+console.log(dynamicColumns)
   const exportColumns = columns.map(col => ({ title: col.header, dataKey: col.field }));
+
+  const changeValuesFormData = (v) => {
+    let i = 1
+    for (let index = 0; index < formProps.data.length; index++) {
+      if( index % 2 !== 0) {
+        formProps.data[index].defaultValue = v[i]
+        i++
+      }
+    }
+  }
+
+  const hideEditDialog = () => {
+    setEditDialog(false)
+  };
 
   const hideDeleteElementDialog = () => {
     setDeleteDialog(false);
@@ -42,10 +56,7 @@ export const Table = ({value, header, size, columns, pagination, rowNumbers, sel
   }
 
   const confirmDeleteElement = (element) => {
-    dispatch({
-      type: actionTypes.SET_ELEMENT_DIALOG,
-      elementDialog: element
-    })
+    setElement(element)
     setDeleteDialog(true)
   }
 
@@ -56,12 +67,31 @@ export const Table = ({value, header, size, columns, pagination, rowNumbers, sel
 
   //editing elements
   const editElement = (elem) => {
-    dispatch({type: actionTypes.SET_EDIT_DIALOG, editDialog:true})
-    dispatch({
-      type: actionTypes.SET_ELEMENT_DIALOG,
-      elementDialog: elem
-    })
+    setElement(elem)
+    changeValuesFormData(Object.values(elem))
+    setEditDialog(true)
   }
+  const saveElement = (/* { tipoContrato, encabezado, ambasPartes } */data) => {
+    console.log("handle")
+    let temp = {};
+    Object.assign(temp, element, data)
+    Object.assign(formProps.variables[Object.keys(formProps.variables)[0]], temp)
+    try {
+      formProps.handle({ variables: formProps.variables})
+    } catch (error) {
+      alert(error);
+    }
+    setEditDialog(false)
+  };
+
+  const deleteOne = () => {
+    removeOne[1][Object.keys(removeOne[1])[0]] = element[Object.keys(element)[0]]
+    try {
+      removeOne[0]({ variables: removeOne[1] });
+    } catch (error) {
+      alert(error);
+    }
+  };
 
   const exportPdf = () => {
     import('jspdf').then(jsPDF => {
@@ -98,7 +128,7 @@ export const Table = ({value, header, size, columns, pagination, rowNumbers, sel
     return (
         <div className="action-table">
             <Button icon="pi pi-pencil" className="p-button-rounded p-button-success mr-2" data-pr-tooltip="Editar" onClick={() => editElement(rowData)} />
-            <Button icon="pi pi-trash" className="p-button-rounded p-button-warning" data-pr-tooltip="Eliminar" onClick={() => confirmDeleteElement(rowData)} />
+            <Button icon="pi pi-trash" className="p-button-rounded p-button-danger" data-pr-tooltip="Eliminar" onClick={() => confirmDeleteElement(rowData)} />
         </div>
     );
   }
@@ -109,8 +139,9 @@ export const Table = ({value, header, size, columns, pagination, rowNumbers, sel
       return (
           <div>
               <Button label="Nuevo" icon="pi pi-plus" className="p-button-success mr-2" onClick={() => {
-                dispatch({type: actionTypes.SET_ELEMENT_DIALOG, elementDialog: {}})
-                dispatch({type: actionTypes.SET_EDIT_DIALOG, editDialog: true})
+                setElement(emptyElement)
+                changeValuesFormData(Object.values({}))
+                setEditDialog(true)
                 }
                 } />
               <Button label="Eliminar" icon="pi pi-trash" className="p-button-danger" /* onClick={confirmDeleteSelected} */ disabled={!selectedElement || !selectedElement.length} />
@@ -162,7 +193,7 @@ export const Table = ({value, header, size, columns, pagination, rowNumbers, sel
           currentPageReportTemplate={`{first} - {last} of {totalRecords}`}  className="p-mt-6"
           rows={rowNumbers[0]} rowsPerPageOptions={rowNumbers}
           header={h} footer={`Filas: ${value ? value.length : 0}`}
-          selectionMode={selectionType} selection={selectedElement} onSelectionChange={e => setSelectedElement(e.value)}
+          selectionMode={selectionType} selection={selectedElement} onSelectionChange={e => {setSelectedElement(e.value)}}
           removableSort={sortRemove} sortField={fieldSort} sortOrder={orderSort} filterDisplay={filterDplay} filters={filtersValues}
         >
           {selectionType === "multiple" ? <Column selectionMode="multiple" exportable={false}/> : undefined}
@@ -173,16 +204,40 @@ export const Table = ({value, header, size, columns, pagination, rowNumbers, sel
         <Dialog visible={deleteDialog} style={{ width: '450px' }} header="Confirmación" modal footer={deleteDialogFooter} onHide={hideDeleteElementDialog}>
                 <div className="flex flex-row align-content-end confirmation-content mt-3">
                     <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem'}} />
-                    {elementDialog && <span className="mt-2">¿Está seguro que desea eliminar el elemento?</span>}
+                    {element && <span className="mt-2">¿Está seguro que desea eliminar el elemento?</span>}
                 </div>
         </Dialog>
 
             <Dialog visible={deleteMultipleDialog} style={{ width: '450px' }} header="Confirm" modal footer={deleteMultipleDialogFooter} onHide={hideDeleteElementsDialog}>
                 <div className="confirmation-content">
                     <i className="pi pi-exclamation-triangle p-mr-3" style={{ fontSize: '2rem'}} />
-                    {elementDialog && <span>¿Está seguro que desea eliminar los elementos seleccionados?</span>}
+                    {element && <span>¿Está seguro que desea eliminar los elementos seleccionados?</span>}
                 </div>
             </Dialog>
+
+            <Dialog
+            visible={editDialog}
+            style={{ width: "450px" }}
+            header={
+              Object.keys(element).length === 0 ? "Insertar" : "Detalles"
+            }
+            modal
+            breakpoints={{ "992px": "50vw", "768px": "65vw", "572px": "80vw" }}
+            resizable={false}
+            className=""
+            onHide={() => {
+              setEditDialog(false)
+            }}
+          >
+            <Form
+              data={formProps.data}
+              schema={formProps.schema}
+              handle={saveElement}
+              cancel={hideEditDialog}
+              buttonsNames={formProps.buttonsNames}
+            />
+          </Dialog>
+
       </div>
     </div>
   );

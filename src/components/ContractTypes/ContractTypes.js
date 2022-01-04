@@ -2,17 +2,15 @@ import React, { useEffect } from "react";
 import { Navbar } from "../NavBar/Navbar";
 import { useQuery, useMutation } from "@apollo/client";
 import { Table } from "../ui/Table";
-import { Dialog } from "primereact/dialog";
 import { FilterMatchMode } from "primereact/api";
 import * as yup from "yup";
 import { useStateValue } from "../../StateProvider";
-import { actionTypes } from "../../Reducer";
 import {
   removeTipoContrato,
   selectAllTipoContrato,
   updateTipoContrato,
 } from "../../database/GraphQLStatements";
-import { Form } from "../ui/Form";
+import { Checkbox } from "primereact/checkbox";
 
 export const ContractTypes = () => {
   const [{ editDialog, elementDialog }, dispatch] = useStateValue();
@@ -27,12 +25,20 @@ export const ContractTypes = () => {
     tipoContrato: { value: null, matchMode: FilterMatchMode.CONTAINS },
     ambasPartes: { value: null, matchMode: FilterMatchMode.CONTAINS },
     encabezado: { value: null, matchMode: FilterMatchMode.CONTAINS },
+    // visible: { value: null, matchMode: FilterMatchMode.CONTAINS },
   };
+  const visibleBodyTemplate = () => {
+    return ( <Checkbox inputId="binary" checked={true}/>
+    );
+}
+  const bodies =  {"tipoContrato": undefined, "encabezado": undefined, "ambasPartes": undefined/* , "visible": visibleBodyTemplate */}
   let c = [
-    { field: "tipoContrato", header: "Tipo Contrato" },
-    { field: "ambasPartes", header: "Ambas partes" },
-    { field: "encabezado", header: "Encabezado" },
+    { field: "tipoContrato", header: "Tipo Contrato"},
+    { field: "encabezado", header: "Encabezado"},
+    { field: "ambasPartes", header: "Ambas partes"},
+    // { field: "visible", header: "Visible"},
   ];
+  let emptyElement = {"tipoContrato": "", "encabezado": "", "ambasPartes": "", "visible": true}
 
   //graphQL
   const { data, error, loading } = useQuery(selectAllTipoContrato);
@@ -43,76 +49,67 @@ export const ContractTypes = () => {
     refetchQueries: ["findAllTipoContrato"],
   });
 
-  const deleteOne = () => {
-    try {
-      removeTC({ variables: { id: elementDialog.idTipoContrato } });
-    } catch (error) {
-      alert(error);
-    }
-  };
-
   //Form
   //React-hook-form
   const schema = yup.object().shape({
     tipoContrato: yup.string().required("Tipo de contrato es requerido"),
     encabezado: yup.string().required("Encabezado es requerido"),
     ambasPartes: yup.string().required("Ambas partes es requerido"),
+    // visible: yup.boolean().required("Visible es requerido"),
   });
-
-  const handle = ({ tipoContrato, encabezado, ambasPartes }) => {
-    let temp = {};
-    Object.assign(temp, elementDialog);
-    temp.tipoContrato = tipoContrato;
-    temp.encabezado = encabezado;
-    temp.ambasPartes = ambasPartes;
-    // Object.keys(elementDialog).length === 0 ? temp.visible= true : console.log("object")
-    temp.visible = true;
-    try {
-      updateTC({ variables: { tipoContrato: temp } });
-      dispatch({ type: actionTypes.SET_EDIT_DIALOG, editDialog: false });
-    } catch (error) {
-      alert(error);
-    }
-  };
-  const cancel = () => {
-    dispatch({
-      type: actionTypes.SET_EDIT_DIALOG,
-      editDialog: false,
-    });
-  };
+  
   const dataStruct = [
     {
+      id: 1,
       component: "label",
       name: "tipoContrato",
       defaultValue: "Tipo de contrato*",
     },
     {
+      id: 2,
       component: "InputText",
       name: "tipoContrato",
-      defaultValue: elementDialog.tipoContrato,
+      defaultValue: "",
     },
     {
-      component: "label",
-      name: "ambasPartes",
-      defaultValue: "Ambas partes*",
-    },
-    {
-      component: "InputText",
-      name: "ambasPartes",
-      defaultValue: elementDialog.ambasPartes,
-    },
-    {
+      id: 3,
       component: "label",
       name: "encabezado",
       defaultValue: "Encabezado*",
     },
     {
+      id: 4,
       component: "InputText",
       name: "encabezado",
-      defaultValue: elementDialog.encabezado,
+      defaultValue: "",
     },
+    {
+      id: 5,
+      component: "label",
+      name: "ambasPartes",
+      defaultValue: "Ambas partes*",
+    },
+    {
+      id: 6,
+      component: "InputText",
+      name: "ambasPartes",
+      defaultValue: "",
+    },
+    // {
+    //   id: 7,
+    //   component: "label",
+    //   name: "visible",
+    //   defaultValue: "Ambas partes*",
+    // },
+    // {
+    //   id: 8,
+    //   component: "CheckBox",
+    //   name: "visible",
+    //   defaultValue: "",
+    // },
   ];
-
+  
+  const formProps = {"data": dataStruct, "schema": schema, "handle": updateTC, "variables": { tipoContrato: {} }, "buttonsNames": ["Guardar", "Cancelar"]}
   return (
     <div>
       <Navbar />
@@ -122,6 +119,7 @@ export const ContractTypes = () => {
         <div>
           <Table
             value={data.findAllTipoContrato}
+            bodies={bodies}
             header="Tipos de Contratos"
             size="small"
             columns={c}
@@ -135,65 +133,14 @@ export const ContractTypes = () => {
             filtersValues={filters}
             edit={true}
             exportData={true}
-            deleteOne={deleteOne}
+            removeOne={ [removeTC, {id: -1}] }
+            formProps={formProps}
+            emptyElement={emptyElement}
           />
-          <Dialog
-            visible={editDialog}
-            style={{ width: "450px" }}
-            header={
-              Object.keys(elementDialog).length === 0 ? "Insertar" : "Detalles"
-            }
-            modal
-            breakpoints={{ "992px": "50vw", "768px": "65vw", "572px": "80vw" }}
-            resizable={false}
-            className=""
-            onHide={() => {
-              dispatch({
-                type: actionTypes.SET_EDIT_DIALOG,
-                editDialog: false,
-              });
-            }}
-          >
-            <Form
-              data={dataStruct}
-              schema={schema}
-              handle={handle}
-              cancel={cancel}
-              buttonsNames={["Guardar", "Cancelar"]}
-            />
-            {/* <FormProvider {...methods}>
-              <form onSubmit={handleSubmit(handle)}>
-                <Field type="label" name="tipoContrato" defaultValue="Tipo de contrato*"/>
-                <Field type="InputText" name="tipoContrato" defaultValue={elementDialog.tipoContrato}/>
-                <Field type="label" name="ambasPartes" defaultValue="Ambas partes*"/>
-                <Field type="InputText" name="ambasPartes" defaultValue={elementDialog.ambasPartes}/>
-                <Field type="label" name="encabezado" defaultValue="Encabezado*"/>
-                <Field type="InputText" name="encabezado" defaultValue={elementDialog.encabezado}/>               
-                <div className="flex justify-content-end mt-3">
-                  <Button
-                    label="Guardar"
-                    icon="pi pi-check"
-                    className="p-button-text"
-                    type="submit"
-                  />
-                  <Button
-                    label="Cancelar"
-                    icon="pi pi-times"
-                    className="p-button-text"
-                    onClick={() =>
-                      dispatch({
-                        type: actionTypes.SET_EDIT_DIALOG,
-                        editDialog: false,
-                      })
-                    }
-                  />
-                </div>
-              </form>
-            </FormProvider> */}
-          </Dialog>
         </div>
       ) : (
-        console.log("e")
+        //poner cargar
+        undefined
       )}
     </div>
   );

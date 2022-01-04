@@ -16,6 +16,7 @@ export const Form = ({ data, schema, handle, cancel, buttonsNames }) => {
         {data.map((item) => {
           return (
             <Field
+              key={item.id}
               type={item.component}
               name={item.name}
               defaultValue={item.defaultValue}
@@ -31,6 +32,7 @@ export const Form = ({ data, schema, handle, cancel, buttonsNames }) => {
           />
           <Button
             label={buttonsNames[1]}
+            type="button"
             icon="pi pi-times"
             className="p-button-text"
             onClick={() => cancel()}
