@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Navbar } from "../NavBar/Navbar";
 import { useQuery, useMutation } from "@apollo/client";
 import { Table } from "../ui/Table";
@@ -9,7 +9,6 @@ import {
   selectAllTipoContrato,
   updateTipoContrato,
 } from "../../database/GraphQLStatements";
-import { Checkbox } from "primereact/checkbox";
 
 export const ContractTypes = () => {
 
@@ -20,10 +19,7 @@ export const ContractTypes = () => {
     encabezado: { value: null, matchMode: FilterMatchMode.CONTAINS },
     // visible: { value: null, matchMode: FilterMatchMode.CONTAINS },
   };
-  const visibleBodyTemplate = () => {
-    return ( <Checkbox inputId="binary" checked={true}/>
-    );
-}
+
   const bodies =  {"tipoContrato": undefined, "encabezado": undefined, "ambasPartes": undefined/* , "visible": visibleBodyTemplate */}
   let c = [
     { field: "tipoContrato", header: "Tipo Contrato"},

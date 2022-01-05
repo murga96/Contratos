@@ -8,6 +8,7 @@ import {Switch, BrowserRouter as Router, Route} from "react-router-dom"
 import { Home } from './components/Home/Home';
 import { ContractTypes } from './components/ContractTypes/ContractTypes';
 import {addLocale, locale} from "primereact/api"
+import { ClauseTypes } from './components/ClauseType/ClauseType';
 
  
 
@@ -67,6 +68,9 @@ function App() {
           </Route>
           <Route path="/TiposContratos">
             <ContractTypes/>
+          </Route>
+          <Route path="/TiposClausulas">
+            <ClauseTypes/>
           </Route>
           <Route path="/Inicio">
             <SignIn/>

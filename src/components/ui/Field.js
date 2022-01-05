@@ -44,7 +44,7 @@ export const Field = ({ type, name, defaultValue }) => {
             name={name}
             defaultValue={defaultValue}
             control={control}
-            render={({ field, fieldState }) => (
+            render={({ field, fieldState, value, onChange }) => (
               <Checkbox
                 id={field.name}
                 {...field}
@@ -52,7 +52,7 @@ export const Field = ({ type, name, defaultValue }) => {
                   { "p-invalid": fieldState.invalid },
                   "w-full mb-2"
                 )}
-                inputId="binary" checked={defaultValue} /* onChange={e => setChecked(e.checked)} */
+                inputId="binary" checked={field.value} onChange={e => field.onChange(e.checked)}
               />
             )}
           />

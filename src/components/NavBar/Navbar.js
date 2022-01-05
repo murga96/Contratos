@@ -40,7 +40,7 @@ export const Navbar = (url) => {
                 {
                     label: 'Tipos de Clausulas',
                     icon: 'pi pi-fw pi-bookmark',
-                    command: () => {navigate.push(`${url}/TiposContratos`)},
+                    command: () => {navigate.push(`/TiposClausulas`)},
                 },
                 {
                     label: 'Tipos de Documentos',

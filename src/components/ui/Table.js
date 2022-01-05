@@ -6,9 +6,10 @@ import { Dialog } from "primereact/dialog";
 import { Toolbar } from "primereact/toolbar";
 import { Tooltip } from "primereact/tooltip";
 import { Form } from "./Form";
+import { TriStateCheckbox } from 'primereact/tristatecheckbox';
 
-export const Table = ({value, bodies, header, size, columns, pagination, rowNumbers, selectionType, sortRemove,
-   fieldSort, orderSort, filterDplay, filtersValues, edit, exportData, removeOne, formProps, emptyElement}) => {
+export const Table = ({value, header, size, columns, pagination, rowNumbers, selectionType, sortRemove,
+   fieldSort, orderSort, filterDplay, filtersValues, edit, exportData, removeOne, removeSeveral, formProps, emptyElement}) => {
   const dt = useRef(null)
   const [selectedElement, setSelectedElement] = useState(null);
   const [element, setElement] = useState({})
@@ -19,16 +20,30 @@ export const Table = ({value, bodies, header, size, columns, pagination, rowNumb
 
   //header and columns
   const h = <div className="table-header">{header}</div>;
-  const dynamicColumns = columns.map((col,i = 0) => {
-      return <Column key={col.field} field={col.field} header={col.header} sortable={fieldSort === null ? false : true}
-      body={bodies[col.field]}
-     filter={filterDplay === null ? false : true} />;
+
+  const bodyChecker = (rowData, item) => {
+    if (typeof rowData[item.field] === "boolean") {
+      return rowData[item.field] ? <i className="pi pi-check-circle" style={{'color': "#008000", "fontSize": "1.3rem" }}></i> : <i className="pi pi-times-circle" style={{'color': 'red', "fontSize": "1.3rem"}}></i>;
+    } else {
+      return rowData[item.field];
+    }
+  };
+
+  const verifiedRowFilterTemplate = (options, rowData) => {
+      return <TriStateCheckbox value={options.value} onChange={(e) => options.filterApplyCallback(e.value)} />
+    }
+
+  const dynamicColumns = columns.map((col, i) => {
+      return <Column key={col.field} field={col.field} header={col.header} sortable={fieldSort === null ? false : true}/*  style={{flex: 1,justifyContent: "center"}} */
+      body={bodyChecker} dataType= {value && typeof Object.values(value[0])[i+1]=== "boolean" ? "boolean": "text"}
+      filterElement={value && typeof Object.values(value[0])[i+1] === "boolean"? verifiedRowFilterTemplate :undefined}
+      filter={filterDplay === null ? false : true} />;
   });
-console.log(dynamicColumns)
   const exportColumns = columns.map(col => ({ title: col.header, dataKey: col.field }));
 
-  const changeValuesFormData = (v) => {
-    let i = 1
+  const changeValuesFormData = (v, edit) => {
+    console.log(v)
+    let i = edit ? 1 : 0
     for (let index = 0; index < formProps.data.length; index++) {
       if( index % 2 !== 0) {
         formProps.data[index].defaultValue = v[i]
@@ -51,8 +66,13 @@ console.log(dynamicColumns)
   
   //deleting elements
   const deleteElement= () => {
-      deleteOne()
-      setDeleteDialog(false);
+    removeOne[1][Object.keys(removeOne[1])[0]] = element[Object.keys(element)[0]]
+    try {
+      removeOne[0]({ variables: removeOne[1] });
+    } catch (error) {
+      alert(error);
+    }
+    setDeleteDialog(false);
   }
 
   const confirmDeleteElement = (element) => {
@@ -60,19 +80,33 @@ console.log(dynamicColumns)
     setDeleteDialog(true)
   }
 
+  const confirmDeleteSelected = () => {
+    setDeleteMultipleDialog(true)
+  }
+
   const deleteElements = () => {
     //bulk delete
-      setDeleteMultipleDialog(false);
+    const arr = []
+    dt.current.props.selection.map((item) => {
+      arr.push(Object.values(item)[0])
+    })
+    removeSeveral[1][Object.keys(removeSeveral[1])[0]] = arr
+    try {
+      removeSeveral[0]({ variables: removeSeveral[1] });
+    } catch (error) {
+      alert(error);
+    }
+    setDeleteMultipleDialog(false);
   }
 
   //editing elements
   const editElement = (elem) => {
     setElement(elem)
-    changeValuesFormData(Object.values(elem))
+    changeValuesFormData(Object.values(elem), true)
     setEditDialog(true)
   }
-  const saveElement = (/* { tipoContrato, encabezado, ambasPartes } */data) => {
-    console.log("handle")
+  const saveElement = (data) => {
+    console.log("handle", data)
     let temp = {};
     Object.assign(temp, element, data)
     Object.assign(formProps.variables[Object.keys(formProps.variables)[0]], temp)
@@ -82,15 +116,6 @@ console.log(dynamicColumns)
       alert(error);
     }
     setEditDialog(false)
-  };
-
-  const deleteOne = () => {
-    removeOne[1][Object.keys(removeOne[1])[0]] = element[Object.keys(element)[0]]
-    try {
-      removeOne[0]({ variables: removeOne[1] });
-    } catch (error) {
-      alert(error);
-    }
   };
 
   const exportPdf = () => {
@@ -128,7 +153,7 @@ console.log(dynamicColumns)
     return (
         <div className="action-table">
             <Button icon="pi pi-pencil" className="p-button-rounded p-button-success mr-2" data-pr-tooltip="Editar" onClick={() => editElement(rowData)} />
-            <Button icon="pi pi-trash" className="p-button-rounded p-button-warning" data-pr-tooltip="Eliminar" onClick={() => confirmDeleteElement(rowData)} />
+            <Button icon="pi pi-trash" className="p-button-rounded p-button-warning " data-pr-tooltip="Eliminar" onClick={() => confirmDeleteElement(rowData)} />
         </div>
     );
   }
@@ -140,11 +165,11 @@ console.log(dynamicColumns)
           <div>
               <Button label="Nuevo" icon="pi pi-plus" className="p-button-success mr-2" onClick={() => {
                 setElement(emptyElement)
-                changeValuesFormData(Object.values({}))
+                changeValuesFormData(Object.values(emptyElement), false)
                 setEditDialog(true)
                 }
                 } />
-              <Button label="Eliminar" icon="pi pi-trash" className="p-button-danger" /* onClick={confirmDeleteSelected} */ disabled={!selectedElement || !selectedElement.length} />
+              <Button label="Eliminar" icon="pi pi-trash" className="p-button-danger" onClick={confirmDeleteSelected} disabled={!selectedElement || !selectedElement.length} />
           </div>
       )
     else
@@ -209,8 +234,8 @@ console.log(dynamicColumns)
         </Dialog>
 
             <Dialog visible={deleteMultipleDialog} style={{ width: '450px' }} header="Confirm" modal footer={deleteMultipleDialogFooter} onHide={hideDeleteElementsDialog}>
-                <div className="confirmation-content">
-                    <i className="pi pi-exclamation-triangle p-mr-3" style={{ fontSize: '2rem'}} />
+                <div className="flex flex-row align-content-end confirmation-content mt-3">
+                    <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem'}} />
                     {element && <span>¿Está seguro que desea eliminar los elementos seleccionados?</span>}
                 </div>
             </Dialog>
