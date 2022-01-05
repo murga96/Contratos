@@ -5,6 +5,7 @@ import { Table } from "../ui/Table";
 import { FilterMatchMode } from "primereact/api";
 import * as yup from "yup";
 import {
+  removeSeveralTipoContrato,
   removeTipoContrato,
   selectAllTipoContrato,
   updateTipoContrato,
@@ -17,7 +18,7 @@ export const ContractTypes = () => {
     tipoContrato: { value: null, matchMode: FilterMatchMode.CONTAINS },
     ambasPartes: { value: null, matchMode: FilterMatchMode.CONTAINS },
     encabezado: { value: null, matchMode: FilterMatchMode.CONTAINS },
-    // visible: { value: null, matchMode: FilterMatchMode.CONTAINS },
+    visible: { value: null, matchMode: FilterMatchMode.CONTAINS },
   };
 
   const bodies =  {"tipoContrato": undefined, "encabezado": undefined, "ambasPartes": undefined/* , "visible": visibleBodyTemplate */}
@@ -25,9 +26,9 @@ export const ContractTypes = () => {
     { field: "tipoContrato", header: "Tipo Contrato"},
     { field: "encabezado", header: "Encabezado"},
     { field: "ambasPartes", header: "Ambas partes"},
-    // { field: "visible", header: "Visible"},
+    { field: "visible", header: "Visible"},
   ];
-  let emptyElement = {"tipoContrato": "", "encabezado": "", "ambasPartes": "", "visible": true}
+  let emptyElement = {"tipoContrato": "", "encabezado": "", "ambasPartes": "", "visible": false}
 
   //graphQL
   const { data, error, loading } = useQuery(selectAllTipoContrato);
@@ -37,6 +38,9 @@ export const ContractTypes = () => {
   const [removeTC] = useMutation(removeTipoContrato, {
     refetchQueries: ["findAllTipoContrato"],
   });
+  const [removeSeverTC] = useMutation(removeSeveralTipoContrato, {
+    refetchQueries: ["findAllTipoContrato"],
+  });
 
   //Form
   //React-hook-form
@@ -44,7 +48,7 @@ export const ContractTypes = () => {
     tipoContrato: yup.string().required("Tipo de contrato es requerido"),
     encabezado: yup.string().required("Encabezado es requerido"),
     ambasPartes: yup.string().required("Ambas partes es requerido"),
-    // visible: yup.boolean().required("Visible es requerido"),
+    visible: yup.boolean(),
   });
   
   const dataStruct = [
@@ -84,18 +88,18 @@ export const ContractTypes = () => {
       name: "ambasPartes",
       defaultValue: "",
     },
-    // {
-    //   id: 7,
-    //   component: "label",
-    //   name: "visible",
-    //   defaultValue: "Ambas partes*",
-    // },
-    // {
-    //   id: 8,
-    //   component: "CheckBox",
-    //   name: "visible",
-    //   defaultValue: "",
-    // },
+    {
+      id: 7,
+      component: "label",
+      name: "visible",
+      defaultValue: "Visible*",
+    },
+    {
+      id: 8,
+      component: "CheckBox",
+      name: "visible",
+      defaultValue: "",
+    },
   ];
   
   const formProps = {"data": dataStruct, "schema": schema, "handle": updateTC, "variables": { tipoContrato: {} }, "buttonsNames": ["Guardar", "Cancelar"]}
@@ -123,6 +127,7 @@ export const ContractTypes = () => {
             edit={true}
             exportData={true}
             removeOne={ [removeTC, {id: -1}] }
+            removeSeveral={ [removeSeverTC, {id: -1}] }
             formProps={formProps}
             emptyElement={emptyElement}
           />

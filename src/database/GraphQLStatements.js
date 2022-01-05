@@ -31,6 +31,14 @@ export const removeTipoContrato = gql`
 }
 `;
 
+export const removeSeveralTipoContrato = gql`
+  mutation removeSeveralTipoContrato($id: [Int!]!){
+  removeSeveralTipoContrato(id: $id){
+    tipoContrato
+  }
+}
+`;
+
 //Tipo de Clausulas
 export const selectAllTiposDeClausulas = gql`
 query selectAllTiposDeClausulas{
