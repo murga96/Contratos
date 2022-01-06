@@ -9,21 +9,21 @@ import { StateProvider } from './StateProvider';
 const httpLink = new HttpLink({
   uri: 'http://localhost:3001/graphql',
 })
-const errorLink = onError( ({graphQLErrors, networkError, response}) => {
-  if(graphQLErrors)
-    graphQLErrors.map( ({message/* , locations, path */}) => alert(`[GraphQL error]: Message: ${message}`) )
-  if(networkError)
+const errorLink = onError( ({graphQLErrors, networkError, response, operation}) => {
+  console.log(graphQLErrors, networkError, response, operation)
+  if(graphQLErrors){
+    graphQLErrors.map( ({message/* , locations, path */}) => {alert(`[GraphQL error]: Message: ${message}`);message=null} )
+  }
+  // graphQLErrors = null
+  if(networkError){
     alert(`[Network error]: ${networkError}`)
-  //no salte el error en la página
-  console.log(networkError,"response")
-  console.log(graphQLErrors,"response1")
-  if(typeof response !== 'undefined' ){
-    console.log("ddsdsds")
-    response.errors = null;
-  }/* else if(typeof networkError !== 'undefined' ){
     networkError = null
   }
- */
+  //no salte el error en la página
+  if(response){
+    response.errors = null;
+  }
+  console.log(graphQLErrors, networkError, response, operation)
 })
 const client = new ApolloClient({
   

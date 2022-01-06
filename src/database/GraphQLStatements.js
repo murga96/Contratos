@@ -131,7 +131,7 @@ query selectAllCargo{
 
 export const updateCargo = gql`
   mutation createCargo($cargo: CreateCargoInput!) {
-    createCargo(CreateCargoInput: $cargo) {
+    createCargo(createCargoInput: $cargo) {
       idCargo,
       cargo,
     }

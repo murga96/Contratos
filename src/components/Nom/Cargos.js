@@ -34,7 +34,7 @@ export const Cargos = () => {
   const [removeSeveralElement] = useMutation(removeSeveralCargo, {
     refetchQueries: ["selectAllCargo"],
   });
-
+  
   //Form
   //React-hook-form
   const schema = yup.object().shape({

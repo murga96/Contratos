@@ -113,6 +113,7 @@ export const Table = ({value, header, size, columns, pagination, rowNumbers, sel
     try {
       formProps.handle({ variables: formProps.variables})
     } catch (error) {
+      console.log("object")
       alert(error);
     }
     setEditDialog(false)
