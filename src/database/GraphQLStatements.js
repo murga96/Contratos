@@ -119,4 +119,38 @@ export const removeSeveralTiposDocumentos = gql`
 }
 `;
 
+//Cargo
+export const selectAllCargo = gql`
+query selectAllCargo{
+  findAllCargos {
+    idCargo,
+    cargo,
+  }
+}
+`;
+
+export const updateCargo = gql`
+  mutation createCargo($cargo: CreateCargoInput!) {
+    createCargo(CreateCargoInput: $cargo) {
+      idCargo,
+      cargo,
+    }
+  }
+`;
+
+export const removeCargo = gql`
+  mutation removeCargo($id: Int!){
+    removeCargo(id:$id) {
+      cargo,
+  }
+}
+`;
+
+export const removeSeveralCargo = gql`
+  mutation removeSeveralCargo($id: [Int!]!){
+    removeSeveralCargo(id: $id){
+    cargo,
+  }
+}
+`;
 
