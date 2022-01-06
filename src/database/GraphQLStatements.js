@@ -84,4 +84,39 @@ export const removeSeveralTiposDeClausulas = gql`
 }
 `;
 
+//Tipos de Documentos
+export const selectAllTiposDocumentos = gql`
+query selectAllTiposDocumentos{
+  findAllTiposDocumento {
+    idTipoDoc,
+    nombreDoc,
+  }
+}
+`;
+
+export const updateTiposDocumentos = gql`
+  mutation createTiposDocumentos($tipoDocumentos: createTiposDocumentoInput!) {
+    createTiposDocumentos(createTiposDocumentoInput: $tipoDocumentos) {
+      idTipoDoc,
+      nombreDoc
+    }
+  }
+`;
+
+export const removeTiposDocumentos = gql`
+  mutation removeTiposDocumentos($id: Int!){
+    removeTiposDocumento(id:$id) {
+      nombreDoc
+  }
+}
+`;
+
+export const removeSeveralTiposDocumentos = gql`
+  mutation removeSeveralTiposDocumentos($id: [Int!]!){
+  removeSeveralTiposDocumento(id: $id){
+    nombre
+  }
+}
+`;
+
 
