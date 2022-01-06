@@ -49,27 +49,33 @@ export const Navbar = (url) => {
                 },
                 {
                     label: 'Cargos',
-                    icon: 'pi pi-fw pi-bookmark'
+                    icon: 'pi pi-fw pi-bookmark',
+                    command: () => {navigate.push(`/Cargos`)},
                 },
                 {
                     label: 'Ejecutivos',
-                    icon: 'pi pi-fw pi-bookmark'
+                    icon: 'pi pi-fw pi-bookmark',
+                    command: () => {navigate.push(`/TiposDocumentos`)},
                 },
                 {
                     label: 'Incoterms',
-                    icon: 'pi pi-fw pi-bookmark'
+                    icon: 'pi pi-fw pi-bookmark',
+                    command: () => {navigate.push(`/TiposDocumentos`)},
                 },
                 {
                     label: 'Monedas',
-                    icon: 'pi pi-fw pi-bookmark'
+                    icon: 'pi pi-fw pi-bookmark',
+                    command: () => {navigate.push(`/TiposDocumentos`)},
                 },
                 {
                     label: 'Puertos',
-                    icon: 'pi pi-fw pi-bookmark'
+                    icon: 'pi pi-fw pi-bookmark',
+                    command: () => {navigate.push(`/TiposDocumentos`)},
                 },
                 {
                     label: 'Clasificación de documentos',
-                    icon: 'pi pi-fw pi-bookmark'
+                    icon: 'pi pi-fw pi-bookmark',
+                    command: () => {navigate.push(`/TiposDocumentos`)},
                 },
             ]
         },

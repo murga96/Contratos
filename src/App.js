@@ -10,6 +10,7 @@ import { ContractTypes } from './components/ContractTypes/ContractTypes';
 import {addLocale, locale} from "primereact/api"
 import { ClauseTypes } from './components/ClauseType/ClauseType';
 import { DocumentTypes } from './components/Nom/DocumentTypes';
+import { Cargos } from './components/Nom/Cargos';
 
  
 
@@ -76,14 +77,14 @@ function App() {
           <Route path="/TiposDocumentos">
             <DocumentTypes/>
           </Route>
+          <Route path="/Cargos">
+            <Cargos/>
+          </Route>
           <Route path="/Inicio">
             <SignIn/>
           </Route>
         </Switch>
-    </Router>       
-       {/* <DataTable value={contracts} responsiveLayout="scroll">
-          <Column field="TipoContrato" header="Tipo de Contrato"></Column>
-        </DataTable> */}
+    </Router>
     </div>
   );
 }
