@@ -95,8 +95,8 @@ query selectAllTiposDocumentos{
 `;
 
 export const updateTiposDocumentos = gql`
-  mutation createTiposDocumentos($tipoDocumentos: createTiposDocumentoInput!) {
-    createTiposDocumentos(createTiposDocumentoInput: $tipoDocumentos) {
+  mutation createTiposDocumentos($tipoDocumentos: CreateTiposDocumentoInput!) {
+    createTiposDocumento(createTiposDocumentoInput: $tipoDocumentos) {
       idTipoDoc,
       nombreDoc
     }
@@ -114,7 +114,7 @@ export const removeTiposDocumentos = gql`
 export const removeSeveralTiposDocumentos = gql`
   mutation removeSeveralTiposDocumentos($id: [Int!]!){
   removeSeveralTiposDocumento(id: $id){
-    nombre
+    nombreDoc
   }
 }
 `;

@@ -44,7 +44,8 @@ export const Navbar = (url) => {
                 },
                 {
                     label: 'Tipos de Documentos',
-                    icon: 'pi pi-fw pi-bookmark'
+                    icon: 'pi pi-fw pi-bookmark',
+                    command: () => {navigate.push(`/TiposDocumentos`)},
                 },
                 {
                     label: 'Cargos',

@@ -9,6 +9,7 @@ import { Home } from './components/Home/Home';
 import { ContractTypes } from './components/ContractTypes/ContractTypes';
 import {addLocale, locale} from "primereact/api"
 import { ClauseTypes } from './components/ClauseType/ClauseType';
+import { DocumentTypes } from './components/Nom/DocumentTypes';
 
  
 
@@ -71,6 +72,9 @@ function App() {
           </Route>
           <Route path="/TiposClausulas">
             <ClauseTypes/>
+          </Route>
+          <Route path="/TiposDocumentos">
+            <DocumentTypes/>
           </Route>
           <Route path="/Inicio">
             <SignIn/>
