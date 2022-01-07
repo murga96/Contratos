@@ -22,17 +22,17 @@ export const Ejecutivos = () => {
     "nombre": { value: null, matchMode: FilterMatchMode.CONTAINS },
     "correo": { value: null, matchMode: FilterMatchMode.CONTAINS },
     "cargo.cargo": { value: null, matchMode: FilterMatchMode.CONTAINS },
-    // "grupo.grupos": { value: null, matchMode: FilterMatchMode.CONTAINS },
+    "grupo.grupos": { value: null, matchMode: FilterMatchMode.CONTAINS },
     "activo": { value: null, matchMode: FilterMatchMode.CONTAINS },
   };
   let c = [
     { field: "nombre", header: "Nombre"},
     { field: "correo", header: "Correo"},
     { field: "cargo.cargo", header: "Cargo"},
-    // { field: "grupo.grupos", header: "Grupo"},
+    { field: "grupo.grupos", header: "Grupo"},
     { field: "activo", header: "Activo"},
   ];
-  let emptyElement = {"nombre": "", "cargo": ""/* , "grupo": ""*/,  "activo": false}
+  let emptyElement = {"nombre": "", "correo": "", "cargo": "", "grupo": "",  "activo": false}
 
   //graphQL
   const { data, error, loading } = useQuery(selectAllEjecutivos);
@@ -52,8 +52,9 @@ export const Ejecutivos = () => {
   //React-hook-form
   const schema = yup.object().shape({
     nombre: yup.string().required("Nombre es requerido"),
-    cargo: yup.object(),
-    // grupo: yup.string().required("Grupo es requerido"),
+    correo: yup.string().email("Correo electrónico inválido. Ej: contratos@email.com").required("Correo es requerido").nullable("Correo es requerido"),
+    idCargo: yup.number().required("Cargo es requerido"),
+    idGrupo: yup.number().required("Grupo es requerido"),
     activo: yup.bool(),
   });
 
@@ -73,37 +74,49 @@ export const Ejecutivos = () => {
     {
       id: 3,
       component: "label",
-      name: "cargo",
-      defaultValue: "Cargo",
+      name: "correo",
+      defaultValue: "Correo*",
     },
     {
       id: 4,
-      component: "Dropdown",
-      name: "cargo",
+      component: "InputText",
+      name: "correo",
       defaultValue: "",
-      props: {options: cargos.data?.findAllCargos,  optionLabel: "cargo", placeholder: "Selecciona un cargo"}
     },
     {
       id: 5,
       component: "label",
-      name: "grupo",
+      name: "idCargo",
+      defaultValue: "Cargo",
+    },
+    {
+      id: 6,
+      component: "Dropdown",
+      name: "idCargo",
+      defaultValue: "",
+      props: {options: cargos.data?.findAllCargos,  optionLabel: "cargo", optionValue: "idCargo", placeholder: "Selecciona un cargo"}
+    },
+    {
+      id: 7,
+      component: "label",
+      name: "idGrupo",
       defaultValue: "Grupo",
     },
     {
-        id: 6,
+        id: 8,
         component: "Dropdown",
-        name: "grupo",
-        defaultValue: "",
-        props: {options: grupos.data?.findAllGrupos,  optionLabel: "grupos", placeholder: "Selecciona un grupo"}
+        name: "idGrupo",
+        defaultValue: 1,
+        props: {options: grupos.data?.findAllGrupos,  optionLabel: "grupos", optionValue: "idGrupo", placeholder: "Selecciona un grupo"}
       },
     {
-      id: 7,
+      id: 9,
       component: "label",
       name: "activo",
       defaultValue: "Activo",
     },
     {
-      id: 8,
+      id: 10,
       component: "CheckBox",
       name: "activo",
       defaultValue: "",
