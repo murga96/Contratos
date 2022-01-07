@@ -19,6 +19,7 @@ export const Form = ({ data, schema, handle, cancel, buttonsNames }) => {
               type={item.component}
               name={item.name}
               defaultValue={item.defaultValue}
+              props={item.props}
             />
           );
         })}

@@ -155,17 +155,18 @@ export const removeSeveralCargo = gql`
 `;
 
 //Ejecutivos
-export const selectAllCargo = gql`
+export const selectAllEjecutivos = gql`
   query selectAllEjecutivos {
     findAllEjecutivos {
       idEjecutivo
       nombre
+      correo
       cargo {
         cargo
       }
-      grupo {
-        grupos
-      }
+      # grupo {
+      #   grupos
+      # }
       activo
     }
   }
@@ -191,6 +192,16 @@ export const removeSeveralEjecutivo = gql`
   mutation removeSeveralEjecutivo($id: [Int!]!) {
     removeSeveralEjecutivo(id: $id) {
       idEjecutivo
+    }
+  }
+`;
+
+//Grupos
+export const selectAllGrupos = gql`
+  query selectAllGrupos{
+    findAllGrupos {
+      idGrupo,
+      grupos
     }
   }
 `;

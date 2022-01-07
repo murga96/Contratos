@@ -55,7 +55,7 @@ export const Navbar = (url) => {
                 {
                     label: 'Ejecutivos',
                     icon: 'pi pi-fw pi-bookmark',
-                    command: () => {navigate.push(`/TiposDocumentos`)},
+                    command: () => {navigate.push(`/Ejecutivos`)},
                 },
                 {
                     label: 'Incoterms',

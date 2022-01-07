@@ -10,13 +10,15 @@ import {
   selectAllCargo,
   updateCargo,
 } from "../../database/GraphQLStatements";
+import { ProgressSpinner } from "primereact/progressspinner";
 
 export const Cargos = () => {
 
   //Table
   const filters = {
-    global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-    cargo: { value: null, matchMode: FilterMatchMode.CONTAINS },
+    "global": { value: null, matchMode: FilterMatchMode.CONTAINS },
+    "cargo": { value: null, matchMode: FilterMatchMode.CONTAINS },
+    "combo": { value: null, matchMode: FilterMatchMode.CONTAINS },
   };
   let c = [
     { field: "cargo", header: "Nombre"},
@@ -54,13 +56,12 @@ export const Cargos = () => {
       name: "cargo",
       defaultValue: "",
     },
-    
   ];
   const formProps = {"data": dataStruct, "schema": schema, "handle": updateElement, "variables": { cargo: {} }, "buttonsNames": ["Guardar", "Cancelar"]}
   return (
     <div>
       <Navbar />
-      {loading && loadingU && <h5>Loading...</h5>}
+      {loading &&  (<div className="flex h-30rem justify-content-center align-items-center"><ProgressSpinner strokeWidth="3" /></div>)}   
       {error && errorU && <h5>{error}</h5>}
       {!(loading || error || loadingU || errorU) ? (
         <div>

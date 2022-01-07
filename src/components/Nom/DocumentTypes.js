@@ -10,13 +10,14 @@ import {
   selectAllTiposDocumentos,
   updateTiposDocumentos,
 } from "../../database/GraphQLStatements";
+import { ProgressSpinner } from "primereact/progressspinner";
 
 export const DocumentTypes = () => {
 
   //Table
   const filters = {
-    global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-    nombreDoc: { value: null, matchMode: FilterMatchMode.CONTAINS },
+    "global": { value: null, matchMode: FilterMatchMode.CONTAINS },
+    "nombreDoc": { value: null, matchMode: FilterMatchMode.CONTAINS },
   };
   let c = [
     { field: "nombreDoc", header: "Nombre"},
@@ -60,7 +61,7 @@ export const DocumentTypes = () => {
   return (
     <div>
       <Navbar />
-      {loading && loadingU && <h5>Loading...</h5>}
+      {loading &&  (<div className="flex h-30rem justify-content-center align-items-center"><ProgressSpinner strokeWidth="3" /></div>)}   
       {error && errorU && <h5>{error}</h5>}
       {!(loading || error || loadingU || errorU) ? (
         <div>
@@ -75,8 +76,8 @@ export const DocumentTypes = () => {
             sortRemove
             orderSort={1}
             fieldSort="nombreDoc"
-            /* filterDplay="row"
-            filtersValues={filters} */
+            filterDplay="row"
+            filtersValues={filters}
             edit={true}
             exportData={true}
             removeOne={ [removeElement, {id: -1}] }

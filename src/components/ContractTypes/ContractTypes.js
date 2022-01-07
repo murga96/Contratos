@@ -10,15 +10,16 @@ import {
   selectAllTipoContrato,
   updateTipoContrato,
 } from "../../database/GraphQLStatements";
+import { ProgressSpinner } from "primereact/progressspinner";
 
 export const ContractTypes = () => {
 
   const filters = {
-    global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-    tipoContrato: { value: null, matchMode: FilterMatchMode.CONTAINS },
-    ambasPartes: { value: null, matchMode: FilterMatchMode.CONTAINS },
-    encabezado: { value: null, matchMode: FilterMatchMode.CONTAINS },
-    visible: { value: null, matchMode: FilterMatchMode.CONTAINS },
+    "global": { value: null, matchMode: FilterMatchMode.CONTAINS },
+    "tipoContrato": { value: null, matchMode: FilterMatchMode.CONTAINS },
+    "ambasPartes": { value: null, matchMode: FilterMatchMode.CONTAINS },
+    "encabezado": { value: null, matchMode: FilterMatchMode.CONTAINS },
+    "visible": { value: null, matchMode: FilterMatchMode.CONTAINS },
   };
 
   const bodies =  {"tipoContrato": undefined, "encabezado": undefined, "ambasPartes": undefined/* , "visible": visibleBodyTemplate */}
@@ -106,7 +107,7 @@ export const ContractTypes = () => {
   return (
     <div>
       <Navbar />
-      {loading && loadingU && <h5>Loading...</h5>}
+      {loading &&  (<div className="flex h-30rem justify-content-center align-items-center"><ProgressSpinner strokeWidth="3" /></div>)}   
       {error && errorU && <h5>{error}</h5>}
       {!(loading || error || loadingU || errorU) ? (
         <div>

@@ -11,6 +11,7 @@ import {addLocale, locale} from "primereact/api"
 import { ClauseTypes } from './components/ClauseType/ClauseType';
 import { DocumentTypes } from './components/Nom/DocumentTypes';
 import { Cargos } from './components/Nom/Cargos';
+import { Ejecutivos } from './components/Nom/Ejecutivos';
 
  
 
@@ -79,6 +80,9 @@ function App() {
           </Route>
           <Route path="/Cargos">
             <Cargos/>
+          </Route>
+          <Route path="/Ejecutivos">
+            <Ejecutivos/>
           </Route>
           <Route path="/Inicio">
             <SignIn/>

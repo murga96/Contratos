@@ -7,6 +7,7 @@ import { Toolbar } from "primereact/toolbar";
 import { Tooltip } from "primereact/tooltip";
 import { Form } from "./Form";
 import { TriStateCheckbox } from 'primereact/tristatecheckbox';
+import { get } from 'lodash'
 
 export const Table = ({value, header, size, columns, pagination, rowNumbers, selectionType, sortRemove,
    fieldSort, orderSort, filterDplay, filtersValues, edit, exportData, removeOne, removeSeveral, formProps, emptyElement}) => {
@@ -16,8 +17,7 @@ export const Table = ({value, header, size, columns, pagination, rowNumbers, sel
   const [editDialog, setEditDialog] = useState(false);
   const [deleteDialog, setDeleteDialog] = useState(false);
   const [deleteMultipleDialog, setDeleteMultipleDialog] = useState(false);
-  // const [product, setProduct] = useState(emptyProduct);
-
+  
   //header and columns
   const h = <div className="table-header">{header}</div>;
 
@@ -25,22 +25,24 @@ export const Table = ({value, header, size, columns, pagination, rowNumbers, sel
     if (typeof rowData[item.field] === "boolean") {
       return rowData[item.field] ? <i className="pi pi-check-circle" style={{'color': "#008000", "fontSize": "1.3rem" }}></i> : <i className="pi pi-times-circle" style={{'color': 'red', "fontSize": "1.3rem"}}></i>;
     } else {
-      return rowData[item.field];
+      return get(rowData, item.field);
     }
   };
 
-  const verifiedRowFilterTemplate = (options, rowData) => {
+  const verifiedRowFilterTemplate = (options) => {
       return <TriStateCheckbox value={options.value} onChange={(e) => options.filterApplyCallback(e.value)} />
     }
 
   const dynamicColumns = columns.map((col, i) => {
       return <Column key={col.field} field={col.field} header={col.header} sortable={fieldSort === null ? false : true}/*  style={{flex: 1,justifyContent: "center"}} */
-      body={bodyChecker} dataType= {value && typeof Object.values(value[0])[i+1]=== "boolean" ? "boolean": "text"}
+      body={bodyChecker} dataType= {value && typeof Object.values(value[0])[i+1]=== "boolean" ? "boolean": "text"} 
       filterElement={value && typeof Object.values(value[0])[i+1] === "boolean"? verifiedRowFilterTemplate :undefined}
-      filter={filterDplay === null ? false : true} />;
+      filter={filterDplay === null ? false : true}  />;
   });
   const exportColumns = columns.map(col => ({ title: col.header, dataKey: col.field }));
 
+  console.log(value, "value")
+  console.log(dynamicColumns, "columns")
   const changeValuesFormData = (v, edit) => {
     console.log(v)
     let i = edit ? 1 : 0
@@ -215,7 +217,7 @@ export const Table = ({value, header, size, columns, pagination, rowNumbers, sel
         <DataTable
           value={value} ref={dt} size={size} exportFilename={header}
           responsiveLayout="scroll"
-          paginator={value.length < rowNumbers[0] ? false : pagination} paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
+          paginator={value.length <= rowNumbers[0] ? false : pagination} paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
           currentPageReportTemplate={`{first} - {last} of {totalRecords}`}  className="p-mt-6"
           rows={rowNumbers[0]} rowsPerPageOptions={rowNumbers}
           header={h} footer={`Filas: ${value ? value.length : 0}`}

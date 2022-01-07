@@ -10,18 +10,19 @@ import {
   selectAllTiposDeClausulas,
   updateTiposDeClausulas,
 } from "../../database/GraphQLStatements";
+import { ProgressSpinner } from "primereact/progressspinner";
 
 export const ClauseTypes = () => {
 
   //Table
   const filters = {
-    global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-    nombre: { value: null, matchMode: FilterMatchMode.CONTAINS },
-    orden: { value: null, matchMode: FilterMatchMode.CONTAINS },
-    basesG: { value: null, matchMode: FilterMatchMode.CONTAINS },
-    compras: { value: null, matchMode: FilterMatchMode.CONTAINS },
-    cMarco: { value: null, matchMode: FilterMatchMode.EQUALS },
-    excepcional: { value: null, matchMode: FilterMatchMode.CONTAINS },
+    "global": { value: null, matchMode: FilterMatchMode.CONTAINS },
+    "nombre": { value: null, matchMode: FilterMatchMode.CONTAINS },
+    "orden": { value: null, matchMode: FilterMatchMode.CONTAINS },
+    "basesG": { value: null, matchMode: FilterMatchMode.CONTAINS },
+    "compras": { value: null, matchMode: FilterMatchMode.CONTAINS },
+    "cMarco": { value: null, matchMode: FilterMatchMode.EQUALS },
+    "excepcional": { value: null, matchMode: FilterMatchMode.CONTAINS },
   };
   let c = [
     { field: "nombre", header: "Nombre"},
@@ -135,7 +136,7 @@ export const ClauseTypes = () => {
   return (
     <div>
       <Navbar />
-      {loading && loadingU && <h5>Loading...</h5>}
+      {loading &&  (<div className="flex h-30rem justify-content-center align-items-center"><ProgressSpinner strokeWidth="3" /></div>)}   
       {error && errorU && <h5>{error}</h5>}
       {!(loading || error || loadingU || errorU) ? (
         <div>
