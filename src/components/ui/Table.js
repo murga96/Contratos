@@ -7,7 +7,7 @@ import { Toolbar } from "primereact/toolbar";
 import { Tooltip } from "primereact/tooltip";
 import { Form } from "./Form";
 import { TriStateCheckbox } from 'primereact/tristatecheckbox';
-import { get } from 'lodash'
+import { get, pick } from 'lodash'
 
 export const Table = ({value, header, size, columns, pagination, rowNumbers, selectionType, sortRemove,
    fieldSort, orderSort, filterDplay, filtersValues, edit, exportData, removeOne, removeSeveral, formProps, emptyElement}) => {
@@ -41,15 +41,17 @@ export const Table = ({value, header, size, columns, pagination, rowNumbers, sel
   });
   const exportColumns = columns.map(col => ({ title: col.header, dataKey: col.field }));
 
-  console.log(value, "value")
-  console.log(dynamicColumns, "columns")
-  const changeValuesFormData = (v, edit) => {
-    console.log(v)
-    let i = edit ? 1 : 0
+  const changeValuesFormData = (elem) => {
+    let i = 0
     for (let index = 0; index < formProps.data.length; index++) {
       if( index % 2 !== 0) {
-        formProps.data[index].defaultValue = v[i]
-        i++
+        //Es objeto el campo
+        if(columns[i].field.includes(".")){
+          let objName = columns[i++].field.split(".")[0]
+          //Obtener el id en vez del nombre
+          formProps.data[index].defaultValue = get(elem, objName.concat((".id"+objName.charAt(0).toUpperCase()+objName.slice(1))) )
+        }else
+          formProps.data[index].defaultValue = get(elem, columns[i++].field)
       }
     }
   }
@@ -104,13 +106,17 @@ export const Table = ({value, header, size, columns, pagination, rowNumbers, sel
   //editing elements
   const editElement = (elem) => {
     setElement(elem)
-    changeValuesFormData(Object.values(elem), true)
+    changeValuesFormData(elem)
     setEditDialog(true)
   }
   const saveElement = (data) => {
     console.log("handle", data)
     let temp = {};
-    Object.assign(temp, element, data)
+    if(Object.keys(element)[0].includes("id")){
+      Object.assign(temp, pick(element, Object.keys(element)[0]))
+    }
+    Object.assign(temp, data)
+    console.log(temp, "temp")
     Object.assign(formProps.variables[Object.keys(formProps.variables)[0]], temp)
     try {
       formProps.handle({ variables: formProps.variables})
@@ -168,7 +174,7 @@ export const Table = ({value, header, size, columns, pagination, rowNumbers, sel
           <div>
               <Button label="Nuevo" icon="pi pi-plus" className="p-button-success mr-2" onClick={() => {
                 setElement(emptyElement)
-                changeValuesFormData(Object.values(emptyElement), false)
+                changeValuesFormData(emptyElement)
                 setEditDialog(true)
                 }
                 } />

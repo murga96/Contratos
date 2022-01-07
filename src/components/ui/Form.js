@@ -6,7 +6,7 @@ import { Field } from "./Field";
 
 
 export const Form = ({ data, schema, handle, cancel, buttonsNames }) => {
-  const methods = useForm({
+  const methods= useForm({
     resolver: yupResolver(schema),
   });
   return (

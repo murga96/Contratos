@@ -10,7 +10,7 @@ const httpLink = new HttpLink({
   uri: 'http://localhost:3001/graphql',
 })
 const errorLink = onError( ({graphQLErrors, networkError, response, operation}) => {
-  console.log(graphQLErrors, networkError, response, operation)
+  // console.log(graphQLErrors, networkError, response, operation)
   if(graphQLErrors){
     graphQLErrors.map( ({message/* , locations, path */}) => {alert(`[GraphQL error]: Message: ${message}`);message=null} )
   }
@@ -23,7 +23,7 @@ const errorLink = onError( ({graphQLErrors, networkError, response, operation}) 
   if(response){
     response.errors = null;
   }
-  console.log(graphQLErrors, networkError, response, operation)
+  // console.log(graphQLErrors, networkError, response, operation)
 })
 const client = new ApolloClient({
   

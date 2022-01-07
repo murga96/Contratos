@@ -162,11 +162,13 @@ export const selectAllEjecutivos = gql`
       nombre
       correo
       cargo {
+        idCargo
         cargo
       }
-      # grupo {
-      #   grupos
-      # }
+      grupo {
+        idGrupo
+        grupos
+      }
       activo
     }
   }
@@ -183,7 +185,7 @@ export const updateEjecutivo = gql`
 export const removeEjecutivo = gql`
   mutation removeEjecutivo($id: Int!) {
     removeEjecutivo(id: $id) {
-      idEjecutivo
+      nombre
     }
   }
 `;
@@ -191,7 +193,7 @@ export const removeEjecutivo = gql`
 export const removeSeveralEjecutivo = gql`
   mutation removeSeveralEjecutivo($id: [Int!]!) {
     removeSeveralEjecutivo(id: $id) {
-      idEjecutivo
+      nombre
     }
   }
 `;
@@ -230,7 +232,7 @@ export const updateIncoterm = gql`
 export const removeIncoterm = gql`
   mutation removeIncoterm($id: Int!) {
     removeIncoterm(id: $id) {
-      idIncoterm
+      nombre
     }
   }
 `;
@@ -238,7 +240,7 @@ export const removeIncoterm = gql`
 export const removeSeveralIncoterm = gql`
   mutation removeSeveralIncoterm($id: [Int!]!) {
     removeSeveralIncoterm(id: $id) {
-      idIncoterm
+      nombre
     }
   }
 `;
