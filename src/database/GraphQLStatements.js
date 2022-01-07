@@ -244,3 +244,38 @@ export const removeSeveralIncoterm = gql`
     }
   }
 `;
+
+//Moneda
+export const selectAllIncoterm = gql`
+  query selectAllMonedas{
+  findAllMoneda {
+   idMoneda
+    moneda,
+    abreviatura
+  }
+}
+`;
+
+export const updateMoneda = gql`
+  mutation createMoneda($moneda: CreateMonedaInput!) {
+    createMoneda(createMonedaInput: $moneda) {
+      moneda
+    }
+  }
+`;
+
+export const removeMoneda = gql`
+  mutation removeMoneda($id: Int!) {
+    removeMoneda(id: $id) {
+      moneda
+    }
+  }
+`;
+
+export const removeSeveralMoneda = gql`
+  mutation removeSeveralMoneda($id: [Int!]!) {
+    removeSeveralMoneda(id: $id) {
+      moneda
+    }
+  }
+`;
