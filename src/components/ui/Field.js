@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { Controller, useFormContext } from "react-hook-form";
 import { InputText } from "primereact/inputtext";
 import { Checkbox } from "primereact/checkbox";

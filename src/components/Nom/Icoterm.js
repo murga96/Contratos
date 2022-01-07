@@ -5,56 +5,49 @@ import { Table } from "../ui/Table";
 import { FilterMatchMode } from "primereact/api";
 import * as yup from "yup";
 import {
-  removeSeveralEjecutivo,
-  removeEjecutivo,
-  selectAllEjecutivos,
-  updateEjecutivo,
-  selectAllCargo,
-  selectAllGrupos,
+  removeSeveralIncoterm,
+  removeIncoterm,
+  selectAllIncoterm,
+  updateIncoterm,
 } from "../../database/GraphQLStatements";
 import { ProgressSpinner } from 'primereact/progressspinner';
 
-export const Ejecutivos = () => {
+export const Incoterms = () => {
 
   //Table
   const filters = {
     "global": { value: null, matchMode: FilterMatchMode.CONTAINS },
     "nombre": { value: null, matchMode: FilterMatchMode.CONTAINS },
-    "correo": { value: null, matchMode: FilterMatchMode.CONTAINS },
-    "cargo.cargo": { value: null, matchMode: FilterMatchMode.CONTAINS },
-    "grupo.grupos": { value: null, matchMode: FilterMatchMode.CONTAINS },
+    "abreviatura": { value: null, matchMode: FilterMatchMode.CONTAINS },
+    "nota": { value: null, matchMode: FilterMatchMode.CONTAINS },
     "activo": { value: null, matchMode: FilterMatchMode.CONTAINS },
   };
   let c = [
     { field: "nombre", header: "Nombre"},
-    { field: "correo", header: "Correo"},
-    { field: "cargo.cargo", header: "Cargo"},
-    { field: "grupo.grupos", header: "Grupo"},
+    { field: "abreviatura", header: "Abreviatura"},
+    { field: "nota", header: "Nota"},
     { field: "activo", header: "Activo"},
   ];
-  let emptyElement = {"nombre": "", "correo": "", "cargo": "", "grupo": "",  "activo": false}
+  let emptyElement = {"nombre": "", "abreviatura": "", "nota": "",  "activo": false}
 
   //graphQL
-  const { data, error, loading } = useQuery(selectAllEjecutivos);
-  const [updateTC, { loadingU, errorU }] = useMutation(updateEjecutivo, {
-    refetchQueries: ["selectAllEjecutivos"],
+  const { data, error, loading } = useQuery(selectAllIncoterm);
+  const [updateTC, { loadingU, errorU }] = useMutation(updateIncoterm, {
+    refetchQueries: ["selectAllIncoterm"],
   });
-  const [removeTC] = useMutation(removeEjecutivo, {
-    refetchQueries: ["selectAllEjecutivos"],
+  const [removeTC] = useMutation(removeIncoterm, {
+    refetchQueries: ["selectAllIncoterm"],
   });
-  const [removeSeverTC] = useMutation(removeSeveralEjecutivo, {
-    refetchQueries: ["selectAllEjecutivos"],
+  const [removeSeverTC] = useMutation(removeSeveralIncoterm, {
+    refetchQueries: ["selectAllIncoterm"],
   });
-  const cargos = useQuery(selectAllCargo);
-  const grupos = useQuery(selectAllGrupos);
 
   //Form
   //React-hook-form
   const schema = yup.object().shape({
     nombre: yup.string().required("Nombre es requerido"),
-    correo: yup.string().email("Correo electrónico inválido. Ej: contratos@email.com").required("Correo es requerido").nullable("Correo es requerido"),
-    idCargo: yup.number().required("Cargo es requerido"),
-    idGrupo: yup.number().required("Grupo es requerido"),
+    abreviatura: yup.string().required("Abreviatura es requerido"),
+    nota: yup.string().required("Nota es requerido"),
     activo: yup.bool(),
   });
 
@@ -74,55 +67,41 @@ export const Ejecutivos = () => {
     {
       id: 3,
       component: "label",
-      name: "correo",
-      defaultValue: "Correo*",
+      name: "abreviatura",
+      defaultValue: "abreviatura*",
     },
     {
       id: 4,
       component: "InputText",
-      name: "correo",
+      name: "abreviatura",
       defaultValue: "",
     },
     {
       id: 5,
       component: "label",
-      name: "idCargo",
-      defaultValue: "Cargo*",
+      name: "nota",
+      defaultValue: "Nota*",
     },
     {
       id: 6,
-      component: "Dropdown",
-      name: "idCargo",
+      component: "InputText",
+      name: "nota",
       defaultValue: "",
-      props: {options: cargos.data?.findAllCargos,  optionLabel: "cargo", optionValue: "idCargo", placeholder: "Selecciona un cargo"}
     },
     {
       id: 7,
-      component: "label",
-      name: "idGrupo",
-      defaultValue: "Grupo*",
-    },
-    {
-        id: 8,
-        component: "Dropdown",
-        name: "idGrupo",
-        defaultValue: 1,
-        props: {options: grupos.data?.findAllGrupos,  optionLabel: "grupos", optionValue: "idGrupo", placeholder: "Selecciona un grupo"}
-      },
-    {
-      id: 9,
       component: "label",
       name: "activo",
       defaultValue: "Activo",
     },
     {
-      id: 10,
+      id: 8,
       component: "CheckBox",
       name: "activo",
       defaultValue: "",
     },
   ];
-  const formProps = {"data": dataStruct, "schema": schema, "handle": updateTC, "variables": { ejecutivo: {} }, "buttonsNames": ["Guardar", "Cancelar"]}
+  const formProps = {"data": dataStruct, "schema": schema, "handle": updateTC, "variables": { incoterm: {} }, "buttonsNames": ["Guardar", "Cancelar"]}
   return (
     <div>
       <Navbar />
@@ -131,8 +110,8 @@ export const Ejecutivos = () => {
       {!(loading || error || loadingU || errorU) ? (
         <div>
           <Table
-            value={data.findAllEjecutivos}
-            header="Ejecutivos"
+            value={data.findAllIncoterm}
+            header="Incoterms"
             size="small"
             columns={c}
             pagination={true}
