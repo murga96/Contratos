@@ -205,3 +205,40 @@ export const selectAllGrupos = gql`
     }
   }
 `;
+
+//Incoterms
+export const selectAllIncoterm = gql`
+  query selectAllIncoterm{
+    findAllIncoterm {
+      idIncoterm,
+      nombre,
+      abreviatura,
+      nota,
+      activo,
+  }
+}
+`;
+
+export const updateIncoterm = gql`
+  mutation createIncoterm($incoterm: CreateIncotermInput!) {
+    createIncoterm(createIncotermInput: $incoterm) {
+      idIncoterm
+    }
+  }
+`;
+
+export const removeIncoterm = gql`
+  mutation removeIncoterm($id: Int!) {
+    removeIncoterm(id: $id) {
+      idIncoterm
+    }
+  }
+`;
+
+export const removeSeveralIncoterm = gql`
+  mutation removeSeveralIncoterm($id: [Int!]!) {
+    removeSeveralIncoterm(id: $id) {
+      idIncoterm
+    }
+  }
+`;
