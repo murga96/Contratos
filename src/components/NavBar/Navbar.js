@@ -33,19 +33,35 @@ export const Navbar = (url) => {
             icon: 'pi pi-fw pi-bookmark',
             items: [
                 {
-                    label: 'Tipos de Contratos',
+                    label: 'Clasificaciones',
                     icon: 'pi pi-fw pi-bookmark',
-                    command: () => {navigate.push(`/TiposContratos`)},
-                },
-                {
-                    label: 'Tipos de Clausulas',
-                    icon: 'pi pi-fw pi-bookmark',
-                    command: () => {navigate.push(`/TiposClausulas`)},
-                },
-                {
-                    label: 'Tipos de Documentos',
-                    icon: 'pi pi-fw pi-bookmark',
-                    command: () => {navigate.push(`/TiposDocumentos`)},
+                    items: [
+                        {
+                            label: 'Tipos de Contratos',
+                            icon: 'pi pi-fw pi-bookmark',
+                            command: () => {navigate.push(`/TiposContratos`)},
+                        },
+                        {
+                            label: 'Tipos de Clausulas',
+                            icon: 'pi pi-fw pi-bookmark',
+                            command: () => {navigate.push(`/TiposClausulas`)},
+                        },
+                        {
+                            label: 'Tipos de Documentos',
+                            icon: 'pi pi-fw pi-bookmark',
+                            command: () => {navigate.push(`/TiposDocumentos`)},
+                        },
+                        {
+                            label: 'Tipos de Compras',
+                            icon: 'pi pi-fw pi-bookmark',
+                            command: () => {navigate.push(`/TiposCompras`)},
+                        },
+                        {
+                            label: 'Tipos de Contenedores',
+                            icon: 'pi pi-fw pi-bookmark',
+                            command: () => {navigate.push(`/TiposContenedores`)},
+                        },
+                    ]
                 },
                 {
                     label: 'Cargos',
@@ -73,9 +89,24 @@ export const Navbar = (url) => {
                     command: () => {navigate.push(`/Puertos`)},
                 },
                 {
-                    label: 'Clasificación de documentos',
+                    label: 'Grupos de compra',
                     icon: 'pi pi-fw pi-bookmark',
-                    command: () => {navigate.push(`/ClasificacionDocumentos`)},
+                    command: () => {navigate.push(`/GruposCompra`)},
+                },
+                {
+                    label: 'Formas de pago',
+                    icon: 'pi pi-fw pi-bookmark',
+                    command: () => {navigate.push(`/FormasPago`)},
+                },
+                {
+                    label: 'Formas de entrega',
+                    icon: 'pi pi-fw pi-bookmark',
+                    command: () => {navigate.push(`/FormasEntrega`)},
+                },
+                {
+                    label: 'Etapas de contratación',
+                    icon: 'pi pi-fw pi-bookmark',
+                    command: () => {navigate.push(`/EtapasContratacion`)},
                 },
             ]
         },

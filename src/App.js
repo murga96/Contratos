@@ -96,6 +96,24 @@ function App() {
           <Route path="/Puertos">
             <Puertos/>
           </Route>
+          <Route path="/TiposCompras">
+            <Puertos/>
+          </Route>
+          <Route path="/TiposContenedores">
+            <Puertos/>
+          </Route>
+          <Route path="/GruposCompra">
+            <Puertos/>
+          </Route>
+          <Route path="/FormasPago">
+            <Puertos/>
+          </Route>
+          <Route path="/FormasEntrega">
+            <Puertos/>
+          </Route>
+          <Route path="/EtapasContratacion">
+            <Puertos/>
+          </Route>
           <Route path="/Inicio">
             <SignIn/>
           </Route>
