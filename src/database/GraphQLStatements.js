@@ -454,3 +454,41 @@ export const removeSeveralFormasEntrega = gql`
     }
   }
 `;
+
+//Etapas Contratacion
+export const selectEtapasContratacion = gql`
+  query selectAllEtapasContratacion {
+    findAllEtapasContratacion {
+      idEtapa
+      calculos
+      tiempoMax
+      tiempoReal
+    }
+  }
+`;
+
+export const updateEtapasContratacion = gql`
+  mutation createEtapasContratacion(
+    $etapa: CreateEtapasContratacionInput!
+  ) {
+    createEtapasContratacion(createEtapasContratacionInput: $etapa) {
+      tiempoMax
+    }
+  }
+`;
+
+export const removeEtapasContratacion = gql`
+  mutation removeEtapasContratacion($id: Int!) {
+    removeEtapasContratacion(id: $id) {
+      tiempoMax
+    }
+  }
+`;
+
+export const removeSeveralEtapasContratacion = gql`
+  mutation removeSeveralEtapasContratacion($id: [Int!]!) {
+    removeSeveralEtapasContratacion(id: $id) {
+      tiempoMax
+    }
+  }
+`;
