@@ -200,9 +200,9 @@ export const removeSeveralEjecutivo = gql`
 
 //Grupos
 export const selectAllGrupos = gql`
-  query selectAllGrupos{
+  query selectAllGrupos {
     findAllGrupos {
-      idGrupo,
+      idGrupo
       grupos
     }
   }
@@ -210,15 +210,15 @@ export const selectAllGrupos = gql`
 
 //Incoterms
 export const selectAllIncoterm = gql`
-  query selectAllIncoterm{
+  query selectAllIncoterm {
     findAllIncoterm {
-      idIncoterm,
-      nombre,
-      abreviatura,
-      nota,
-      activo,
+      idIncoterm
+      nombre
+      abreviatura
+      nota
+      activo
+    }
   }
-}
 `;
 
 export const updateIncoterm = gql`
@@ -247,13 +247,13 @@ export const removeSeveralIncoterm = gql`
 
 //Moneda
 export const selectAllMonedas = gql`
-  query selectAllMonedas{
-  findAllMoneda {
-   idMoneda
-    moneda,
-    abreviatura
+  query selectAllMonedas {
+    findAllMoneda {
+      idMoneda
+      moneda
+      abreviatura
+    }
   }
-}
 `;
 
 export const updateMoneda = gql`
@@ -276,6 +276,41 @@ export const removeSeveralMoneda = gql`
   mutation removeSeveralMoneda($id: [Int!]!) {
     removeSeveralMoneda(id: $id) {
       moneda
+    }
+  }
+`;
+
+//Puertos
+export const selectAllPuertoss = gql`
+  query selectAllPuertos {
+    findAllPuertos {
+      idPuerto
+      nombre
+      deposito
+    }
+  }
+`;
+
+export const updatePuerto = gql`
+  mutation createPuerto($puerto: CreatePuertoInput!) {
+    createPuerto(createPuertoInput: $puerto) {
+      nombre
+    }
+  }
+`;
+
+export const removePuerto = gql`
+  mutation removePuerto($id: Int!) {
+    removePuerto(id: $id) {
+      nombre
+    }
+  }
+`;
+
+export const removeSeveralPuerto = gql`
+  mutation removeSeveralPuerto($id: [Int!]!) {
+    removeSeveralPuerto(id: $id) {
+      nombre
     }
   }
 `;
