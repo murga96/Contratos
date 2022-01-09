@@ -15,6 +15,7 @@ import { Ejecutivos } from './components/Nom/Ejecutivos';
 import { Incoterms } from './components/Nom/Icoterms';
 import { Monedas } from './components/Nom/Monedas';
 import { Puertos } from './components/Nom/Puertos';
+import { TiposDeCompras } from './components/Nom/TiposDeCompras';
 
  
 
@@ -97,7 +98,7 @@ function App() {
             <Puertos/>
           </Route>
           <Route path="/TiposCompras">
-            <Puertos/>
+            <TiposDeCompras/>
           </Route>
           <Route path="/TiposContenedores">
             <Puertos/>

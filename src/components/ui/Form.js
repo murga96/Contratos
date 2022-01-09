@@ -9,6 +9,7 @@ export const Form = ({ data, schema, handle, cancel, buttonsNames }) => {
   const methods= useForm({
     resolver: yupResolver(schema),
   });
+  {console.log(methods.formState.errors, "errors")}
 
   return (
     <FormProvider {...methods}>

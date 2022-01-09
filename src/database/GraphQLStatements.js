@@ -281,9 +281,9 @@ export const removeSeveralMoneda = gql`
 `;
 
 //TiposDeCompras
-export const selectAllTiposDeCompras = gql`
-  query selectAllTiposDeCompras {
-    findAllTiposDeCompras {
+export const selectAllPuertos = gql`
+  query selectPuertos {
+    findAllPuertos {
       idPuerto
       nombre
       deposito

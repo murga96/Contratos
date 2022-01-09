@@ -105,7 +105,7 @@ export const Puertos = () => {
             selectionType="multiple"
             sortRemove
             orderSort={1}
-            fieldSort="moneda"
+            fieldSort="nombre"
             filterDplay="row"
             filtersValues={filters}
             edit={true}
