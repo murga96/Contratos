@@ -5,43 +5,43 @@ import { Table } from "../ui/Table";
 import { FilterMatchMode } from "primereact/api";
 import * as yup from "yup";
 import {
-  removeSeveralFormasEntrega,
-  removeFormasEntrega,
-  selectFormasEntrega,
-  updateFormasEntrega,
+  removeSeveralFormasPago,
+  removeFormasPago,
+  selectFormasPago,
+  updateFormasPago,
 } from "../../database/GraphQLStatements";
 import { ProgressSpinner } from "primereact/progressspinner";
 
-export const FormasEntrega = () => {
+export const FormasPago = () => {
 
   //Table
   const filters = {
     "global": { value: null, matchMode: FilterMatchMode.CONTAINS },
-    "formaEntrega": { value: null, matchMode: FilterMatchMode.CONTAINS },
+    "formaPago": { value: null, matchMode: FilterMatchMode.CONTAINS },
     "dias": { value: null, matchMode: FilterMatchMode.EQUALS },
   };
   let c = [
-    { field: "formaEntrega", header: "Formas de entrega"},
+    { field: "formaPago", header: "Formas de pago"},
     { field: "dias", header: "Días"},
   ];
-  let emptyElement = {"formaEntrega": "", "dias": ""}
+  let emptyElement = {"formaPago": "", "dias": ""}
 
   //graphQL
-  const { data, error, loading } = useQuery(selectFormasEntrega);
-  const [updateElement, { loadingU, errorU }] = useMutation(updateFormasEntrega, {
-    refetchQueries: ["selectAllFormasEntrega"],
+  const { data, error, loading } = useQuery(selectFormasPago);
+  const [updateElement, { loadingU, errorU }] = useMutation(updateFormasPago, {
+    refetchQueries: ["selectAllFormasPagos"],
   });
-  const [removeElement] = useMutation(removeFormasEntrega, {
-    refetchQueries: ["selectAllFormasEntrega"],
+  const [removeElement] = useMutation(removeFormasPago, {
+    refetchQueries: ["selectAllFormasPagos"],
   });
-  const [removeSeveralElement] = useMutation(removeSeveralFormasEntrega, {
-    refetchQueries: ["selectAllFormasEntrega"],
+  const [removeSeveralElement] = useMutation(removeSeveralFormasPago, {
+    refetchQueries: ["selectAllFormasPagos"],
   });
 
   //Form
   //React-hook-form
   const schema = yup.object().shape({
-    formaEntrega: yup.string().required("Forma de entrega es requerido"),
+    formaPagos: yup.string().required("Forma de pago es requerido"),
     dias: yup.number().required("Días es requerido").typeError("Días tiene que ser de tipo númerico").integer("Días tiene que ser un número entero")
                       .positive("Días tiene que ser un número positivo"),
   });
@@ -50,13 +50,13 @@ export const FormasEntrega = () => {
     {
       id: 1,
       component: "label",
-      name: "formaEntrega",
-      defaultValue: "Formas de entrega*",
+      name: "formaPagos",
+      defaultValue: "Formas de pagos*",
     },
     {
       id: 2,
       component: "InputText",
-      name: "formaEntrega",
+      name: "formaPagos",
       defaultValue: "",
     },
     {
@@ -73,7 +73,7 @@ export const FormasEntrega = () => {
     },
     
   ];
-  const formProps = {"data": dataStruct, "schema": schema, "handle": updateElement, "variables": { formaEntrega: {} }, "buttonsNames": ["Guardar", "Cancelar"]}
+  const formProps = {"data": dataStruct, "schema": schema, "handle": updateElement, "variables": { formaPagos: {} }, "buttonsNames": ["Guardar", "Cancelar"]}
   return (
     <div>
       <Navbar />
@@ -82,8 +82,8 @@ export const FormasEntrega = () => {
       {!(loading || error || loadingU || errorU) ? (
         <div>
           <Table
-            value={data?.findAllFormasEntrega}
-            header="Formas de entrega"
+            value={data?.findAllFormasPagos}
+            header="Formas de Pagos"
             size="small"
             columns={c}
             pagination={true}
@@ -91,7 +91,7 @@ export const FormasEntrega = () => {
             selectionType="multiple"
             sortRemove
             orderSort={1}
-            fieldSort="formaEntrega"
+            fieldSort="formaPagos"
             filterDplay="row"
             filtersValues={filters}
             edit={true}

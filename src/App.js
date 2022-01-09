@@ -20,6 +20,7 @@ import { TiposContenedor } from './components/Nom/TiposContenedor';
 import { GruposDeCompras } from './components/Nom/GruposDeCompras';
 import { FormasEntrega } from './components/Nom/FormasEntregas';
 import { EtapasContratacion } from './components/Nom/EtapasContratacion';
+import { FormasPago } from './components/Nom/FormasPago';
 
  
 
@@ -111,7 +112,7 @@ function App() {
             <GruposDeCompras/>
           </Route>
           <Route path="/FormasPago">
-            <Puertos/>
+            <FormasPago/>
           </Route>
           <Route path="/FormasEntrega">
             <FormasEntrega/>
