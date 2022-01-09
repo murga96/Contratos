@@ -66,7 +66,7 @@ export const Cargos = () => {
       {!(loading || error || loadingU || errorU) ? (
         <div>
           <Table
-            value={data.findAllCargos}
+            value={data?.findAllCargos}
             header="Cargos"
             size="small"
             columns={c}

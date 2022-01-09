@@ -223,7 +223,7 @@ export const Table = ({value, header, size, columns, pagination, rowNumbers, sel
         <DataTable
           value={value} ref={dt} size={size} exportFilename={header}
           responsiveLayout="scroll"
-          paginator={value.length <= rowNumbers[0] ? false : pagination} paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
+          paginator={value?.length <= rowNumbers[0] ? false : pagination} paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
           currentPageReportTemplate={`{first} - {last} of {totalRecords}`}  className="p-mt-6"
           rows={rowNumbers[0]} rowsPerPageOptions={rowNumbers}
           header={h} footer={`Filas: ${value ? value.length : 0}`}

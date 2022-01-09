@@ -65,17 +65,17 @@ export const Navbar = (url) => {
                 {
                     label: 'Monedas',
                     icon: 'pi pi-fw pi-bookmark',
-                    command: () => {navigate.push(`/TiposDocumentos`)},
+                    command: () => {navigate.push(`/Monedas`)},
                 },
                 {
                     label: 'Puertos',
                     icon: 'pi pi-fw pi-bookmark',
-                    command: () => {navigate.push(`/TiposDocumentos`)},
+                    command: () => {navigate.push(`/Puertos`)},
                 },
                 {
                     label: 'Clasificación de documentos',
                     icon: 'pi pi-fw pi-bookmark',
-                    command: () => {navigate.push(`/TiposDocumentos`)},
+                    command: () => {navigate.push(`/ClasificacionDocumentos`)},
                 },
             ]
         },

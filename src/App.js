@@ -12,7 +12,8 @@ import { ClauseTypes } from './components/ClauseType/ClauseType';
 import { DocumentTypes } from './components/Nom/DocumentTypes';
 import { Cargos } from './components/Nom/Cargos';
 import { Ejecutivos } from './components/Nom/Ejecutivos';
-import { Incoterms } from './components/Nom/Icoterm';
+import { Incoterms } from './components/Nom/Icoterms';
+import { Monedas } from './components/Nom/Monedas';
 
  
 
@@ -87,6 +88,9 @@ function App() {
           </Route>
           <Route path="/Incoterms">
             <Incoterms/>
+          </Route>
+          <Route path="/Monedas">
+            <Monedas/>
           </Route>
           <Route path="/Inicio">
             <SignIn/>

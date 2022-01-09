@@ -5,70 +5,64 @@ import { Table } from "../ui/Table";
 import { FilterMatchMode } from "primereact/api";
 import * as yup from "yup";
 import {
-  removeSeveralIncoterm,
-  removeIncoterm,
-  selectAllIncoterm,
-  updateIncoterm,
+  updateMoneda,
+  selectAllMonedas,
+  removeMoneda,
+  removeSeveralMoneda,
 } from "../../database/GraphQLStatements";
 import { ProgressSpinner } from 'primereact/progressspinner';
 
-export const Incoterms = () => {
+export const Monedas = () => {
 
   //Table
   const filters = {
     "global": { value: null, matchMode: FilterMatchMode.CONTAINS },
-    "nombre": { value: null, matchMode: FilterMatchMode.CONTAINS },
+    "moneda": { value: null, matchMode: FilterMatchMode.CONTAINS },
     "abreviatura": { value: null, matchMode: FilterMatchMode.CONTAINS },
-    "nota": { value: null, matchMode: FilterMatchMode.CONTAINS },
-    "activo": { value: null, matchMode: FilterMatchMode.CONTAINS },
   };
   let c = [
-    { field: "nombre", header: "Nombre"},
+    { field: "moneda", header: "Moneda"},
     { field: "abreviatura", header: "Abreviatura"},
-    { field: "nota", header: "Nota"},
-    { field: "activo", header: "Activo"},
   ];
-  let emptyElement = {"nombre": "", "abreviatura": "", "nota": "",  "activo": false}
+  let emptyElement = {"moneda": "", "abreviatura": ""}
 
   //graphQL
-  const { data, error, loading } = useQuery(selectAllIncoterm);
-  const [updateTC, { loadingU, errorU }] = useMutation(updateIncoterm, {
-    refetchQueries: ["selectAllIncoterm"],
+  const { data, error, loading } = useQuery(selectAllMonedas);
+  const [updateTC, { loadingU, errorU }] = useMutation(updateMoneda, {
+    refetchQueries: ["selectAllMonedas"],
   });
-  const [removeTC] = useMutation(removeIncoterm, {
-    refetchQueries: ["selectAllIncoterm"],
+  const [removeTC] = useMutation(removeMoneda, {
+    refetchQueries: ["selectAllMonedas"],
   });
-  const [removeSeverTC] = useMutation(removeSeveralIncoterm, {
-    refetchQueries: ["selectAllIncoterm"],
+  const [removeSeverTC] = useMutation(removeSeveralMoneda, {
+    refetchQueries: ["selectAllMonedas"],
   });
 
   //Form
   //React-hook-form
   const schema = yup.object().shape({
-    nombre: yup.string().required("Nombre es requerido"),
+    moneda: yup.string().required("Moneda es requerido"),
     abreviatura: yup.string().required("Abreviatura es requerido"),
-    nota: yup.string().required("Nota es requerido"),
-    activo: yup.bool(),
   });
 
   let dataStruct = [
     {
       id: 1,
       component: "label",
-      name: "nombre",
-      defaultValue: "Nombre*",
+      name: "moneda",
+      defaultValue: "Moneda*",
     },
     {
       id: 2,
       component: "InputText",
-      name: "nombre",
+      name: "moneda",
       defaultValue: "",
     },
     {
       id: 3,
       component: "label",
       name: "abreviatura",
-      defaultValue: "abreviatura*",
+      defaultValue: "Abreviatura*",
     },
     {
       id: 4,
@@ -76,32 +70,8 @@ export const Incoterms = () => {
       name: "abreviatura",
       defaultValue: "",
     },
-    {
-      id: 5,
-      component: "label",
-      name: "nota",
-      defaultValue: "Nota*",
-    },
-    {
-      id: 6,
-      component: "InputText",
-      name: "nota",
-      defaultValue: "",
-    },
-    {
-      id: 7,
-      component: "label",
-      name: "activo",
-      defaultValue: "Activo",
-    },
-    {
-      id: 8,
-      component: "CheckBox",
-      name: "activo",
-      defaultValue: "",
-    },
   ];
-  const formProps = {"data": dataStruct, "schema": schema, "handle": updateTC, "variables": { incoterm: {} }, "buttonsNames": ["Guardar", "Cancelar"]}
+  const formProps = {"data": dataStruct, "schema": schema, "handle": updateTC, "variables": { moneda: {} }, "buttonsNames": ["Guardar", "Cancelar"]}
   return (
     <div>
       <Navbar />
@@ -110,8 +80,8 @@ export const Incoterms = () => {
       {!(loading || error || loadingU || errorU) ? (
         <div>
           <Table
-            value={data.findAllIncoterm}
-            header="Incoterms"
+            value={data?.findAllMoneda}
+            header="Monedas"
             size="small"
             columns={c}
             pagination={true}
@@ -119,7 +89,7 @@ export const Incoterms = () => {
             selectionType="multiple"
             sortRemove
             orderSort={1}
-            fieldSort="nombre"
+            fieldSort="moneda"
             filterDplay="row"
             filtersValues={filters}
             edit={true}

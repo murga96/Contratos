@@ -246,7 +246,7 @@ export const removeSeveralIncoterm = gql`
 `;
 
 //Moneda
-export const selectAllIncoterm = gql`
+export const selectAllMonedas = gql`
   query selectAllMonedas{
   findAllMoneda {
    idMoneda

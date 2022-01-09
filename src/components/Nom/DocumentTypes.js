@@ -66,7 +66,7 @@ export const DocumentTypes = () => {
       {!(loading || error || loadingU || errorU) ? (
         <div>
           <Table
-            value={data.findAllTiposDocumento}
+            value={data?.findAllTiposDocumento}
             header="Tipos de Documentos"
             size="small"
             columns={c}

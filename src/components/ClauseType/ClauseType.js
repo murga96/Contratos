@@ -141,7 +141,7 @@ export const ClauseTypes = () => {
       {!(loading || error || loadingU || errorU) ? (
         <div>
           <Table
-            value={data.findAllTiposDeClausulas}
+            value={data?.findAllTiposDeClausulas}
             header="Tipos de Claúsulas"
             size="small"
             columns={c}

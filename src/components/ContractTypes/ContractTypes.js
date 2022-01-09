@@ -112,7 +112,7 @@ export const ContractTypes = () => {
       {!(loading || error || loadingU || errorU) ? (
         <div>
           <Table
-            value={data.findAllTipoContrato}
+            value={data?.findAllTipoContrato}
             bodies={bodies}
             header="Tipos de Contratos"
             size="small"
