@@ -361,7 +361,9 @@ export const selectAllTiposContenedor = gql`
 `;
 
 export const updateTiposContenedor = gql`
-  mutation createTiposContenedor($tiposContenedor: CreateTiposContenedorInput!) {
+  mutation createTiposContenedor(
+    $tiposContenedor: CreateTiposContenedorInput!
+  ) {
     createTiposContenedor(createTiposContenedorInput: $tiposContenedor) {
       tipoContenedor
     }
@@ -379,6 +381,40 @@ export const removeTiposContenedor = gql`
 export const removeSeveralTiposContenedor = gql`
   mutation removeSeveralTiposContenedor($id: [Int!]!) {
     removeSeveralTiposContenedor(id: $id) {
+      tipoContenedor
+    }
+  }
+`;
+
+//Grupos de Compra
+export const selectGrupos = gql`
+  query selectAllGrupos {
+    findAllGrupos {
+      idGrupo
+      grupos
+    }
+  }
+`;
+
+export const updateGruposDeCompra = gql`
+  mutation createGruposDeCompra($grupo: CreateGruposDeCompraInput!) {
+    createGruposDeCompra(createGruposDeCompraInput: $grupo) {
+      tipoContenedor
+    }
+  }
+`;
+
+export const removeGruposDeCompra = gql`
+  mutation removeGruposDeCompra($id: Int!) {
+    removeGruposDeCompra(id: $id) {
+      tipoContenedor
+    }
+  }
+`;
+
+export const removeSeveralGruposDeCompra = gql`
+  mutation removeSeveralGruposDeCompra($id: [Int!]!) {
+    removeSeveralGruposDeCompra(id: $id) {
       tipoContenedor
     }
   }
