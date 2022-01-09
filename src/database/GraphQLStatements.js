@@ -419,3 +419,38 @@ export const removeSeveralGruposDeCompra = gql`
     }
   }
 `;
+
+//Formas de Entrega
+export const selectFormasEntrega = gql`
+  query selectAllFormasEntrega {
+    findAllFormasEntrega {
+      idFormaEntrega
+      formaEntrega
+      dias
+    }
+  }
+`;
+
+export const updateFormasEntrega = gql`
+  mutation createFormasEntrega($grupo: CreateFormasEntregaInput!) {
+    createFormasEntrega(createFormasEntregaInput: $grupo) {
+      formaEntrega
+    }
+  }
+`;
+
+export const removeFormasEntrega = gql`
+  mutation removeFormasEntrega($id: Int!) {
+    removeFormasEntrega(id: $id) {
+      formaEntrega
+    }
+  }
+`;
+
+export const removeSeveralFormasEntrega = gql`
+  mutation removeSeveralFormasEntrega($id: [Int!]!) {
+    removeSeveralFormasEntrega(id: $id) {
+      formaEntrega
+    }
+  }
+`;
