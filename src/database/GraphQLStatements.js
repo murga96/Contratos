@@ -361,8 +361,8 @@ export const selectAllTiposContenedor = gql`
 `;
 
 export const updateTiposContenedor = gql`
-  mutation createTiposContenedor($tiposDeCompra: CreateTiposContenedorInput!) {
-    createTiposContenedor(createTiposContenedorInput: $tiposDeCompra) {
+  mutation createTiposContenedor($tiposContenedor: CreateTiposContenedorInput!) {
+    createTiposContenedor(createTiposContenedorInput: $tiposContenedor) {
       tipoContenedor
     }
   }

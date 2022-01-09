@@ -16,6 +16,7 @@ import { Incoterms } from './components/Nom/Icoterms';
 import { Monedas } from './components/Nom/Monedas';
 import { Puertos } from './components/Nom/Puertos';
 import { TiposDeCompras } from './components/Nom/TiposDeCompras';
+import { TiposContenedor } from './components/Nom/TiposContenedor';
 
  
 
@@ -101,7 +102,7 @@ function App() {
             <TiposDeCompras/>
           </Route>
           <Route path="/TiposContenedores">
-            <Puertos/>
+            <TiposContenedor/>
           </Route>
           <Route path="/GruposCompra">
             <Puertos/>
