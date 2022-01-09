@@ -281,12 +281,13 @@ export const removeSeveralMoneda = gql`
 `;
 
 //Puertos
-export const selectAllPuertoss = gql`
+export const selectAllPuertos = gql`
   query selectAllPuertos {
     findAllPuertos {
       idPuerto
       nombre
       deposito
+      pais
     }
   }
 `;

@@ -14,6 +14,7 @@ import { Cargos } from './components/Nom/Cargos';
 import { Ejecutivos } from './components/Nom/Ejecutivos';
 import { Incoterms } from './components/Nom/Icoterms';
 import { Monedas } from './components/Nom/Monedas';
+import { Puertos } from './components/Nom/Puertos';
 
  
 
@@ -91,6 +92,9 @@ function App() {
           </Route>
           <Route path="/Monedas">
             <Monedas/>
+          </Route>
+          <Route path="/Puertos">
+            <Puertos/>
           </Route>
           <Route path="/Inicio">
             <SignIn/>
