@@ -420,6 +420,41 @@ export const removeSeveralGruposDeCompra = gql`
   }
 `;
 
+//Formas de Pago
+export const selectFormasPago = gql`
+  query selectAllFormasPago {
+    findAllFormasPago {
+      idFormaPago
+  	formaPago
+    dias
+    }
+  }
+`;
+
+export const updateFormasPago = gql`
+  mutation createFormasPago($formaPago: CreateFormasPagoInput!) {
+    createFormasPago(createFormasPagoInput: $formaPago) {
+      formaPago
+    }
+  }
+`;
+
+export const removeFormasPago = gql`
+  mutation removeFormasPago($id: Int!) {
+    removeFormasPago(id: $id) {
+      formaPago
+    }
+  }
+`;
+
+export const removeSeveralFormasPago = gql`
+  mutation removeSeveralFormasPago($id: [Int!]!) {
+    removeSeveralFormasPago(id: $id) {
+      formaPago
+    }
+  }
+`;
+
 //Formas de Entrega
 export const selectFormasEntrega = gql`
   query selectAllFormasEntrega {
