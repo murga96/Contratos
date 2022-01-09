@@ -456,10 +456,11 @@ export const removeSeveralFormasEntrega = gql`
 `;
 
 //Etapas Contratacion
-export const selectEtapasContratacion = gql`
+export const selectAllEtapasContratacion = gql`
   query selectAllEtapasContratacion {
     findAllEtapasContratacion {
       idEtapa
+      etapa
       calculos
       tiempoMax
       tiempoReal
@@ -468,9 +469,7 @@ export const selectEtapasContratacion = gql`
 `;
 
 export const updateEtapasContratacion = gql`
-  mutation createEtapasContratacion(
-    $etapa: CreateEtapasContratacionInput!
-  ) {
+  mutation createEtapasContratacion($etapa: CreateEtapasContratacionInput!) {
     createEtapasContratacion(createEtapasContratacionInput: $etapa) {
       tiempoMax
     }

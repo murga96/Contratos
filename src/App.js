@@ -19,6 +19,7 @@ import { TiposDeCompras } from './components/Nom/TiposDeCompras';
 import { TiposContenedor } from './components/Nom/TiposContenedor';
 import { GruposDeCompras } from './components/Nom/GruposDeCompras';
 import { FormasEntrega } from './components/Nom/FormasEntregas';
+import { EtapasContratacion } from './components/Nom/EtapasContratacion';
 
  
 
@@ -116,7 +117,7 @@ function App() {
             <FormasEntrega/>
           </Route>
           <Route path="/EtapasContratacion">
-            <Puertos/>
+            <EtapasContratacion/>
           </Route>
           <Route path="/Inicio">
             <SignIn/>
