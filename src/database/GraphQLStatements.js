@@ -399,7 +399,7 @@ export const selectGrupos = gql`
 export const updateGruposDeCompra = gql`
   mutation createGruposDeCompra($grupo: CreateGruposDeCompraInput!) {
     createGruposDeCompra(createGruposDeCompraInput: $grupo) {
-      tipoContenedor
+      grupos
     }
   }
 `;
@@ -407,7 +407,7 @@ export const updateGruposDeCompra = gql`
 export const removeGruposDeCompra = gql`
   mutation removeGruposDeCompra($id: Int!) {
     removeGruposDeCompra(id: $id) {
-      tipoContenedor
+      grupos
     }
   }
 `;
@@ -415,7 +415,7 @@ export const removeGruposDeCompra = gql`
 export const removeSeveralGruposDeCompra = gql`
   mutation removeSeveralGruposDeCompra($id: [Int!]!) {
     removeSeveralGruposDeCompra(id: $id) {
-      tipoContenedor
+      grupos
     }
   }
 `;

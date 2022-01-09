@@ -17,6 +17,7 @@ import { Monedas } from './components/Nom/Monedas';
 import { Puertos } from './components/Nom/Puertos';
 import { TiposDeCompras } from './components/Nom/TiposDeCompras';
 import { TiposContenedor } from './components/Nom/TiposContenedor';
+import { GruposDeCompras } from './components/Nom/GruposDeCompras';
 
  
 
@@ -105,7 +106,7 @@ function App() {
             <TiposContenedor/>
           </Route>
           <Route path="/GruposCompra">
-            <Puertos/>
+            <GruposDeCompras/>
           </Route>
           <Route path="/FormasPago">
             <Puertos/>
