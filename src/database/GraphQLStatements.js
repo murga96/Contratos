@@ -280,10 +280,10 @@ export const removeSeveralMoneda = gql`
   }
 `;
 
-//Puertos
-export const selectAllPuertos = gql`
-  query selectAllPuertos {
-    findAllPuertos {
+//TiposDeCompras
+export const selectAllTiposDeCompras = gql`
+  query selectAllTiposDeCompras {
+    findAllTiposDeCompras {
       idPuerto
       nombre
       deposito
@@ -312,6 +312,40 @@ export const removeSeveralPuerto = gql`
   mutation removeSeveralPuerto($id: [Int!]!) {
     removeSeveralPuerto(id: $id) {
       nombre
+    }
+  }
+`;
+
+//TiposDeCompras
+export const selectAllTiposDeCompras = gql`
+  query selectAllTiposDeCompras {
+    findAllTiposDeCompras {
+      idTipoCompras
+      compras
+    }
+  }
+`;
+
+export const updateTiposDeCompras = gql`
+  mutation createTiposDeCompras($tiposDeCompra: CreateTiposDeCompraInput!) {
+    createTiposDeCompras(createTiposDeCompraInput: $tiposDeCompra) {
+      compras
+    }
+  }
+`;
+
+export const removeTiposDeCompras = gql`
+  mutation removeTiposDeCompras($id: Int!) {
+    removeTiposDeCompras(id: $id) {
+      compras
+    }
+  }
+`;
+
+export const removeSeveralTiposDeCompras = gql`
+  mutation removeSeveralTiposDeCompras($id: [Int!]!) {
+    removeSeveralTiposDeCompras(id: $id) {
+      compras
     }
   }
 `;
