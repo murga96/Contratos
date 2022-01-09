@@ -280,7 +280,7 @@ export const removeSeveralMoneda = gql`
   }
 `;
 
-//TiposDeCompras
+//Puertos
 export const selectAllPuertos = gql`
   query selectPuertos {
     findAllPuertos {
@@ -346,6 +346,40 @@ export const removeSeveralTiposDeCompras = gql`
   mutation removeSeveralTiposDeCompras($id: [Int!]!) {
     removeSeveralTiposDeCompras(id: $id) {
       compras
+    }
+  }
+`;
+
+//TiposContenedor
+export const selectAllTiposContenedor = gql`
+  query selectAllTiposContenedor {
+    findAllTiposContenedor {
+      idTipoContenedor
+      tipoContenedor
+    }
+  }
+`;
+
+export const updateTiposContenedor = gql`
+  mutation createTiposContenedor($tiposDeCompra: CreateTiposContenedorInput!) {
+    createTiposContenedor(createTiposContenedorInput: $tiposDeCompra) {
+      tipoContenedor
+    }
+  }
+`;
+
+export const removeTiposContenedor = gql`
+  mutation removeTiposContenedor($id: Int!) {
+    removeTiposContenedor(id: $id) {
+      tipoContenedor
+    }
+  }
+`;
+
+export const removeSeveralTiposContenedor = gql`
+  mutation removeSeveralTiposContenedor($id: [Int!]!) {
+    removeSeveralTiposContenedor(id: $id) {
+      tipoContenedor
     }
   }
 `;
