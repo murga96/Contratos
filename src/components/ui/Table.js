@@ -17,7 +17,7 @@ export const Table = ({value, header, size, columns, pagination, rowNumbers, sel
   const [editDialog, setEditDialog] = useState(false);
   const [deleteDialog, setDeleteDialog] = useState(false);
   const [deleteMultipleDialog, setDeleteMultipleDialog] = useState(false);
-  
+
   //header and columns
   const h = <div className="table-header">{header}</div>;
 
@@ -28,14 +28,26 @@ export const Table = ({value, header, size, columns, pagination, rowNumbers, sel
       return get(rowData, item.field);
     }
   };
+  // const datatypeChecker = (i) => {
+  //   let type = value && typeof Object.values(value[0])[i+1]
+  //   if (type === "string") {
+  //     return "text"
+  //   } else if(type === "number"){
+  //     return "numeric";
+  //   }
+  //   else{
+  //     return type;
+  //   }
+  // };
 
   const verifiedRowFilterTemplate = (options) => {
       return <TriStateCheckbox value={options.value} onChange={(e) => options.filterApplyCallback(e.value)} />
     }
 
   const dynamicColumns = columns.map((col, i) => {
+    console.log(typeof Object.values(value[0])[i+1]=== "string" ? "text": typeof Object.values(value[0])[i+1])
       return <Column key={col.field} field={col.field} header={col.header} sortable={fieldSort === null ? false : true}/*  style={{flex: 1,justifyContent: "center"}} */
-      body={bodyChecker} dataType= {value && typeof Object.values(value[0])[i+1]=== "boolean" ? "boolean": "text"} 
+      body={bodyChecker} dataType= {value && typeof Object.values(value[0])[i+1]=== "string" ? "text": typeof Object.values(value[0])[i+1]=== "number" ? "numeric" : typeof Object.values(value[0])[i+1]} 
       filterElement={value && typeof Object.values(value[0])[i+1] === "boolean"? verifiedRowFilterTemplate :undefined}
       filter={filterDplay === null ? false : true}  />;
   });

@@ -432,8 +432,8 @@ export const selectFormasEntrega = gql`
 `;
 
 export const updateFormasEntrega = gql`
-  mutation createFormasEntrega($grupo: CreateFormasEntregaInput!) {
-    createFormasEntrega(createFormasEntregaInput: $grupo) {
+  mutation createFormasEntrega($formaEntrega: CreateFormasEntregaInput!) {
+    createFormasEntrega(createFormasEntregaInput: $formaEntrega) {
       formaEntrega
     }
   }

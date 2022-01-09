@@ -18,7 +18,7 @@ export const Puertos = () => {
   const filters = {
     "global": { value: null, matchMode: FilterMatchMode.CONTAINS },
     "nombre": { value: null, matchMode: FilterMatchMode.CONTAINS },
-    "pais": { value: null, matchMode: FilterMatchMode.CONTAINS },
+    "pais": { value: null, matchMode: FilterMatchMode.EQUALS },
     "deposito": { value: null, matchMode: FilterMatchMode.CONTAINS },
   };
   let c = [

@@ -18,7 +18,7 @@ export const ClauseTypes = () => {
   const filters = {
     "global": { value: null, matchMode: FilterMatchMode.CONTAINS },
     "nombre": { value: null, matchMode: FilterMatchMode.CONTAINS },
-    "orden": { value: null, matchMode: FilterMatchMode.CONTAINS },
+    "orden": { value: null, matchMode: FilterMatchMode.EQUALS },
     "basesG": { value: null, matchMode: FilterMatchMode.CONTAINS },
     "compras": { value: null, matchMode: FilterMatchMode.CONTAINS },
     "cMarco": { value: null, matchMode: FilterMatchMode.EQUALS },

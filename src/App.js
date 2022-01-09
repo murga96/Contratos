@@ -18,6 +18,7 @@ import { Puertos } from './components/Nom/Puertos';
 import { TiposDeCompras } from './components/Nom/TiposDeCompras';
 import { TiposContenedor } from './components/Nom/TiposContenedor';
 import { GruposDeCompras } from './components/Nom/GruposDeCompras';
+import { FormasEntrega } from './components/Nom/FormasEntregas';
 
  
 
@@ -112,7 +113,7 @@ function App() {
             <Puertos/>
           </Route>
           <Route path="/FormasEntrega">
-            <Puertos/>
+            <FormasEntrega/>
           </Route>
           <Route path="/EtapasContratacion">
             <Puertos/>
