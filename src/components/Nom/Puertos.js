@@ -9,6 +9,7 @@ import {
   selectAllPuertos,
   removePuerto,
   removeSeveralPuerto,
+  selectAllPaises,
 } from "../../database/GraphQLStatements";
 import { ProgressSpinner } from 'primereact/progressspinner';
 
@@ -18,12 +19,12 @@ export const Puertos = () => {
   const filters = {
     "global": { value: null, matchMode: FilterMatchMode.CONTAINS },
     "nombre": { value: null, matchMode: FilterMatchMode.CONTAINS },
-    "pais": { value: null, matchMode: FilterMatchMode.EQUALS },
+    "pais.nomb": { value: null, matchMode: FilterMatchMode.CONTAINS },
     "deposito": { value: null, matchMode: FilterMatchMode.CONTAINS },
   };
   let c = [
     { field: "nombre", header: "Nombre"},
-    { field: "pais", header: "País"},
+    { field: "pais.nomb", header: "País"},
     { field: "deposito", header: "Depósito"},
   ];
   let emptyElement = {"nombre": "", "pais": "", "deposito": ""}
@@ -40,12 +41,13 @@ export const Puertos = () => {
     refetchQueries: ["selectAllPuertos"],
   });
 
+  const paises = useQuery(selectAllPaises);
+
   //Form
   //React-hook-form
   const schema = yup.object().shape({
     nombre: yup.string().required("Nombre es requerido"),
-    pais: yup.number().required("País es requerido").typeError("País tiene que ser de tipo númerico").integer("País tiene que ser un número entero")
-                      .positive("País tiene que ser un número positivo"),
+    idPais: yup.number().required("País es requerido"),
     deposito: yup.string()/* .required("Depósito es requerido") */,
 });
 
@@ -65,14 +67,16 @@ export const Puertos = () => {
     {
         id: 3,
         component: "label",
-        name: "pais",
+        name: "idPais",
         defaultValue: "País*",
       },
       {
         id: 4,
-        component: "InputText",
-        name: "pais",
+        component: "Dropdown",
+        name: "idPais",
         defaultValue: "",
+        props: {options: paises.data?.findAllPaises,  optionLabel: "nomb", optionValue: "pais", placeholder: "Seleccione un país"}
+
       },
     {
       id: 5,

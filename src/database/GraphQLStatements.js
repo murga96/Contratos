@@ -286,10 +286,11 @@ export const selectAllPuertos = gql`
     findAllPuertos {
       idPuerto
       nombre
-      deposito
       pais {
+        pais
         nomb
       }
+      deposito
     }
   }
 `;
@@ -528,3 +529,13 @@ export const removeSeveralEtapasContratacion = gql`
     }
   }
 `;
+
+//Paises
+export const selectAllPaises = gql`
+query selectAllPaises {
+  findAllPaises{
+      pais
+        nomb
+  }
+}
+`

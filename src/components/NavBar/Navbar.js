@@ -64,6 +64,33 @@ export const Navbar = (url) => {
                     ]
                 },
                 {
+                    label: 'Formas',
+                    icon: 'pi pi-fw pi-bookmark',
+                   items: [
+                    {
+                        label: 'Formas de pago',
+                        icon: 'pi pi-fw pi-bookmark',
+                        command: () => {navigate.push(`/FormasPago`)},
+                    },
+                    {
+                        label: 'Formas de entrega',
+                        icon: 'pi pi-fw pi-bookmark',
+                        command: () => {navigate.push(`/FormasEntrega`)},
+                    },
+                   ],
+                },
+                {
+                    label: 'Grupos de compra',
+                    icon: 'pi pi-fw pi-bookmark',
+                    command: () => {navigate.push(`/GruposCompra`)},
+                },
+                
+                {
+                    label: 'Etapas de contratación',
+                    icon: 'pi pi-fw pi-bookmark',
+                    command: () => {navigate.push(`/EtapasContratacion`)},
+                },
+                {
                     label: 'Cargos',
                     icon: 'pi pi-fw pi-bookmark',
                     command: () => {navigate.push(`/Cargos`)},
@@ -87,26 +114,6 @@ export const Navbar = (url) => {
                     label: 'Puertos',
                     icon: 'pi pi-fw pi-bookmark',
                     command: () => {navigate.push(`/Puertos`)},
-                },
-                {
-                    label: 'Grupos de compra',
-                    icon: 'pi pi-fw pi-bookmark',
-                    command: () => {navigate.push(`/GruposCompra`)},
-                },
-                {
-                    label: 'Formas de pago',
-                    icon: 'pi pi-fw pi-bookmark',
-                    command: () => {navigate.push(`/FormasPago`)},
-                },
-                {
-                    label: 'Formas de entrega',
-                    icon: 'pi pi-fw pi-bookmark',
-                    command: () => {navigate.push(`/FormasEntrega`)},
-                },
-                {
-                    label: 'Etapas de contratación',
-                    icon: 'pi pi-fw pi-bookmark',
-                    command: () => {navigate.push(`/EtapasContratacion`)},
                 },
             ]
         },

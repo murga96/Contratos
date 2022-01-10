@@ -46,7 +46,7 @@ export const Table = ({value, header, size, columns, pagination, rowNumbers, sel
 
   const dynamicColumns = columns.map((col, i) => {
       return <Column key={col.field} field={col.field} header={col.header} sortable={fieldSort === null ? false : true}/*  style={{flex: 1,justifyContent: "center"}} */
-      body={bodyChecker} dataType= {value && typeof Object.values(value[0])[i+1]=== "string" ? "text": typeof Object.values(value[0])[i+1]=== "number" ? "numeric" : typeof Object.values(value[0])[i+1]} 
+      body={bodyChecker} dataType= {value && typeof Object.values(value[0])[i+1]=== "number" ? "numeric" : "text"} 
       filterElement={value && typeof Object.values(value[0])[i+1] === "boolean"? verifiedRowFilterTemplate :undefined}
       filter={filterDplay === null ? false : true}  />;
   });
@@ -54,17 +54,19 @@ export const Table = ({value, header, size, columns, pagination, rowNumbers, sel
 
   const changeValuesFormData = (elem) => {
     let i = 0
+    console.log(elem, "elem")
     for (let index = 0; index < formProps.data.length; index++) {
       if( index % 2 !== 0) {
         //Es objeto el campo
         if(columns[i].field.includes(".")){
           let objName = columns[i++].field.split(".")[0]
           //Obtener el id en vez del nombre
-          formProps.data[index].defaultValue = get(elem, objName.concat((".id"+objName.charAt(0).toUpperCase()+objName.slice(1))) )
+          formProps.data[index].defaultValue = Object.entries(elem)[i][1][objName]
         }else
           formProps.data[index].defaultValue = get(elem, columns[i++].field)
       }
     }
+    console.log(formProps.data, "j")
   }
 
   const hideEditDialog = () => {
