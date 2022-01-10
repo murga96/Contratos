@@ -1,7 +1,7 @@
 import { gql } from "@apollo/client";
 
 export const selectAllTipoContrato = gql`
-  query findAllTipoContrato {
+  query selectAllTipoContrato {
     findAllTipoContrato {
       idTipoContrato
       tipoContrato
@@ -282,12 +282,14 @@ export const removeSeveralMoneda = gql`
 
 //Puertos
 export const selectAllPuertos = gql`
-  query selectPuertos {
+  query selectAllPuertos {
     findAllPuertos {
       idPuerto
       nombre
       deposito
-      pais
+      pais {
+        nomb
+      }
     }
   }
 `;

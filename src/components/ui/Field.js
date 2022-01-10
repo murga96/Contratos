@@ -59,7 +59,6 @@ export const Field = ({ type, name, defaultValue, props }) => {
           {getFormErrorMessage(name)}
         </div>
       );
-    
     case "Dropdown":
       return (
         <div>

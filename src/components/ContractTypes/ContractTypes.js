@@ -34,13 +34,13 @@ export const ContractTypes = () => {
   //graphQL
   const { data, error, loading } = useQuery(selectAllTipoContrato);
   const [updateTC, { loadingU, errorU }] = useMutation(updateTipoContrato, {
-    refetchQueries: ["findAllTipoContrato"],
+    refetchQueries: ["selectAllTipoContrato"],
   });
   const [removeTC] = useMutation(removeTipoContrato, {
-    refetchQueries: ["findAllTipoContrato"],
+    refetchQueries: ["selectAllTipoContrato"],
   });
   const [removeSeverTC] = useMutation(removeSeveralTipoContrato, {
-    refetchQueries: ["findAllTipoContrato"],
+    refetchQueries: ["selectAllTipoContrato"],
   });
 
   //Form

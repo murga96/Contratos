@@ -29,19 +29,19 @@ export const FormasPago = () => {
   //graphQL
   const { data, error, loading } = useQuery(selectFormasPago);
   const [updateElement, { loadingU, errorU }] = useMutation(updateFormasPago, {
-    refetchQueries: ["selectAllFormasPagos"],
+    refetchQueries: ["selectAllFormasPago"],
   });
   const [removeElement] = useMutation(removeFormasPago, {
-    refetchQueries: ["selectAllFormasPagos"],
+    refetchQueries: ["selectAllFormasPago"],
   });
   const [removeSeveralElement] = useMutation(removeSeveralFormasPago, {
-    refetchQueries: ["selectAllFormasPagos"],
+    refetchQueries: ["selectAllFormasPago"],
   });
 
   //Form
   //React-hook-form
   const schema = yup.object().shape({
-    formaPagos: yup.string().required("Forma de pago es requerido"),
+    formaPago: yup.string().required("Forma de pago es requerido"),
     dias: yup.number().required("Días es requerido").typeError("Días tiene que ser de tipo númerico").integer("Días tiene que ser un número entero")
                       .positive("Días tiene que ser un número positivo"),
   });
@@ -50,13 +50,13 @@ export const FormasPago = () => {
     {
       id: 1,
       component: "label",
-      name: "formaPagos",
+      name: "formaPago",
       defaultValue: "Formas de pagos*",
     },
     {
       id: 2,
       component: "InputText",
-      name: "formaPagos",
+      name: "formaPago",
       defaultValue: "",
     },
     {
@@ -73,7 +73,7 @@ export const FormasPago = () => {
     },
     
   ];
-  const formProps = {"data": dataStruct, "schema": schema, "handle": updateElement, "variables": { formaPagos: {} }, "buttonsNames": ["Guardar", "Cancelar"]}
+  const formProps = {"data": dataStruct, "schema": schema, "handle": updateElement, "variables": { formaPago: {} }, "buttonsNames": ["Guardar", "Cancelar"]}
   return (
     <div>
       <Navbar />
@@ -82,7 +82,7 @@ export const FormasPago = () => {
       {!(loading || error || loadingU || errorU) ? (
         <div>
           <Table
-            value={data?.findAllFormasPagos}
+            value={data?.findAllFormasPago}
             header="Formas de Pagos"
             size="small"
             columns={c}
