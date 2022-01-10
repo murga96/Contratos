@@ -9,10 +9,22 @@ import { StateProvider } from './StateProvider';
 const httpLink = new HttpLink({
   uri: 'http://localhost:3001/graphql',
 })
+
+const handlingError = (error) => {
+  console.log(error)
+  if(error.includes("Error: Cannot insert duplicate key row")){
+    alert("[Error] No se puede guardar elementos de valor único repetidos en la base de datos. Revise sus datos y restricciones.")
+  }else if(error.includes("Error: The DELETE statement conflicted with the REFERENCE constraint")){
+    alert("[Error] No se puede eliminar elemento(s) que están siendo utilizados en la base de datos.")
+  }else{
+    alert(`[GraphQL error]: Message: ${error}`)
+  }
+}
+
 const errorLink = onError( ({graphQLErrors, networkError, response, operation}) => {
   // console.log(graphQLErrors, networkError, response, operation)
   if(graphQLErrors){
-    graphQLErrors.map( ({message/* , locations, path */}) => {alert(`[GraphQL error]: Message: ${message}`);message=null} )
+    graphQLErrors.map( ({message/* , locations, path */}) => {handlingError(message); message=null} )
   }
   // graphQLErrors = null
   if(networkError){
@@ -35,12 +47,12 @@ const client = new ApolloClient({
 });
 
 ReactDOM.render(
-  // <React.StrictMode>
+  <React.StrictMode>
     <ApolloProvider client={client}>
     <StateProvider initialState= { initialState } reducer= { reducer }>
       <App />
     </StateProvider>
     </ApolloProvider>
-  // </React.StrictMode>,
-  ,document.getElementById('root')
+  </React.StrictMode>,
+  document.getElementById('root')
 );
