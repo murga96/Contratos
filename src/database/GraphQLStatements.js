@@ -539,3 +539,13 @@ query selectAllPaises {
   }
 }
 `
+
+//Usuarios
+export const autenticarUsuario = gql`
+query autenticarUsuario($nombreUsuario: String!, $contrasena : String!) {
+    autenticarUsuarios(nombreUsuario: $nombreUsuario, contrasena:  $contrasena){
+    idUsuario
+    nombreUsuario
+  }
+}
+`

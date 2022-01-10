@@ -16,7 +16,10 @@ const handlingError = (error) => {
     alert("[Error] No se puede guardar elementos de valor único repetidos en la base de datos. Revise sus datos y restricciones.")
   }else if(error.includes("Error: The DELETE statement conflicted with the REFERENCE constraint")){
     alert("[Error] No se puede eliminar elemento(s) que están siendo utilizados en la base de datos.")
-  }else{
+  } else if(error. includes("Unexpected error value: \"Usuario o contraseña incorrectos\"")){
+    return
+  }
+  else{
     alert(`[GraphQL error]: Message: ${error}`)
   }
 }

@@ -11,23 +11,29 @@ import { Controller, useForm } from 'react-hook-form'
 import { classNames } from 'primereact/utils';
 import {useHistory} from 'react-router-dom'
 import { Toast } from "primereact/toast"
+import { autenticarUsuario } from '../../database/GraphQLStatements'
+import { useLazyQuery } from '@apollo/client'
 
 export const SignIn = () => {
     const [checked1, setChecked1] = useState(false)
     const navigate = useHistory()
     const toast = useRef(null)
 
+    const [autenticacionQuery] = useLazyQuery(autenticarUsuario)
     //React-hook-form
     const schema = yup.object().shape({
-        email: yup.string().email("Correo electrónico inválido. Ej: contratos@email.com").required("Correo es requerido"),
+        username: yup.string().required("Nombre de usuario es requerido"),
         password: yup.string().required("Contraseña es requerida"),
     })
     const {handleSubmit, control, formState: {errors}, reset} = useForm({
         resolver: yupResolver(schema),
     })
 
-    const handle = ({email, password}) => {
-        if(email==="gustavo.murga1996@gmail.com" && password==="1"){
+    const handle = async ({username, password}) => {
+        const {data} = await autenticacionQuery({variables: {"nombreUsuario": username, "contrasena": password}})
+        console.log(data)
+        if(data){
+            console.log("Entro")
             navigate.push("/")
         }else{
             showError("Credenciales inválidas.")
@@ -39,28 +45,28 @@ export const SignIn = () => {
     };
 
     const showError = (message) => {
-        toast.current.show({severity:'error', summary: 'Error', detail: message, life: 3000});
+        toast.current.show({severity:'error', summary: 'Error', detail: message, life: 5000});
     }
     return (
         <div className="flex flex-column align-items-center justify-content-center m-8">
-            <Toast ref={toast} position="bottom-center"/>
+            <Toast ref={toast}/>
             <div className="surface-card py-6 px-6 xl:px-6 lg:px-4 md:px-4 sm:px-2 shadow-2 border-round xl:w-30rem lg:w-30rem md:w-30rem sm:w-30rem">
                 <div className="text-center mb-3">
                     <img src={logo} alt="hyper" height={50} className="mb-3" />
                     <div className="text-900 text-4xl font-medium mb-3">Contratos</div>
                 </div>
                     <form onSubmit={handleSubmit(handle)} className="p-fluid">
-                        <label htmlFor="email" className={classNames({ 'p-error': errors.email }, "block text-900 font-medium mb-2")}>Correo*</label>
+                        <label htmlFor="username" className={classNames({ 'p-error': errors.username }, "block text-900 font-medium mb-2")}>Usuario*</label>
                         <Controller
-                         name="email"
-                         defaultValue="gustavo.murga1996@gmail.com"
+                         name="username"
+                         defaultValue="PEP"
                          control={control}
                          render={({ field, fieldState }) => (
                             <InputText id={field.name} {...field}
                              className={classNames({ 'p-invalid': fieldState.invalid}, "w-full")} />
                         )}
                         />
-                        {getFormErrorMessage('email')}
+                        {getFormErrorMessage('username')}
                         <label htmlFor="password" className={classNames({ 'p-error': errors.password }, "block text-900 font-medium my-2")}>Contraseña*</label>
                         <Controller
                             name="password"
