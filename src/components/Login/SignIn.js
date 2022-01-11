@@ -12,14 +12,19 @@ import { classNames } from 'primereact/utils';
 import {useHistory} from 'react-router-dom'
 import { Toast } from "primereact/toast"
 import { autenticarUsuario } from '../../database/GraphQLStatements'
-import { useLazyQuery } from '@apollo/client'
+import { useLazyQuery, useMutation, useQuery } from '@apollo/client'
+import { useStateValue } from '../../StateProvider'
+import { actionTypes } from '../../Reducer'
 
 export const SignIn = () => {
     const [checked1, setChecked1] = useState(false)
+    const [{idUser}, dispatch] = useStateValue()
     const navigate = useHistory()
     const toast = useRef(null)
 
-    const [autenticacionQuery] = useLazyQuery(autenticarUsuario)
+    const [autenticacionQuery, { called, loading, data, refetch }] = useLazyQuery(autenticarUsuario, {
+        fetchPolicy: "network-only"
+    })    
     //React-hook-form
     const schema = yup.object().shape({
         username: yup.string().required("Nombre de usuario es requerido"),
@@ -29,16 +34,52 @@ export const SignIn = () => {
         resolver: yupResolver(schema),
     })
 
-    const handle = async ({username, password}) => {
-        const {data} = await autenticacionQuery({variables: {"nombreUsuario": username, "contrasena": password}})
-        console.log(data)
-        if(data){
-            console.log("Entro")
-            navigate.push("/")
-        }else{
-            showError("Credenciales inválidas.")
-        }
+    const handle = ({username, password}) => {
+        console.log(called,"called")
+        if(!called)
+            autenticacionQuery({variables: {"nombreUsuario": username, "contrasena": password}}).then((data) => {
+                console.log(data.data)
+                if(data.data){
+                    dispatch({
+                    type: actionTypes.SET_USER,
+                    idUser: data.data?.autenticarUsuarios.idUsuario
+                })
+                navigate.push("/")
+                }else {
+                    showError("Credenciales inválidas.")
+                }
+            })
+        else
+            refetch({"nombreUsuario": username, "contrasena": password}).then((data) => {
+                console.log(data.data)
+                if(data.data){
+                    dispatch({
+                    type: actionTypes.SET_USER,
+                    idUser: data.data?.autenticarUsuarios.idUsuario
+                })
+                navigate.push("/")
+                }else {
+                    showError("Credenciales inválidas.")
+                }
+            })
         reset();
+        // if(typeof data === "undefined"){ 
+        //     showError("Credenciales inválidas.")
+        // }else{
+            // data?.autenticarUsuarios && (
+            //     console.log(data?.autenticarUsuarios))
+                // dispatch({
+                //     type: actionTypes.SET_USER,
+                //     idUser: data?.autenticarUsuarios.idUsuario
+                // })
+                
+                
+            
+            // navigate.push("/")
+        // }
+        // }else{
+        //     showError("Credenciales inválidas.")
+        // }
     }
     const getFormErrorMessage = (name) => {
         return errors[name] && <small className="p-error">{errors[name].message}</small>
@@ -70,7 +111,7 @@ export const SignIn = () => {
                         <label htmlFor="password" className={classNames({ 'p-error': errors.password }, "block text-900 font-medium my-2")}>Contraseña*</label>
                         <Controller
                             name="password"
-                            defaultValue="1"
+                            defaultValue="pepe"
                             control= {control}
                             render={ ({field, fieldState}) => (
                                 <Password id={field.name} {...field} inputClassName={classNames({ 'p-invalid': fieldState.invalid}, "w-full")} className="w-full" toggleMask feedback={false}/>
