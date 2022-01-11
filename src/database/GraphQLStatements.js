@@ -541,6 +541,53 @@ query selectAllPaises {
 `
 
 //Usuarios
+export const selectAllUsuarios = gql`
+  query selectAllUsuarios {
+    findAllUsuarios {
+      idUsuario
+      nombreUsuario    
+      usuarioRoles {
+        idRol
+        rol {
+          rol
+        }
+      }
+      ejecutivo {
+        idEjecutivo
+        nombre
+      }
+      ejecutivoModifica {
+        idEjecutivo
+        nombre
+      }
+    }
+  }
+`;
+
+export const updateUsuario = gql`
+  mutation createUsuario($usuario: CreateUsuarioInput!) {
+    createUsuario(createUsuarioInput: $usuario) {
+      nombreUsuario
+    }
+  }
+`;
+
+export const removeUsuario = gql`
+  mutation removeUsuario($id: Int!) {
+    removeUsuario(id: $id) {
+      nombreUsuario
+    }
+  }
+`;
+
+export const removeSeveralUsuario = gql`
+  mutation removeSeveralUsuario($id: [Int!]!) {
+    removeSeveralUsuario(id: $id) {
+      nombreUsuario
+    }
+  }
+`;
+
 export const autenticarUsuario = gql`
 query autenticarUsuario($nombreUsuario: String!, $contrasena : String!) {
     autenticarUsuarios(nombreUsuario: $nombreUsuario, contrasena:  $contrasena){
