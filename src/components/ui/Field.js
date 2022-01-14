@@ -3,6 +3,7 @@ import { Controller, useFormContext } from "react-hook-form";
 import { InputText } from "primereact/inputtext";
 import { Checkbox } from "primereact/checkbox";
 import { Dropdown } from "primereact/dropdown";
+import { MultiSelect } from "primereact/multiselect";
 import { classNames } from "primereact/utils";
 
 export const Field = ({ type, name, defaultValue, props }) => {
@@ -25,6 +26,7 @@ export const Field = ({ type, name, defaultValue, props }) => {
             control={control}
             render={({ field, fieldState }) => (
               <InputText
+                {...props}
                 id={field.name}
                 {...field}
                 className={classNames(
@@ -70,7 +72,32 @@ export const Field = ({ type, name, defaultValue, props }) => {
               return(
                 <Dropdown
                   {...props}
-                  value={field.value} onChange={e => field.onChange(e.target.value)}
+                    value={field.value} onChange={e => field.onChange(e.target.value)}
+                    id={field.name}
+                    {...field}
+                    className={classNames(
+                      { "p-invalid": fieldState.invalid },
+                      "w-full mb-2"
+                    )}
+              />
+             )}}
+           />
+          {getFormErrorMessage(name)}
+         </div>
+      );
+    case "MultiSelect":
+      return (
+        <div>
+          <Controller
+            name={name}
+            defaultValue={defaultValue}
+            control={control}
+            render={({ field, fieldState}) => {
+              console.log(field.value)
+              return(
+                <MultiSelect
+                  {...props}
+                    value={field.value} onChange={e => field.onChange(e.target.value)}
                     id={field.name}
                     {...field}
                     className={classNames(
@@ -86,6 +113,7 @@ export const Field = ({ type, name, defaultValue, props }) => {
     case "label":
       return (
         <label
+          {...props}
           htmlFor={name}
           className={classNames(
             { "p-error": errors.email },

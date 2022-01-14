@@ -9,12 +9,13 @@ export const Form = ({ data, schema, handle, cancel, buttonsNames }) => {
   const methods= useForm({
     resolver: yupResolver(schema),
   });
-  {console.log(methods.formState.errors, "errors")}
+  // console.log(methods.formState.errors, "errors")
 
   return (
     <FormProvider {...methods}>
       <form onSubmit={methods.handleSubmit(handle)}>
         {data.map((item) => {
+          console.log(item.defaultValue)
           return (
             <Field
               key={item.id}

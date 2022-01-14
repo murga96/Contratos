@@ -545,20 +545,16 @@ export const selectAllUsuarios = gql`
   query selectAllUsuarios {
     findAllUsuarios {
       idUsuario
-      nombreUsuario    
-      usuarioRoles {
-        idRol
-        rol {
-          rol
-        }
-      }
+      nombreUsuario
       ejecutivo {
         idEjecutivo
         nombre
       }
-      ejecutivoModifica {
-        idEjecutivo
-        nombre
+      usuarioRoles {
+        rol {
+          idRol
+          rol
+        }
       }
     }
   }
@@ -596,3 +592,12 @@ query autenticarUsuario($nombreUsuario: String!, $contrasena : String!) {
   }
 }
 `
+//Usuarios
+export const selectAllRoles = gql`
+  query selectAllRoles {
+    findAllRoles {
+      idRol
+      rol
+    }
+  }
+`;

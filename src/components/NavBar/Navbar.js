@@ -120,6 +120,13 @@ export const Navbar = (url) => {
         {
             label: 'Configuración',
             icon: 'pi pi-fw pi-cog',
+            items:[
+                {
+                    label: 'Usuarios',
+                    icon: 'pi pi-fw pi-bookmark',
+                    command: () => {navigate.push(`/Usuarios`)},
+                },
+            ],
         },
     ];
     //TODO

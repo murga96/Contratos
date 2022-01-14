@@ -1,3 +1,4 @@
+
 import React, { useRef, useState } from "react";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
@@ -8,9 +9,11 @@ import { Tooltip } from "primereact/tooltip";
 import { Form } from "./Form";
 import { TriStateCheckbox } from 'primereact/tristatecheckbox';
 import { get, pick } from 'lodash'
+import { Dropdown } from "primereact/dropdown";
 
 export const Table = ({value, header, size, columns, pagination, rowNumbers, selectionType, sortRemove,
-   fieldSort, orderSort, filterDplay, filtersValues, edit, exportData, removeOne, removeSeveral, formProps, emptyElement}) => {
+   fieldSort, orderSort, filterDplay, filtersValues, edit, exportData, removeOne, removeSeveral, formProps,
+   emptyElement, additionalButton}) => {
   const dt = useRef(null)
   const [selectedElement, setSelectedElement] = useState(null);
   const [element, setElement] = useState({})
@@ -24,10 +27,22 @@ export const Table = ({value, header, size, columns, pagination, rowNumbers, sel
   const bodyChecker = (rowData, item) => {
     if (typeof rowData[item.field] === "boolean") {
       return rowData[item.field] ? <i className="pi pi-check-circle" style={{'color': "#008000", "fontSize": "1.3rem" }}></i> : <i className="pi pi-times-circle" style={{'color': 'red', "fontSize": "1.3rem"}}></i>;
-    } else {
+    } else if(Array.isArray(rowData[item.field])){
+      if(rowData[item.field].length > 0){
+        //llave del objeto
+        console.log("bodyArray")
+        const objectKey = Object.keys(rowData[item.field][0])
+        //Obtengo el segundo item del arreglo para mostrarlo en la cadena
+        console.log(rowData[item.field].map((i) =>  Object.keys(i).length === 1 ? i[objectKey][Object.keys(i[objectKey])[1]] : i[Object.keys(i)[1]]
+        ).toString(),"return bodyArray")
+        return rowData[item.field].map((i) =>  Object.keys(i).length === 1 ? i[objectKey][Object.keys(i[objectKey])[1]] : i[Object.keys(i)[1]]
+        ).toString()
+      }
+    }else {
       return get(rowData, item.field);
     }
   };
+
   // const datatypeChecker = (i) => {
   //   let type = value && typeof Object.values(value[0])[i+1]
   //   if (type === "string") {
@@ -52,21 +67,41 @@ export const Table = ({value, header, size, columns, pagination, rowNumbers, sel
   });
   const exportColumns = columns.map(col => ({ title: col.header, dataKey: col.field }));
 
-  const changeValuesFormData = (elem) => {
-    let i = 0
+  const changeValuesFormData = (elem, edit) => {
+    let i = edit ? 1 : 0
+    const entries = Object.entries(elem)
     console.log(elem, "elem")
+    console.log(columns)
     for (let index = 0; index < formProps.data.length; index++) {
       if( index % 2 !== 0) {
-        //Es objeto el campo
-        if(columns[i].field.includes(".")){
-          let objName = columns[i++].field.split(".")[0]
-          //Obtener el id en vez del nombre
-          formProps.data[index].defaultValue = Object.entries(elem)[i][1][objName]
-        }else
-          formProps.data[index].defaultValue = get(elem, columns[i++].field)
+        console.log(i,"i")
+        console.log(entries[i][1])
+        const value = entries[i][1]
+
+        if(Array.isArray(value)){
+          if(value.length > 0){
+            console.log("array")
+            //llave del objeto
+            const objectKey = Object.keys(value[0])
+            console.log(value.map((item) => item[objectKey][Object.keys(item[objectKey])[0]], "map"))
+            //Obtengo el primer item dependiendo si es un objeto con llave o no
+            formProps.data[index].defaultValue = value.map((item) =>  Object.keys(item).length === 1 ? (item[objectKey][Object.keys(item[objectKey])[0]]) : (item[Object.keys(item)[0]])
+            )
+          }else {
+            formProps.data[index].defaultValue = value
+          }
+        }else if(typeof value === 'object'){ //Es objeto el valor
+          console.log("object")
+          //Obtener el id en vez del nombre (el id siempre ira primero en la consulta graphql)
+          formProps.data[index].defaultValue = Object.values(value)[0]
+        }else{
+          console.log("normal")
+          formProps.data[index].defaultValue = value
+        }
+        i++;
       }
     }
-    console.log(formProps.data, "j")
+    console.log(formProps.data, "valuesFormData")
   }
 
   const hideEditDialog = () => {
@@ -119,7 +154,7 @@ export const Table = ({value, header, size, columns, pagination, rowNumbers, sel
   //editing elements
   const editElement = (elem) => {
     setElement(elem)
-    changeValuesFormData(elem)
+    changeValuesFormData(elem, true)
     setEditDialog(true)
   }
   const saveElement = (data) => {
@@ -131,6 +166,7 @@ export const Table = ({value, header, size, columns, pagination, rowNumbers, sel
     Object.assign(temp, data)
     console.log(temp, "temp")
     Object.assign(formProps.variables[Object.keys(formProps.variables)[0]], temp)
+    console.log( formProps.variables, "formVariables")
     try {
       formProps.handle({ variables: formProps.variables})
     } catch (error) {
@@ -174,6 +210,7 @@ export const Table = ({value, header, size, columns, pagination, rowNumbers, sel
   const actionBodyTemplate = (rowData) => {
     return (
         <div className="action-table">
+            {additionalButton && React.cloneElement(additionalButton[0], {"onClick": () => additionalButton[1](rowData)})}
             <Button icon="pi pi-pencil" className="p-button-rounded p-button-success mr-2" data-pr-tooltip="Editar" onClick={() => editElement(rowData)} />
             <Button icon="pi pi-trash" className="p-button-rounded p-button-warning " data-pr-tooltip="Eliminar" onClick={() => confirmDeleteElement(rowData)} />
         </div>
@@ -187,7 +224,7 @@ export const Table = ({value, header, size, columns, pagination, rowNumbers, sel
           <div>
               <Button label="Nuevo" icon="pi pi-plus" className="p-button-success mr-2" onClick={() => {
                 setElement(emptyElement)
-                changeValuesFormData(emptyElement)
+                changeValuesFormData(emptyElement, false)
                 setEditDialog(true)
                 }
                 } />

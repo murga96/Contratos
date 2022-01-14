@@ -12,17 +12,17 @@ import { classNames } from 'primereact/utils';
 import {useHistory} from 'react-router-dom'
 import { Toast } from "primereact/toast"
 import { autenticarUsuario } from '../../database/GraphQLStatements'
-import { useLazyQuery, useMutation, useQuery } from '@apollo/client'
+import { useLazyQuery} from '@apollo/client'
 import { useStateValue } from '../../StateProvider'
 import { actionTypes } from '../../Reducer'
 
 export const SignIn = () => {
     const [checked1, setChecked1] = useState(false)
-    const [{idUser}, dispatch] = useStateValue()
+    const [ {idUser}, dispatch] = useStateValue()
     const navigate = useHistory()
     const toast = useRef(null)
 
-    const [autenticacionQuery, { called, loading, data, refetch }] = useLazyQuery(autenticarUsuario, {
+    const [autenticacionQuery, { called, refetch }] = useLazyQuery(autenticarUsuario, {
         fetchPolicy: "network-only"
     })    
     //React-hook-form
