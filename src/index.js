@@ -18,6 +18,8 @@ const handlingError = (error) => {
     alert("[Error] No se puede eliminar elemento(s) que están siendo utilizados en la base de datos.")
   } else if(error. includes("Unexpected error value: \"Usuario o contraseña incorrectos\"")){
     return
+  }else if(error.includes("Unexpected error value:")){
+    alert(error.split("value: ")[1])
   }
   else{
     alert(`[GraphQL error]: Message: ${error}`)
