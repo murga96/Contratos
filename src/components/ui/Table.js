@@ -8,7 +8,7 @@ import { Toolbar } from "primereact/toolbar";
 import { Tooltip } from "primereact/tooltip";
 import { Form } from "./Form";
 import { TriStateCheckbox } from 'primereact/tristatecheckbox';
-import { get, pick } from 'lodash'
+import { get, pick, hasIn } from 'lodash'
 import { Dropdown } from "primereact/dropdown";
 
 export const Table = ({value, header, size, columns, pagination, rowNumbers, selectionType, sortRemove,
@@ -42,6 +42,14 @@ export const Table = ({value, header, size, columns, pagination, rowNumbers, sel
       return get(rowData, item.field);
     }
   };
+  const filterChecker = (options) => {
+    console.log(options, 'options')
+    /* if(hasIn(col, 'filterElement')){
+        return col.filterElement;
+    }else{
+      return undefined;
+    } */
+  }
 
   // const datatypeChecker = (i) => {
   //   let type = value && typeof Object.values(value[0])[i+1]
@@ -56,13 +64,14 @@ export const Table = ({value, header, size, columns, pagination, rowNumbers, sel
   // };
 
   const verifiedRowFilterTemplate = (options) => {
+    console.log(options, 'options')
       return <TriStateCheckbox value={options.value} onChange={(e) => options.filterApplyCallback(e.value)} />
     }
 
   const dynamicColumns = columns.map((col, i) => {
       return <Column key={col.field} field={col.field} header={col.header} sortable={fieldSort === null ? false : true}/*  style={{flex: 1,justifyContent: "center"}} */
       body={bodyChecker} dataType= {value && typeof Object.values(value[0])[i+1]=== "number" ? "numeric" : "text"} 
-      filterElement={value && typeof Object.values(value[0])[i+1] === "boolean"? verifiedRowFilterTemplate :undefined}
+      filterElement={value && typeof Object.values(value[0])[i+1] === "boolean"? verifiedRowFilterTemplate : undefined}
       filter={filterDplay === null ? false : true}  />;
   });
   const exportColumns = columns.map(col => ({ title: col.header, dataKey: col.field }));

@@ -428,8 +428,8 @@ export const selectFormasPago = gql`
   query selectAllFormasPago {
     findAllFormasPago {
       idFormaPago
-  	formaPago
-    dias
+      formaPago
+      dias
     }
   }
 `;
@@ -532,13 +532,13 @@ export const removeSeveralEtapasContratacion = gql`
 
 //Paises
 export const selectAllPaises = gql`
-query selectAllPaises {
-  findAllPaises{
+  query selectAllPaises {
+    findAllPaises {
       pais
-        nomb
+      nomb
+    }
   }
-}
-`
+`;
 
 //Usuarios
 export const selectAllUsuarios = gql`
@@ -585,14 +585,23 @@ export const removeSeveralUsuario = gql`
 `;
 
 export const autenticarUsuario = gql`
-query autenticarUsuario($nombreUsuario: String!, $contrasena : String!) {
-    autenticarUsuarios(nombreUsuario: $nombreUsuario, contrasena:  $contrasena){
-    idUsuario
-    nombreUsuario
+  query autenticarUsuario($nombreUsuario: String!, $contrasena: String!) {
+    autenticarUsuarios(nombreUsuario: $nombreUsuario, contrasena: $contrasena) {
+      idUsuario
+      nombreUsuario
+    }
   }
-}
-`
-//Usuarios
+`;
+
+export const forcePasswordUsuario = gql`
+  mutation forcePasswordUsuario($idUsuario: Int!) {
+    forcePasswordUsuario(idUsuario: $idUsuario) {
+      nombreUsuario
+    }
+  }
+`;
+
+//Roles
 export const selectAllRoles = gql`
   query selectAllRoles {
     findAllRoles {

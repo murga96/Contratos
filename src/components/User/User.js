@@ -11,23 +11,28 @@ import {
   selectAllRoles,
   selectAllUsuarios,
   selectAllEjecutivos,
+  forcePasswordUsuario,
 } from "../../database/GraphQLStatements";
 import { ProgressSpinner } from 'primereact/progressspinner';
 import { Button } from "primereact/button";
+import { MultiSelect } from "primereact/multiselect";
 
 export const Users = () => {
 
+    const roles = useQuery(selectAllRoles);
+    const ejecutivos = useQuery(selectAllEjecutivos);
   //Table
   const filters = {
     "global": { value: null, matchMode: FilterMatchMode.CONTAINS },
     "nombreUsuario": { value: null, matchMode: FilterMatchMode.CONTAINS },
     "ejecutivo.nombre": { value: null, matchMode: FilterMatchMode.CONTAINS },
-    "usuarioRoles": { value: null, matchMode: FilterMatchMode.CONTAINS },
+    "usuarioRoles": { value: null, matchMode: FilterMatchMode.IN },
   };
   let c = [
     { field: "nombreUsuario", header: "Nombre de Usuario"},
     { field: "ejecutivo.nombre", header: "Ejecutivo"},
-    { field: "usuarioRoles", header: "Rol"},
+    { field: "usuarioRoles", header: "Rol",
+     filterElement: <MultiSelect options= {roles.data?.findAllRoles} optionLabel= "rol" optionValue= "idRol" maxSelectedLabels={3}  placeholder= "Selecciona los roles"/>},
   ];
   let emptyElement = {"nombreUsuario": "", "ejecutivo": "", "usuarioRoles": []}
 
@@ -42,12 +47,12 @@ export const Users = () => {
   const [removeSeverTC] = useMutation(removeSeveralUsuario, {
     refetchQueries: ["selectAllUsuarios"],
   });
+  const [forcePassword] = useMutation(forcePasswordUsuario);
+  
   const forzarPassword = (elem) => {
-      console.log("Forzar password", elem)
+      forcePassword({variables: {idUsuario: elem?.idUsuario}})
+      alert('La contraseña del usuario ' + elem.nombreUsuario+ " fue modificada a Nombre de usuario + * + Año actual")
   }
-
-  const roles = useQuery(selectAllRoles);
-  const ejecutivos = useQuery(selectAllEjecutivos);
 
   //Form
   //React-hook-form
@@ -116,8 +121,8 @@ export const Users = () => {
             sortRemove
             orderSort={1}
             fieldSort="nombreUsuario"
-            // filterDplay="row"
-            // filtersValues={filters}
+            filterDplay="row"
+            filtersValues={filters}
             edit={true}
             exportData={true}
             removeOne={ [removeTC, {id: -1}] }
