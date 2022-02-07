@@ -1,20 +1,15 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { Menubar } from 'primereact/menubar';
+import { Menu } from 'primereact/menu';
 import logo from "../../assets/images/contrato.png"
 import { useHistory } from 'react-router';
-
-const end = () => {
-    return(
-        //TODO Poner usuario
-        <div className="flex">
-            <i className="pi pi-user mr-2"/>
-            <div className="p-text-left">gustavo.murga1996</div>
-        </div>
-    )
-} 
+import { useStateValue } from '../../StateProvider';
+import { Button } from 'primereact/button';
 
 export const Navbar = (url) => {
+    const [ {user}, dispatch] = useStateValue()
     const navigate = useHistory()
+    const menuUserRef = useRef(null)
     const MenuModel = [
         {
             label: 'Bases Generales',
@@ -129,6 +124,25 @@ export const Navbar = (url) => {
             ],
         },
     ];
+    const menuUser = [
+        {
+            label: "Cambiar contraseña",
+            icon: 'pi pi-key',
+            command: () => {navigate.push(`/CambiarContraseña`)},
+        }
+    ]
+    const end = () => {
+        console.log(user, "user")
+        return(
+            //TODO Poner usuario en el almacenamiento local
+            <div className="flex align-items-center">
+                <Menu model={menuUser} ref={menuUserRef} popup/>
+                <Button  className="p-button-sm p-button-rounded p-button-text" icon="pi pi-user" onClick={(event) => menuUserRef.current.toggle(event)}/>
+                {/* <i className="pi pi-user mr-2" onClick={() => navigate.push()}/> */}
+                <div className="flex p-text-left">{user?.nombreUsuario}</div>
+            </div>
+        )
+    } 
     //TODO
     // let start = null;
     // <Link to="/">

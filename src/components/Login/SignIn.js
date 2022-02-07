@@ -18,7 +18,7 @@ import { actionTypes } from '../../Reducer'
 
 export const SignIn = () => {
     const [checked1, setChecked1] = useState(false)
-    const [ {idUser}, dispatch] = useStateValue()
+    const [ {user}, dispatch] = useStateValue()
     const navigate = useHistory()
     const toast = useRef(null)
 
@@ -42,7 +42,7 @@ export const SignIn = () => {
                 if(data.data){
                     dispatch({
                     type: actionTypes.SET_USER,
-                    idUser: data.data?.autenticarUsuarios.idUsuario
+                    user: data.data?.autenticarUsuarios
                 })
                 navigate.push("/")
                 }else {
@@ -55,7 +55,7 @@ export const SignIn = () => {
                 if(data.data){
                     dispatch({
                     type: actionTypes.SET_USER,
-                    idUser: data.data?.autenticarUsuarios.idUsuario
+                    user: data.data?.autenticarUsuarios
                 })
                 navigate.push("/")
                 }else {
@@ -63,23 +63,6 @@ export const SignIn = () => {
                 }
             })
         reset();
-        // if(typeof data === "undefined"){ 
-        //     showError("Credenciales inválidas.")
-        // }else{
-            // data?.autenticarUsuarios && (
-            //     console.log(data?.autenticarUsuarios))
-                // dispatch({
-                //     type: actionTypes.SET_USER,
-                //     idUser: data?.autenticarUsuarios.idUsuario
-                // })
-                
-                
-            
-            // navigate.push("/")
-        // }
-        // }else{
-        //     showError("Credenciales inválidas.")
-        // }
     }
     const getFormErrorMessage = (name) => {
         return errors[name] && <small className="p-error">{errors[name].message}</small>
@@ -89,7 +72,7 @@ export const SignIn = () => {
         toast.current.show({severity:'error', summary: 'Error', detail: message, life: 5000});
     }
     return (
-        <div className="flex flex-column align-items-center justify-content-center m-8">
+        <div className="flex flex-column align-items-center justify-content-center h-screen">
             <Toast ref={toast}/>
             <div className="surface-card py-6 px-6 xl:px-6 lg:px-4 md:px-4 sm:px-2 shadow-2 border-round xl:w-30rem lg:w-30rem md:w-30rem sm:w-30rem">
                 <div className="text-center mb-3">

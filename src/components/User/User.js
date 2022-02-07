@@ -129,7 +129,7 @@ export const Users = () => {
             removeSeveral={ [removeSeverTC, {id: -1}] }
             formProps={formProps}
             emptyElement={emptyElement}
-            additionalButton={[<Button icon="pi pi-unlock" className="p-button-rounded mr-2" data-pr-tooltip="Forzar contraseña"/>, forzarPassword]}
+            additionalButtons={[[<Button icon="pi pi-unlock" className="p-button-rounded mr-2" data-pr-tooltip="Forzar contraseña"/>, forzarPassword]]}
           />
         </div>
       ) : (

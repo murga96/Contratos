@@ -13,7 +13,7 @@ import { Dropdown } from "primereact/dropdown";
 
 export const Table = ({value, header, size, columns, pagination, rowNumbers, selectionType, sortRemove,
    fieldSort, orderSort, filterDplay, filtersValues, edit, exportData, removeOne, removeSeveral, formProps,
-   emptyElement, additionalButton}) => {
+   emptyElement, additionalButtons}) => {
   const dt = useRef(null)
   const [selectedElement, setSelectedElement] = useState(null);
   const [element, setElement] = useState({})
@@ -218,10 +218,13 @@ export const Table = ({value, header, size, columns, pagination, rowNumbers, sel
 
   const actionBodyTemplate = (rowData) => {
     return (
-        <div className="action-table">
-            {additionalButton && React.cloneElement(additionalButton[0], {"onClick": () => additionalButton[1](rowData)})}
+        <div className="action-table flex">
+          {additionalButtons && additionalButtons.map(item => React.cloneElement(item[0], {"onClick": () => item[1](rowData)})) }
+          {edit && <div>   
             <Button icon="pi pi-pencil" className="p-button-rounded p-button-success mr-2" data-pr-tooltip="Editar" onClick={() => editElement(rowData)} />
             <Button icon="pi pi-trash" className="p-button-rounded p-button-warning " data-pr-tooltip="Eliminar" onClick={() => confirmDeleteElement(rowData)} />
+          </div>
+          }
         </div>
     );
   }
@@ -291,7 +294,7 @@ export const Table = ({value, header, size, columns, pagination, rowNumbers, sel
         >
           {selectionType === "multiple" ? <Column selectionMode="multiple" exportable={false}/> : undefined}
           {dynamicColumns}
-          {edit ? <Column body={actionBodyTemplate} exportable={false} style={{ minWidth: '8rem' }}></Column> : undefined}
+          {edit || additionalButtons ? <Column body={actionBodyTemplate} exportable={false} style={{ minWidth: '8rem' }}></Column> : undefined}
         </DataTable>
 
         <Dialog visible={deleteDialog} style={{ width: '450px' }} header="Confirmación" modal footer={deleteDialogFooter} onHide={hideDeleteElementDialog}>

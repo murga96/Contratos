@@ -1,5 +1,5 @@
 export const initialState = {
-    idUser: null,
+    user: null,
 }
 
 export const actionTypes = {
@@ -12,7 +12,7 @@ const reducer = (state, action) => {
         case "SET_USER":
             return {
                 ...state,
-                idUser: action.idUser,
+                user: action.user,
             }
         default:
             console.log("Default case in reducer")

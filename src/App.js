@@ -22,6 +22,7 @@ import { FormasEntrega } from './components/Nom/FormasEntregas';
 import { EtapasContratacion } from './components/Nom/EtapasContratacion';
 import { FormasPago } from './components/Nom/FormasPago';
 import { Users } from './components/User/User';
+import { ChangePassword } from './components/User/ChangePassword';
 
  
 
@@ -126,6 +127,9 @@ function App() {
           </Route>
           <Route path="/Inicio">
             <SignIn/>
+          </Route>
+          <Route path="/CambiarContraseña">
+            <ChangePassword/>
           </Route>
         </Switch>
     </Router>

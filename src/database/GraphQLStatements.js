@@ -601,6 +601,15 @@ export const forcePasswordUsuario = gql`
   }
 `;
 
+export const changePasswordUsuario = gql`
+  mutation modifyPasswordUsuario($idUsuario: Int!, $contrasenaVieja: String!, $contrasenaNueva: String!, $contrasenaNuevaConfirmar: String!) {
+    modifyPasswordUsuario(idUsuario: $idUsuario, contrasenaVieja: $contrasenaVieja, contrasenaNueva: $contrasenaNueva,
+      contrasenaNuevaConfirmar: $contrasenaNuevaConfirmar) {
+      nombreUsuario
+    }
+  }
+`;
+
 //Roles
 export const selectAllRoles = gql`
   query selectAllRoles {
