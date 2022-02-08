@@ -602,9 +602,18 @@ export const forcePasswordUsuario = gql`
 `;
 
 export const changePasswordUsuario = gql`
-  mutation modifyPasswordUsuario($idUsuario: Int!, $contrasenaVieja: String!, $contrasenaNueva: String!, $contrasenaNuevaConfirmar: String!) {
-    modifyPasswordUsuario(idUsuario: $idUsuario, contrasenaVieja: $contrasenaVieja, contrasenaNueva: $contrasenaNueva,
-      contrasenaNuevaConfirmar: $contrasenaNuevaConfirmar) {
+  mutation modifyPasswordUsuario(
+    $idUsuario: Int!
+    $contrasenaVieja: String!
+    $contrasenaNueva: String!
+    $contrasenaNuevaConfirmar: String!
+  ) {
+    modifyPasswordUsuario(
+      idUsuario: $idUsuario
+      contrasenaVieja: $contrasenaVieja
+      contrasenaNueva: $contrasenaNueva
+      contrasenaNuevaConfirmar: $contrasenaNuevaConfirmar
+    ) {
       nombreUsuario
     }
   }
@@ -616,6 +625,50 @@ export const selectAllRoles = gql`
     findAllRoles {
       idRol
       rol
+    }
+  }
+`;
+
+//Bases Generales
+export const selectAllBasesGenerales = gql`
+  query selectAllRoles {
+    findAllBasesGenerales {
+      idBasesGenerales
+      tipoDeContrato {
+        tipoContrato
+      }
+      proveedor {
+        codigo
+      }
+      pais {
+        nomb
+      }
+      compradores {
+        nombre
+      }
+      lugardeFirma
+      fecha
+      consecutivo
+    }
+  }
+`;
+
+export const selectOneBasesGenerales = gql`
+  query selectOneRoles($idBasesG: Int!) {
+    findOneBasesGenerales(idBasesG: $idBasesG) {
+      idBasesGenerales
+      tipoDeContrato {
+        tipoContrato
+      }
+      proveedor {
+        codigo
+      }
+      compradores {
+        nombre
+      }
+      lugardeFirma
+      fecha
+      consecutivo
     }
   }
 `;

@@ -14,6 +14,7 @@ export const Navbar = (url) => {
         {
             label: 'Bases Generales',
             icon: 'pi pi-fw pi-bookmark',
+            command: () => {navigate.push(`/BasesGenerales`)},
         },
         {
             label: 'Contratos',

@@ -8,7 +8,7 @@ import { Toolbar } from "primereact/toolbar";
 import { Tooltip } from "primereact/tooltip";
 import { Form } from "./Form";
 import { TriStateCheckbox } from 'primereact/tristatecheckbox';
-import { get, pick, hasIn } from 'lodash'
+import { get, pick, isDate } from 'lodash'
 import { Dropdown } from "primereact/dropdown";
 
 export const Table = ({value, header, size, columns, pagination, rowNumbers, selectionType, sortRemove,
@@ -25,17 +25,22 @@ export const Table = ({value, header, size, columns, pagination, rowNumbers, sel
   const h = <div className="table-header">{header}</div>;
 
   const bodyChecker = (rowData, item) => {
-    if (typeof rowData[item.field] === "boolean") {
-      return rowData[item.field] ? <i className="pi pi-check-circle" style={{'color': "#008000", "fontSize": "1.3rem" }}></i> : <i className="pi pi-times-circle" style={{'color': 'red', "fontSize": "1.3rem"}}></i>;
-    } else if(Array.isArray(rowData[item.field])){
-      if(rowData[item.field].length > 0){
+    console.log(isDate(get(rowData, item.field)))
+    if (typeof get(rowData, item.field) === "boolean") {
+      return get(rowData, item.field) ? <i className="pi pi-check-circle" style={{'color': "#008000", "fontSize": "1.3rem" }}></i> : <i className="pi pi-times-circle" style={{'color': 'red', "fontSize": "1.3rem"}}></i>;
+    }else if(typeof get(rowData, item.field)?.getMonth === "function"){     
+      return get(rowData, item.field).toLocaleDateString('en-US', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+    });
+    }else if(Array.isArray(get(rowData, item.field))){
+      if(get(rowData, item.field).length > 0){
         //llave del objeto
         console.log("bodyArray")
-        const objectKey = Object.keys(rowData[item.field][0])
+        const objectKey = Object.keys(get(rowData, item.field)[0])
         //Obtengo el segundo item del arreglo para mostrarlo en la cadena
-        console.log(rowData[item.field].map((i) =>  Object.keys(i).length === 1 ? i[objectKey][Object.keys(i[objectKey])[1]] : i[Object.keys(i)[1]]
-        ).toString(),"return bodyArray")
-        return rowData[item.field].map((i) =>  Object.keys(i).length === 1 ? i[objectKey][Object.keys(i[objectKey])[1]] : i[Object.keys(i)[1]]
+        return get(rowData, item.field).map((i) =>  Object.keys(i).length === 1 ? i[objectKey][Object.keys(i[objectKey])[1]] : i[Object.keys(i)[1]]
         ).toString()
       }
     }else {
@@ -64,13 +69,12 @@ export const Table = ({value, header, size, columns, pagination, rowNumbers, sel
   // };
 
   const verifiedRowFilterTemplate = (options) => {
-    console.log(options, 'options')
       return <TriStateCheckbox value={options.value} onChange={(e) => options.filterApplyCallback(e.value)} />
     }
 
   const dynamicColumns = columns.map((col, i) => {
       return <Column key={col.field} field={col.field} header={col.header} sortable={fieldSort === null ? false : true}/*  style={{flex: 1,justifyContent: "center"}} */
-      body={bodyChecker} dataType= {value && typeof Object.values(value[0])[i+1]=== "number" ? "numeric" : "text"} 
+      body={bodyChecker} dataType= {value && typeof Object.values(value[0])[i+1]=== "number" ? "numeric" : isDate(Object.values(value[0])[i+1]) ? "date" : "text"} 
       filterElement={value && typeof Object.values(value[0])[i+1] === "boolean"? verifiedRowFilterTemplate : undefined}
       filter={filterDplay === null ? false : true}  />;
   });
@@ -326,11 +330,11 @@ export const Table = ({value, header, size, columns, pagination, rowNumbers, sel
             }}
           >
             <Form
-              data={formProps.data}
-              schema={formProps.schema}
+              data={formProps?.data}
+              schema={formProps?.schema}
               handle={saveElement}
               cancel={hideEditDialog}
-              buttonsNames={formProps.buttonsNames}
+              buttonsNames={formProps?.buttonsNames}
             />
           </Dialog>
 

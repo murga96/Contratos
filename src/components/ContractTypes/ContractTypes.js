@@ -22,7 +22,6 @@ export const ContractTypes = () => {
     "visible": { value: null, matchMode: FilterMatchMode.CONTAINS },
   };
 
-  const bodies =  {"tipoContrato": undefined, "encabezado": undefined, "ambasPartes": undefined/* , "visible": visibleBodyTemplate */}
   let c = [
     { field: "tipoContrato", header: "Tipo Contrato"},
     { field: "encabezado", header: "Encabezado"},
@@ -113,7 +112,6 @@ export const ContractTypes = () => {
         <div>
           <Table
             value={data?.findAllTipoContrato}
-            bodies={bodies}
             header="Tipos de Contratos"
             size="small"
             columns={c}

@@ -23,6 +23,7 @@ import { EtapasContratacion } from './components/Nom/EtapasContratacion';
 import { FormasPago } from './components/Nom/FormasPago';
 import { Users } from './components/User/User';
 import { ChangePassword } from './components/User/ChangePassword';
+import { BasesGenerales } from './components/BasesGenerales/BasesGenerales';
 
  
 
@@ -124,6 +125,9 @@ function App() {
           </Route>
           <Route path="/Usuarios">
             <Users/>
+          </Route>
+          <Route path="/BasesGenerales">
+            <BasesGenerales/>
           </Route>
           <Route path="/Inicio">
             <SignIn/>
