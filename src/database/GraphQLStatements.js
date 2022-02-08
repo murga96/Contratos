@@ -634,6 +634,7 @@ export const selectAllBasesGenerales = gql`
   query selectAllRoles {
     findAllBasesGenerales {
       idBasesGenerales
+      consecutivo
       tipoDeContrato {
         tipoContrato
       }
@@ -646,9 +647,8 @@ export const selectAllBasesGenerales = gql`
       compradores {
         nombre
       }
-      lugardeFirma
       fecha
-      consecutivo
+      lugardeFirma
     }
   }
 `;

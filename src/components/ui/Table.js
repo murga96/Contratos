@@ -10,6 +10,7 @@ import { Form } from "./Form";
 import { TriStateCheckbox } from 'primereact/tristatecheckbox';
 import { get, pick, isDate } from 'lodash'
 import { Dropdown } from "primereact/dropdown";
+import moment from "moment";
 
 export const Table = ({value, header, size, columns, pagination, rowNumbers, selectionType, sortRemove,
    fieldSort, orderSort, filterDplay, filtersValues, edit, exportData, removeOne, removeSeveral, formProps,
@@ -25,15 +26,11 @@ export const Table = ({value, header, size, columns, pagination, rowNumbers, sel
   const h = <div className="table-header">{header}</div>;
 
   const bodyChecker = (rowData, item) => {
-    console.log(isDate(get(rowData, item.field)))
+    console.log(rowData, item, "object")
     if (typeof get(rowData, item.field) === "boolean") {
       return get(rowData, item.field) ? <i className="pi pi-check-circle" style={{'color': "#008000", "fontSize": "1.3rem" }}></i> : <i className="pi pi-times-circle" style={{'color': 'red', "fontSize": "1.3rem"}}></i>;
-    }else if(typeof get(rowData, item.field)?.getMonth === "function"){     
-      return get(rowData, item.field).toLocaleDateString('en-US', {
-        day: '2-digit',
-        month: '2-digit',
-        year: 'numeric',
-    });
+    }else if(item.column.props.dataType === "date"){ 
+      return moment(get(rowData, item.field), moment.ISO_8601).format("DD/MM/YYYY");
     }else if(Array.isArray(get(rowData, item.field))){
       if(get(rowData, item.field).length > 0){
         //llave del objeto
@@ -56,17 +53,19 @@ export const Table = ({value, header, size, columns, pagination, rowNumbers, sel
     } */
   }
 
-  // const datatypeChecker = (i) => {
-  //   let type = value && typeof Object.values(value[0])[i+1]
-  //   if (type === "string") {
-  //     return "text"
-  //   } else if(type === "number"){
-  //     return "numeric";
-  //   }
-  //   else{
-  //     return type;
-  //   }
-  // };
+  const datatypeChecker = (col,i) => {
+    let ret = "";
+    const type = value && typeof Object.values(value[0])[i+1]
+    if(col.type){
+      console.log("object")
+      ret = col.type;
+    }else if (type === "number") {
+        ret = "numeric"
+    } else{
+        ret = "text";
+    }
+    return ret;
+  };
 
   const verifiedRowFilterTemplate = (options) => {
       return <TriStateCheckbox value={options.value} onChange={(e) => options.filterApplyCallback(e.value)} />
@@ -74,7 +73,7 @@ export const Table = ({value, header, size, columns, pagination, rowNumbers, sel
 
   const dynamicColumns = columns.map((col, i) => {
       return <Column key={col.field} field={col.field} header={col.header} sortable={fieldSort === null ? false : true}/*  style={{flex: 1,justifyContent: "center"}} */
-      body={bodyChecker} dataType= {value && typeof Object.values(value[0])[i+1]=== "number" ? "numeric" : isDate(Object.values(value[0])[i+1]) ? "date" : "text"} 
+      body={bodyChecker} dataType= {datatypeChecker(col, i)}
       filterElement={value && typeof Object.values(value[0])[i+1] === "boolean"? verifiedRowFilterTemplate : undefined}
       filter={filterDplay === null ? false : true}  />;
   });

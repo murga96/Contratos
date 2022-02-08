@@ -30,7 +30,7 @@ export const BasesGenerales = () => {
     { field: "proveedor.codigo", header: "Proveedor"},
     { field: "pais.nomb", header: "País"},
     { field: "compradores.nombre", header: "Comprador"},
-    { field: "fecha", header: "Fecha"},
+    { field: "fecha", header: "Fecha", type: "date"},
     { field: "lugardeFirma", header: "Lugar de Firma"},
   ];
   let emptyElement = {"consecutivo": "", "tipoDeContrato.tipoContrato": "", "proveedor.codigo": "", "pais.pais": "",
@@ -61,7 +61,7 @@ export const BasesGenerales = () => {
             edit={false}
             exportData={true}
             emptyElement={emptyElement}
-            additionalButtons={[[<Button icon="pi pi-eye" className="p-button-rounded p-button-text" data-pr-tooltip="Ver"/>, () => navigate.push("/")]]}
+            additionalButtons={[[<Button icon="pi pi-eye" className="p-button-rounded p-button-text" data-pr-tooltip="Ver"/>, () => navigate.push("/BasesGenerales/2")]]}
           />
         </div>
       ) : (
