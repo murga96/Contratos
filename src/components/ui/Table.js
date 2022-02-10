@@ -26,7 +26,6 @@ export const Table = ({value, header, size, columns, pagination, rowNumbers, sel
   const h = <div className="table-header">{header}</div>;
 
   const bodyChecker = (rowData, item) => {
-    console.log(rowData, item, "object")
     if (typeof get(rowData, item.field) === "boolean") {
       return get(rowData, item.field) ? <i className="pi pi-check-circle" style={{'color': "#008000", "fontSize": "1.3rem" }}></i> : <i className="pi pi-times-circle" style={{'color': 'red', "fontSize": "1.3rem"}}></i>;
     }else if(item.column.props.dataType === "date"){ 

@@ -6,7 +6,7 @@ import { Dropdown } from "primereact/dropdown";
 import { MultiSelect } from "primereact/multiselect";
 import { classNames } from "primereact/utils";
 
-export const Field = ({ type, name, defaultValue, props }) => {
+export const Field = ({ type, name, defaultValue, props, label }) => {
   const {
     control,
     formState: { errors },
@@ -20,6 +20,15 @@ export const Field = ({ type, name, defaultValue, props }) => {
     case "InputText":
       return (
         <div>
+          <label
+          htmlFor={name}
+          className={classNames(
+            { "p-error": errors.email },
+            "block text-900 font-medium mb-2"
+          )}
+        >
+          {label}
+        </label>
           <Controller
             name={name}
             defaultValue={defaultValue}

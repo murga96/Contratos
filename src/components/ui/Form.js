@@ -5,26 +5,30 @@ import { FormProvider, useForm } from "react-hook-form";
 import { Field } from "./Field";
 
 
-export const Form = ({ data, schema, handle, cancel, buttonsNames }) => {
+export const Form = ({ data, schema, handle, cancel, buttonsNames, formLayout }) => {
   const methods= useForm({
     resolver: yupResolver(schema),
   });
   // console.log(methods.formState.errors, "errors")
-
   return (
     <FormProvider {...methods}>
       <form onSubmit={methods.handleSubmit(handle)}>
-        {data.map((item) => {
-          return (
-            <Field
-              key={item.id}
-              type={item.component}
-              name={item.name}
-              defaultValue={item.defaultValue}
-              props={item.props}
-            />
-          );
-        })}
+        <div {...formLayout}>
+          {data.map((item) => {
+            return (
+              <div {...item.fieldLayout}>
+                <Field
+                  key={item.id}
+                  type={item.component}
+                  name={item.name}
+                  defaultValue={item.defaultValue}
+                  props={item.props}
+                  label={item.label}
+                />
+              </div>
+            );
+          })}
+        </div>
         <div className="flex justify-content-end mt-3">
           <Button
             label={buttonsNames[0]}
