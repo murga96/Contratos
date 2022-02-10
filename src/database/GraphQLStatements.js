@@ -655,7 +655,7 @@ export const selectAllBasesGenerales = gql`
 
 export const selectOneBasesGenerales = gql`
   query selectOneRoles($idBasesG: Int!) {
-    findOneBasesGenerales(idBasesG: $idBasesG) {
+    findOneBasesGenerales(id: $idBasesG) {
       idBasesGenerales
       tipoDeContrato {
         tipoContrato

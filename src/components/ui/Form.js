@@ -15,7 +15,6 @@ export const Form = ({ data, schema, handle, cancel, buttonsNames }) => {
     <FormProvider {...methods}>
       <form onSubmit={methods.handleSubmit(handle)}>
         {data.map((item) => {
-          console.log(item.defaultValue)
           return (
             <Field
               key={item.id}

@@ -4,7 +4,7 @@ import 'primereact/resources/primereact.min.css'
 import 'primeicons/primeicons.css'
 import { SignIn } from './components/Login/SignIn';
 import 'primeflex/primeflex.css'
-import { BrowserRouter as Router, Route, Routes} from "react-router-dom"
+import { BrowserRouter as Router, Route, Routes, Outlet} from "react-router-dom"
 import { Home } from './components/Home/Home';
 import { ContractTypes } from './components/ContractTypes/ContractTypes';
 import {addLocale, locale} from "primereact/api"
@@ -24,6 +24,7 @@ import { FormasPago } from './components/Nom/FormasPago';
 import { Users } from './components/User/User';
 import { ChangePassword } from './components/User/ChangePassword';
 import { BasesGenerales } from './components/BasesGenerales/BasesGenerales';
+import { BaseGeneral } from './components/BasesGenerales/BaseGeneral';
 
  
 
@@ -94,10 +95,23 @@ function App() {
             <Route path="/FormasEntrega" element={<FormasEntrega/>}/>
             <Route path="/EtapasContratacion" element={<EtapasContratacion/>}/>
             <Route path="/Usuarios" element={<Users/>}/>
-            <Route path="/BasesGenerales" element={<BasesGenerales/>}/>
+            <Route path="/BasesGenerales" element={<div><Outlet/></div>} >
+              <Route
+                index
+                element={
+                  <BasesGenerales/>
+                }
+              />
+              <Route path=":BaseGeneral" element={<BaseGeneral/>} />
+            </Route>
           </Route>
           <Route path="/Inicio" element={<SignIn/>}/>
           <Route path="/CambiarContraseña" element={<ChangePassword/>}/>
+          <Route path="*" element={
+            <main style={{ padding: "1rem"}}>
+              <h1>Página no encontrada</h1>
+            </main>
+          }/>
         </Routes>
     </Router>
     </div>

@@ -7,7 +7,7 @@ import {
   selectAllBasesGenerales
 } from "../../database/GraphQLStatements";
 import { ProgressSpinner } from "primereact/progressspinner";
-import { useNavigate } from "react-router";
+import { Outlet, useNavigate } from "react-router";
 import { Button } from "primereact/button";
 
 export const BasesGenerales = () => {
@@ -59,8 +59,9 @@ export const BasesGenerales = () => {
             edit={false}
             exportData={true}
             emptyElement={emptyElement}
-            additionalButtons={[[<Button icon="pi pi-eye" className="p-button-rounded p-button-text" data-pr-tooltip="Ver"/>, () => navigate("/BasesGenerales/2")]]}
+            additionalButtons={[[<Button icon="pi pi-eye" className="p-button-rounded p-button-text" data-pr-tooltip="Ver"/>, (rowData) => navigate(`/BasesGenerales/${rowData.idBasesGenerales}`)]]}
           />
+          <Outlet/>
         </div>
       ) : (
         //poner cargar
