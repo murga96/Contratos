@@ -1,5 +1,4 @@
 import React from "react";
-import { Navbar } from "../NavBar/Navbar";
 import { useQuery, useMutation } from "@apollo/client";
 import { Table } from "../ui/Table";
 import { FilterMatchMode } from "primereact/api";
@@ -60,7 +59,6 @@ export const TiposContenedor = () => {
   const formProps = {"data": dataStruct, "schema": schema, "handle": updateElement, "variables": { tiposContenedor: {} }, "buttonsNames": ["Guardar", "Cancelar"]}
   return (
     <div>
-      <Navbar />
       {loading &&  (<div className="flex h-30rem justify-content-center align-items-center"><ProgressSpinner strokeWidth="3" /></div>)}   
       {error && errorU && <h5>{error}</h5>}
       {!(loading || error || loadingU || errorU) ? (

@@ -1,5 +1,4 @@
 import React from "react";
-import { Navbar } from "../NavBar/Navbar";
 import { useQuery, useMutation } from "@apollo/client";
 import { Table } from "../ui/Table";
 import { FilterMatchMode } from "primereact/api";
@@ -8,11 +7,11 @@ import {
   selectAllBasesGenerales
 } from "../../database/GraphQLStatements";
 import { ProgressSpinner } from "primereact/progressspinner";
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router";
 import { Button } from "primereact/button";
 
 export const BasesGenerales = () => {
-  const navigate = useHistory()
+  const navigate = useNavigate()
   const filters = {
     "global": { value: null, matchMode: FilterMatchMode.CONTAINS },
     "consecutivo": { value: null, matchMode: FilterMatchMode.CONTAINS },
@@ -40,7 +39,6 @@ export const BasesGenerales = () => {
   const { data, error, loading } = useQuery(selectAllBasesGenerales);
   return (
     <div>
-      <Navbar />
       {loading &&  (<div className="flex h-30rem justify-content-center align-items-center"><ProgressSpinner strokeWidth="3" /></div>)}   
       {error && <h5>{error}</h5>}
       {!(loading || error) ? (
@@ -61,7 +59,7 @@ export const BasesGenerales = () => {
             edit={false}
             exportData={true}
             emptyElement={emptyElement}
-            additionalButtons={[[<Button icon="pi pi-eye" className="p-button-rounded p-button-text" data-pr-tooltip="Ver"/>, () => navigate.push("/BasesGenerales/2")]]}
+            additionalButtons={[[<Button icon="pi pi-eye" className="p-button-rounded p-button-text" data-pr-tooltip="Ver"/>, () => navigate("/BasesGenerales/2")]]}
           />
         </div>
       ) : (

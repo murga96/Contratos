@@ -4,7 +4,7 @@ import 'primereact/resources/primereact.min.css'
 import 'primeicons/primeicons.css'
 import { SignIn } from './components/Login/SignIn';
 import 'primeflex/primeflex.css'
-import {Switch, BrowserRouter as Router, Route} from "react-router-dom"
+import { BrowserRouter as Router, Route, Routes} from "react-router-dom"
 import { Home } from './components/Home/Home';
 import { ContractTypes } from './components/ContractTypes/ContractTypes';
 import {addLocale, locale} from "primereact/api"
@@ -77,65 +77,28 @@ function App() {
   return (
     <div className="App">
     <Router>
-        <Switch>
-          <Route exact path="/">
-            <Home/>
+        <Routes>
+          <Route path="/" element={<Home/>}>
+            <Route path="/TiposContratos" element={<ContractTypes/>}/>
+            <Route path="/TiposClausulas" element={<ClauseTypes/>}/>
+            <Route path="/TiposDocumentos" element={<DocumentTypes/>}/>
+            <Route path="/Cargos" element={<Cargos/>}/>
+            <Route path="/Ejecutivos" element={<Ejecutivos/>}/>
+            <Route path="/Incoterms" element={<Incoterms/>}/>
+            <Route path="/Monedas" element={<Monedas/>}/>
+            <Route path="/Puertos" element={<Puertos/>}/>
+            <Route path="/TiposCompras" element={<TiposDeCompras/>}/>
+            <Route path="/TiposContenedores" element={<TiposContenedor/>}/>
+            <Route path="/GruposCompra" element={<GruposDeCompras/>}/>
+            <Route path="/FormasPago" element={<FormasPago/>}/>
+            <Route path="/FormasEntrega" element={<FormasEntrega/>}/>
+            <Route path="/EtapasContratacion" element={<EtapasContratacion/>}/>
+            <Route path="/Usuarios" element={<Users/>}/>
+            <Route path="/BasesGenerales" element={<BasesGenerales/>}/>
           </Route>
-          <Route path="/TiposContratos">
-            <ContractTypes/>
-          </Route>
-          <Route path="/TiposClausulas">
-            <ClauseTypes/>
-          </Route>
-          <Route path="/TiposDocumentos">
-            <DocumentTypes/>
-          </Route>
-          <Route path="/Cargos">
-            <Cargos/>
-          </Route>
-          <Route path="/Ejecutivos">
-            <Ejecutivos/>
-          </Route>
-          <Route path="/Incoterms">
-            <Incoterms/>
-          </Route>
-          <Route path="/Monedas">
-            <Monedas/>
-          </Route>
-          <Route path="/Puertos">
-            <Puertos/>
-          </Route>
-          <Route path="/TiposCompras">
-            <TiposDeCompras/>
-          </Route>
-          <Route path="/TiposContenedores">
-            <TiposContenedor/>
-          </Route>
-          <Route path="/GruposCompra">
-            <GruposDeCompras/>
-          </Route>
-          <Route path="/FormasPago">
-            <FormasPago/>
-          </Route>
-          <Route path="/FormasEntrega">
-            <FormasEntrega/>
-          </Route>
-          <Route path="/EtapasContratacion">
-            <EtapasContratacion/>
-          </Route>
-          <Route path="/Usuarios">
-            <Users/>
-          </Route>
-          <Route path="/BasesGenerales">
-            <BasesGenerales/>
-          </Route>
-          <Route path="/Inicio">
-            <SignIn/>
-          </Route>
-          <Route path="/CambiarContraseña">
-            <ChangePassword/>
-          </Route>
-        </Switch>
+          <Route path="/Inicio" element={<SignIn/>}/>
+          <Route path="/CambiarContraseña" element={<ChangePassword/>}/>
+        </Routes>
     </Router>
     </div>
   );

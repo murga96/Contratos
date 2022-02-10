@@ -9,7 +9,7 @@ import * as yup from 'yup'
 import {yupResolver} from '@hookform/resolvers/yup'
 import { Controller, useForm } from 'react-hook-form'
 import { classNames } from 'primereact/utils';
-import {useHistory} from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { Toast } from "primereact/toast"
 import { autenticarUsuario } from '../../database/GraphQLStatements'
 import { useLazyQuery} from '@apollo/client'
@@ -19,7 +19,7 @@ import { actionTypes } from '../../Reducer'
 export const SignIn = () => {
     const [checked1, setChecked1] = useState(false)
     const [ {user}, dispatch] = useStateValue()
-    const navigate = useHistory()
+    const navigate = useNavigate()
     const toast = useRef(null)
 
     const [autenticacionQuery, { called, refetch }] = useLazyQuery(autenticarUsuario, {
@@ -44,7 +44,7 @@ export const SignIn = () => {
                     type: actionTypes.SET_USER,
                     user: data.data?.autenticarUsuarios
                 })
-                navigate.push("/")
+                navigate("/")
                 }else {
                     showError("Credenciales inválidas.")
                 }
@@ -57,7 +57,7 @@ export const SignIn = () => {
                     type: actionTypes.SET_USER,
                     user: data.data?.autenticarUsuarios
                 })
-                navigate.push("/")
+                navigate("/")
                 }else {
                     showError("Credenciales inválidas.")
                 }

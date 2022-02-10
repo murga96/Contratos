@@ -9,7 +9,7 @@ import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Controller, useForm } from "react-hook-form";
 import { classNames } from "primereact/utils";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Toast } from "primereact/toast";
 import { changePasswordUsuario } from "../../database/GraphQLStatements";
 import { useMutation } from "@apollo/client";
@@ -18,7 +18,7 @@ import { actionTypes } from "../../Reducer";
 
 export const ChangePassword = () => {
   const [{ user }, dispatch] = useStateValue();
-  const navigate = useHistory();
+  const navigate = useNavigate();
 
   const [changePassword] = useMutation(changePasswordUsuario);
   //React-hook-form
@@ -55,7 +55,7 @@ export const ChangePassword = () => {
           contrasenaNuevaConfirmar: newPasswordConfirm,
         },
       });
-      navigate.push("/");
+      navigate("/");
     } catch (error) {
       alert(error);
     }
