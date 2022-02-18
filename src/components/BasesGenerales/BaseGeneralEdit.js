@@ -3,13 +3,14 @@ import { ProgressSpinner } from "primereact/progressspinner";
 import React, { useRef, useState } from "react";
 import { useParams } from "react-router";
 import {
+  selectAllCompradores,
   selectOneBasesGenerales,
 } from "../../database/GraphQLStatements";
 import { Form } from "../ui/Form";
 import * as yup from "yup";
 import moment from "moment";
 
-export const BaseGeneral = ({ idBG }) => {
+export const BaseGeneralEdit = ({ baseGeneral }) => {
   const bg = useParams();
   const formRef = useRef();
   const { data, error, loading } = useQuery(selectOneBasesGenerales, {
@@ -17,6 +18,10 @@ export const BaseGeneral = ({ idBG }) => {
   });
 
   const schema = yup.object().shape({
+    tipoContrato: yup.string().required("Tipo de contrato es requerido"),
+    encabezado: yup.string().required("Encabezado es requerido"),
+    ambasPartes: yup.string().required("Ambas partes es requerido"),
+    visible: yup.boolean(),
   });
   const dataStruct = [
     {
@@ -227,6 +232,8 @@ export const BaseGeneral = ({ idBG }) => {
             ref={formRef}
             data={formProps?.data}
             schema={formProps?.schema}
+            // handle={saveElement}
+            // cancel={hideEditDialog}
             buttonsNames={formProps?.buttonsNames}
             formLayout={{ className: "grid" }}
           />

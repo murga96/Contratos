@@ -1,0 +1,9 @@
+/* .p-disabled, .p-component:disabled{
+    opacity: 1;
+} */
+.disabled {
+    opacity: 1 !important;
+}
+.textArea {
+    pointer-events: all !important;
+}

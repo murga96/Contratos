@@ -631,12 +631,15 @@ export const selectAllRoles = gql`
 
 //Bases Generales
 export const selectAllBasesGenerales = gql`
-  query selectAllRoles {
+  query selectAllBasesGenerales {
     findAllBasesGenerales {
       idBasesGenerales
       consecutivo
       tipoDeContrato {
         tipoContrato
+      }
+      incoterm {
+        abreviatura
       }
       proveedor {
         codigo
@@ -648,27 +651,65 @@ export const selectAllBasesGenerales = gql`
         nombre
       }
       fecha
-      lugardeFirma
     }
   }
 `;
 
 export const selectOneBasesGenerales = gql`
-  query selectOneRoles($idBasesG: Int!) {
+  query selectOneBasesGenerales($idBasesG: Int!) {
     findOneBasesGenerales(id: $idBasesG) {
       idBasesGenerales
+      consecutivo
       tipoDeContrato {
         tipoContrato
       }
+      incoterm {
+        nombre
+        abreviatura
+      }
       proveedor {
         codigo
+        compaIa
+        cargo
+        representante
+        domicilio
+      }
+      pais {
+        nomb
       }
       compradores {
         nombre
+        representante
+        domicilio
+        cargo
+      }
+      basesGeneralesClausulas {
+        idTipoClausula
+        tiposDeClausulas {
+          idTipoClausula
+          nombre
+        }
+        orden
+        clausula
+        excepcional
       }
       lugardeFirma
       fecha
-      consecutivo
+    }
+  }
+`;
+
+//Compradores
+export const selectAllCompradores = gql`
+  query selectAllCompradores {
+    findAllCompradores {
+      idComprador
+      nombre
+      representante
+      domicilio
+      cargo
+      doble
+      activo
     }
   }
 `;

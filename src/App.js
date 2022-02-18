@@ -25,6 +25,7 @@ import { Users } from './components/User/User';
 import { ChangePassword } from './components/User/ChangePassword';
 import { BasesGenerales } from './components/BasesGenerales/BasesGenerales';
 import { BaseGeneral } from './components/BasesGenerales/BaseGeneral';
+import { BaseGeneralEdit } from './components/BasesGenerales/BaseGeneralEdit';
 
  
 
@@ -95,14 +96,15 @@ function App() {
             <Route path="/FormasEntrega" element={<FormasEntrega/>}/>
             <Route path="/EtapasContratacion" element={<EtapasContratacion/>}/>
             <Route path="/Usuarios" element={<Users/>}/>
-            <Route path="/BasesGenerales" element={<div><Outlet/></div>} >
+            <Route path="/BasesGenerales" >
               <Route
                 index
                 element={
                   <BasesGenerales/>
                 }
               />
-              <Route path=":BaseGeneral" element={<BaseGeneral/>} />
+              <Route path="/BasesGenerales/:operation/:BaseGeneral" element={<BaseGeneralEdit/>} />
+              <Route path="/BasesGenerales/Detalle/:BaseGeneral" element={<BaseGeneral/>} />
             </Route>
           </Route>
           <Route path="/Inicio" element={<SignIn/>}/>

@@ -220,11 +220,11 @@ export const Table = ({value, header, size, columns, pagination, rowNumbers, sel
 
   const actionBodyTemplate = (rowData) => {
     return (
-        <div className="action-table flex">
+        <div className="action-table flex ">
           {additionalButtons && additionalButtons.map(item => React.cloneElement(item[0], {"onClick": () => item[1](rowData)})) }
-          {edit && <div>   
-            <Button icon="pi pi-pencil" className="p-button-rounded p-button-success mr-2" data-pr-tooltip="Editar" onClick={() => editElement(rowData)} />
-            <Button icon="pi pi-trash" className="p-button-rounded p-button-warning " data-pr-tooltip="Eliminar" onClick={() => confirmDeleteElement(rowData)} />
+          {edit && <div className="action-table flex">   
+            <Button icon="pi pi-pencil" className="p-button-rounded p-button-text p-button-success" data-pr-tooltip="Editar" onClick={() => editElement(rowData)} />
+            <Button icon="pi pi-trash" className="p-button-rounded p-button-text p-button-danger" data-pr-tooltip="Eliminar" onClick={() => confirmDeleteElement(rowData)} />
           </div>
           }
         </div>

@@ -16,24 +16,24 @@ export const BasesGenerales = () => {
     "global": { value: null, matchMode: FilterMatchMode.CONTAINS },
     "consecutivo": { value: null, matchMode: FilterMatchMode.CONTAINS },
     "tipoDeContrato.tipoContrato": { value: null, matchMode: FilterMatchMode.CONTAINS },
+    "incoterm.abreviatura": { value: null, matchMode: FilterMatchMode.CONTAINS },
     "proveedor.codigo": { value: null, matchMode: FilterMatchMode.CONTAINS },
     "pais.nomb": { value: null, matchMode: FilterMatchMode.CONTAINS },
     "compradores.nombre": { value: null, matchMode: FilterMatchMode.CONTAINS },
     "fecha": { value: null, matchMode: FilterMatchMode.DATE_IS },
-    "lugardeFirma": { value: null, matchMode: FilterMatchMode.CONTAINS },
   };
 
   let c = [
     { field: "consecutivo", header: "Consecutivo"},
     { field: "tipoDeContrato.tipoContrato", header: "Tipo de Contrato"},
+    { field: "incoterm.abreviatura", header: "Incoterm"},
     { field: "proveedor.codigo", header: "Proveedor"},
     { field: "pais.nomb", header: "País"},
     { field: "compradores.nombre", header: "Comprador"},
     { field: "fecha", header: "Fecha", type: "date"},
-    { field: "lugardeFirma", header: "Lugar de Firma"},
   ];
-  let emptyElement = {"consecutivo": "", "tipoDeContrato.tipoContrato": "", "proveedor.codigo": "", "pais.pais": "",
-                       "compradores.nombre": "", "fecha": "", "lugardeFirma": "", }
+  let emptyElement = {"consecutivo": "", "tipoDeContrato.tipoContrato": "", "incoterm.abreviatura": "", "proveedor.codigo": "", "pais.pais": "",
+                       "compradores.nombre": "", "fecha": ""}
 
   //graphQL
   const { data, error, loading } = useQuery(selectAllBasesGenerales);
@@ -56,12 +56,12 @@ export const BasesGenerales = () => {
             fieldSort="consecutivo"
             filterDplay="row"
             filtersValues={filters}
-            edit={false}
+            edit={true}
             exportData={true}
             emptyElement={emptyElement}
-            additionalButtons={[[<Button icon="pi pi-eye" className="p-button-rounded p-button-text" data-pr-tooltip="Ver"/>, (rowData) => navigate(`/BasesGenerales/${rowData.idBasesGenerales}`)]]}
+            additionalButtons={[[<Button icon="pi pi-eye" className="p-button-rounded p-button-text" data-pr-tooltip="Ver"/>, (rowData) => navigate(`/BasesGenerales/Detalle/${rowData.idBasesGenerales}`)]]}
+            editLinks={["BasesGenerales/Add/","BasesGenerales/Edit/"]}
           />
-          <Outlet/>
         </div>
       ) : (
         //poner cargar
