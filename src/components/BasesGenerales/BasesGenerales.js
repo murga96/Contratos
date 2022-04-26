@@ -1,13 +1,12 @@
 import React from "react";
-import { useQuery, useMutation } from "@apollo/client";
+import { useQuery} from "@apollo/client";
 import { Table } from "../ui/Table";
 import { FilterMatchMode } from "primereact/api";
-import * as yup from "yup";
 import {
   selectAllBasesGenerales
 } from "../../database/GraphQLStatements";
 import { ProgressSpinner } from "primereact/progressspinner";
-import { Outlet, useNavigate } from "react-router";
+import { useNavigate } from "react-router";
 import { Button } from "primereact/button";
 
 export const BasesGenerales = () => {
@@ -60,7 +59,7 @@ export const BasesGenerales = () => {
             exportData={true}
             emptyElement={emptyElement}
             additionalButtons={[[<Button icon="pi pi-eye" className="p-button-rounded p-button-text" data-pr-tooltip="Ver"/>, (rowData) => navigate(`/BasesGenerales/Detalle/${rowData.idBasesGenerales}`)]]}
-            editLinks={["BasesGenerales/Add/","BasesGenerales/Edit/"]}
+            editLinks={["Add","Edit"]}
           />
         </div>
       ) : (

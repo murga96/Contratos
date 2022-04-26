@@ -3,7 +3,6 @@ import { ProgressSpinner } from "primereact/progressspinner";
 import { confirmDialog } from "primereact/confirmdialog";
 import React, { useRef, useState, useEffect } from "react";
 import { useParams } from "react-router";
-import { useNavigate } from "react-router-dom";
 import {
   actualizarClausulasFromBaseGeneral,
   getClausulasFromBaseGeneral,
@@ -13,24 +12,18 @@ import {
   selectAllProveedores,
   selectAllTipoContrato,
   selectOneBasesGenerales,
-  updateBaseGeneral,
 } from "../../database/GraphQLStatements";
 import { Form } from "../ui/Form";
 import * as yup from "yup";
 import moment from "moment";
-import _ from "lodash";
 
-export const BaseGeneralEdit = () => {
+export const BaseGeneralAdd = () => {
   const bg = useParams();
   const formRef = useRef();
-  const navigate = useNavigate();
   const [baseG, setBaseG] = useState(null);
   const [formProps, setFormProps] = useState(null);
   const [dataBG, respBG] = useLazyQuery(selectOneBasesGenerales);
-  const [actualizarClausulasProforma] = useMutation(
-    actualizarClausulasFromBaseGeneral
-  );
-  const [updateBG] = useMutation(updateBaseGeneral);
+  const [actualizarClausulasProforma] = useMutation(actualizarClausulasFromBaseGeneral);
   const { data: findAllTipoContrato } = useQuery(selectAllTipoContrato);
   const { data: findAllPaises } = useQuery(selectAllPaises);
   const { data: findAllProveedores } = useQuery(selectAllProveedores);
@@ -46,49 +39,24 @@ export const BaseGeneralEdit = () => {
     dataBG({
       variables: { idBasesG: parseInt(bg.BaseGeneral) },
     }).then((resp) => {
-      console.log(JSON.parse(JSON.stringify(resp.data.findOneBasesGenerales)));
       setBaseG(JSON.parse(JSON.stringify(resp.data.findOneBasesGenerales)));
     });
-  };
-
-  const save = (element) => {
-    console.log(element);
-    let temp = _.omit(element, [
-      "representanteComprador",
-      "representanteVendedor",
-      "tipoClausula",
-      "clausula",
-      "button",
-    ]);
-    temp.idProforma = baseG.idProforma;
-    temp.consecutivo = baseG.consecutivo;
-    temp.idBasesGenerales = baseG.idBasesGenerales;
-    temp.vigencia = baseG.vigencia;
-    temp.aprobado = baseG.aprobado;
-    temp.cancelado = baseG.cancelado;
-    temp.activo = baseG.activo;
-    temp.basesGeneralesClausulas = baseG.basesGeneralesClausulas;
-    console.log(temp);
-    // updateBG({variables: {createBasesGeneraleInput: temp}})
   };
 
   useEffect(() => {
     console.log("baseG change");
     if (baseG) {
       const schema = yup.object().shape({
-        idTipoContrato: yup.number().required("Seleccione un tipo de contrato"),
-        fecha: yup.date().required("Fecha es requerido"),
-        idPais: yup.number().required("Seleccione un país"),
-        lugardeFirma: yup.string().required("Firma es requerida"),
-        idProveedor: yup.number().required("Seleccione un vendedor"),
-        idComprador: yup.number().required("Seleccione un comprador"),
-        idIncoterm: yup.number().required("Seleccione una condición de compra"),
+        tipoContrato: yup.string().required("Tipo de contrato es requerido"),
+        encabezado: yup.string().required("Encabezado es requerido"),
+        ambasPartes: yup.string().required("Ambas partes es requerido"),
+        visible: yup.boolean(),
       });
       let dataStruct = [
         {
           id: 1,
           component: "Dropdown",
-          name: "idTipoContrato",
+          name: "tipoContrato",
           defaultValue: 0,
           label: "Tipo de contrato*:",
           props: {
@@ -113,7 +81,7 @@ export const BaseGeneralEdit = () => {
         {
           id: 3,
           component: "Dropdown",
-          name: "idPais",
+          name: "pais",
           defaultValue: baseG.pais.pais,
           label: "País:",
           props: {
@@ -127,7 +95,7 @@ export const BaseGeneralEdit = () => {
         {
           id: 4,
           component: "InputText",
-          name: "lugardeFirma",
+          name: "firma",
           defaultValue: baseG.lugardeFirma,
           label: "Firma:",
           props: {},
@@ -142,7 +110,7 @@ export const BaseGeneralEdit = () => {
         {
           id: 6,
           component: "Dropdown",
-          name: "idProveedor",
+          name: "vendedor",
           defaultValue: baseG.proveedor.codigo,
           label: "Vendedor:",
           props: {
@@ -165,7 +133,7 @@ export const BaseGeneralEdit = () => {
         {
           id: 7,
           component: "Dropdown",
-          name: "idComprador",
+          name: "comprador",
           defaultValue: baseG.compradores.idComprador,
           label: "Comprador:",
           props: {
@@ -188,7 +156,7 @@ export const BaseGeneralEdit = () => {
         {
           id: 8,
           component: "Dropdown",
-          name: "idIncoterm",
+          name: "condCompra",
           defaultValue: baseG.incoterm.idIncoterm,
           label: "Condición de Compra:",
           props: {
@@ -278,20 +246,15 @@ export const BaseGeneralEdit = () => {
               ? baseG.basesGeneralesClausulas[0].clausula
               : "",
           label: "Claúsula:",
-          props: {
-            rows: 15,
-            onChange: (value) => {
-              console.log(formRef?.current.getValue("tipoClausula"));
-            },
-          },
+          props: { rows: 15 },
           fieldLayout: { className: "col-12" },
         },
       ];
-
-      // console.log(schema, "schema");
+      console.log(dataStruct, "dataStruct");
       setFormProps({
         data: dataStruct,
-        schema: schema,
+        schema: schema/*  , "handle": save */,
+        // variables: { tipoContrato: {} },
         buttonsNames: ["Guardar", "Cancelar"], //TODO Poner botones en todos los componentes en vez del texto
       });
     }
@@ -315,47 +278,38 @@ export const BaseGeneralEdit = () => {
       breakpoints: { "960px": "70vw", "640px": "90vw" },
       icon: "pi pi-question-circle",
       accept: () => {
-        actualizarClausulasProforma({
-          variables: { id: baseG.idBasesGenerales },
-        }).then(({ data }) => {
-          if (data) {
-            const value = formProps["data"][11].defaultValue;
-            baseG.basesGeneralesClausulas =
-              data.actualizarClausulasFromBaseGeneral;
-            setBaseG(baseG);
+        actualizarClausulasProforma({variables: {id: baseG.idBasesGenerales}}).then( ({data}) => {
+          if(data){
+            const value = formProps['data'][11].defaultValue
+            baseG.basesGeneralesClausulas = data.actualizarClausulasFromBaseGeneral
+            setBaseG(baseG)
             //actualizar campo que se visualiza
             formRef?.current.setValues(
               "clausula",
               baseG.basesGeneralesClausulas.find(
                 (item) => item.idTipoClausula === value
-              ).clausula
-            );
+              ).clausula)
           }
-        });
+        })        
       },
       reject: () => {
-        getClausulasFromBaseGeneral({
-          variables: {
-            idIncoterm: baseG.incoterm.idIncoterm,
-            idProveedor: baseG.proveedor.codigo,
-          },
-        }).then(({ data }) => {
-          if (data) {
-            const value = formProps["data"][11].defaultValue;
-            baseG.basesGeneralesClausulas = data.getClausulasFromBaseGeneral;
-            setBaseG(baseG);
+        getClausulasFromBaseGeneral({variables: {idIncoterm: baseG.incoterm.idIncoterm, idProveedor: baseG.proveedor.codigo}}).then( ({data}) => {
+          if(data){
+            const value = formProps['data'][11].defaultValue
+            baseG.basesGeneralesClausulas = data.getClausulasFromBaseGeneral
+            setBaseG(baseG)
             //actualizar campo que se visualiza
             formRef?.current.setValues(
               "clausula",
               baseG.basesGeneralesClausulas.find(
                 (item) => item.idTipoClausula === value
-              ).clausula
-            );
+              ).clausula)
           }
-        });
+        }) 
       },
     });
   };
+  console.log("render");
   return (
     <div>
       {!baseG && (
@@ -369,8 +323,8 @@ export const BaseGeneralEdit = () => {
             ref={formRef}
             data={formProps.data}
             schema={formProps.schema}
-            handle={save}
-            cancel={() => navigate("BasesGenerales")}
+            // handle={saveElement}
+            // cancel={hideEditDialog}
             buttonsNames={formProps.buttonsNames}
             formLayout={{ className: "grid" }}
           />

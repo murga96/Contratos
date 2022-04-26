@@ -1,20 +1,14 @@
-import { InputText } from "primereact/inputtext";
-import { Checkbox } from "primereact/checkbox";
 import { Button } from "primereact/button";
 import { Password } from "primereact/password";
-import { useRef, useState } from "react";
 import "primeflex/primeflex.css";
-import logo from "../../assets/images/contrato.png";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Controller, useForm } from "react-hook-form";
 import { classNames } from "primereact/utils";
 import { useNavigate } from "react-router-dom";
-import { Toast } from "primereact/toast";
 import { changePasswordUsuario } from "../../database/GraphQLStatements";
 import { useMutation } from "@apollo/client";
 import { useStateValue } from "../../StateProvider";
-import { actionTypes } from "../../Reducer";
 
 export const ChangePassword = () => {
   const [{ user }, dispatch] = useStateValue();

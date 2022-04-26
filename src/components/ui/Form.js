@@ -1,6 +1,6 @@
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Button } from "primereact/button";
-import React, { forwardRef, useRef, useImperativeHandle } from "react";
+import React, { forwardRef, useImperativeHandle } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { Field } from "./Field";
 
@@ -14,14 +14,18 @@ export const Form = forwardRef(({
   buttonsNames,
   formLayout,
 }, ref) => {
-
   const methods = useForm({
     resolver: yupResolver(schema),
   });
-  
   useImperativeHandle(ref, () => ({
       setValues: (name, value) => {
         methods.setValue(name, value)
+      }
+    })
+  )
+  useImperativeHandle(ref, () => ({
+      getValue: (name) => {
+        return methods.getValues(name)
       }
     })
   )
@@ -47,19 +51,19 @@ export const Form = forwardRef(({
         </div>
         {buttonsNames.length > 0 ? (
           <div className="flex justify-content-end mt-3">
-            <Button
+            { buttonsNames[0] && <Button
               label={buttonsNames[0]}
               icon="pi pi-check"
               className="p-button-text"
               type="submit"
-            />
-            <Button
+            />}
+            {buttonsNames[1] && <Button
               label={buttonsNames[1]}
               type="button"
               icon="pi pi-times"
               className="p-button-text"
               onClick={() => cancel()}
-            />
+            />}
           </div>
         ) : undefined}
       </form>

@@ -8,14 +8,15 @@ import { Toolbar } from "primereact/toolbar";
 import { Tooltip } from "primereact/tooltip";
 import { Form } from "./Form";
 import { TriStateCheckbox } from 'primereact/tristatecheckbox';
-import { get, pick, isDate } from 'lodash'
-import { Dropdown } from "primereact/dropdown";
+import { get, pick } from 'lodash'
 import moment from "moment";
+import { useNavigate } from "react-router";
 
 export const Table = ({value, header, size, columns, pagination, rowNumbers, selectionType, sortRemove,
    fieldSort, orderSort, filterDplay, filtersValues, edit, exportData, removeOne, removeSeveral, formProps,
-   emptyElement, additionalButtons}) => {
+   emptyElement, additionalButtons, editLinks}) => {
   const dt = useRef(null)
+  const navigate = useNavigate();
   const [selectedElement, setSelectedElement] = useState(null);
   const [element, setElement] = useState({})
   const [editDialog, setEditDialog] = useState(false);
@@ -43,14 +44,6 @@ export const Table = ({value, header, size, columns, pagination, rowNumbers, sel
       return get(rowData, item.field);
     }
   };
-  const filterChecker = (options) => {
-    console.log(options, 'options')
-    /* if(hasIn(col, 'filterElement')){
-        return col.filterElement;
-    }else{
-      return undefined;
-    } */
-  }
 
   const datatypeChecker = (col,i) => {
     let ret = "";
@@ -150,9 +143,9 @@ export const Table = ({value, header, size, columns, pagination, rowNumbers, sel
   const deleteElements = () => {
     //bulk delete
     const arr = []
-    dt.current.props.selection.map((item) => {
+    dt.current.props.selection.map((item) => (
       arr.push(Object.values(item)[0])
-    })
+    ))
     removeSeveral[1][Object.keys(removeSeveral[1])[0]] = arr
     try {
       removeSeveral[0]({ variables: removeSeveral[1] });
@@ -189,21 +182,43 @@ export const Table = ({value, header, size, columns, pagination, rowNumbers, sel
 
   const exportPdf = () => {
     import('jspdf').then(jsPDF => {
-        import('jspdf-autotable').then(() => {
-            const doc = new jsPDF.default(0, 0);
-            doc.autoTable(exportColumns, value);
-            doc.save(`${header}.pdf`);
+      import('jspdf-autotable').then(() => {
+          const doc = new jsPDF.default(0, 0);
+          let arr = []
+        let temp = []
+        value.map( index => {
+          exportColumns.map( x => {
+            temp.push(get(index, x.dataKey))
+            return undefined
+          })
+          arr.push(temp)
+          temp = []
+          return undefined
         })
-    })
+        doc.autoTable({head:[exportColumns.map( i => i.title)], body:arr});
+        doc.save(`${header}.pdf`);
+      })
+  })
   }
 
   const exportExcel = () => {
-      import('xlsx').then(xlsx => {
-          const worksheet = xlsx.utils.json_to_sheet(value);
-          const workbook = { Sheets: { 'data': worksheet }, SheetNames: ['data'] };
-          const excelBuffer = xlsx.write(workbook, { bookType: 'xlsx', type: 'array' });
-          saveAsExcelFile(excelBuffer, header);
-      });
+    import('xlsx').then(xlsx => {
+      let arr = []
+      let obj = {}
+      value.map(v => {
+        exportColumns.map(col => {
+          obj[col.title] = get(v, col.dataKey)
+          return undefined
+        })
+        arr.push(obj)
+        obj = {}
+        return undefined
+      })
+      const worksheet = xlsx.utils.json_to_sheet(arr);
+      const workbook = { Sheets: { 'Datos': worksheet }, SheetNames: ['Datos'] };
+      const excelBuffer = xlsx.write(workbook, { bookType: 'xlsx', type: 'array' });
+      saveAsExcelFile(excelBuffer, header);
+  });
   }
 
   const saveAsExcelFile = (buffer, fileName) => {
@@ -223,7 +238,7 @@ export const Table = ({value, header, size, columns, pagination, rowNumbers, sel
         <div className="action-table flex ">
           {additionalButtons && additionalButtons.map(item => React.cloneElement(item[0], {"onClick": () => item[1](rowData)})) }
           {edit && <div className="action-table flex">   
-            <Button icon="pi pi-pencil" className="p-button-rounded p-button-text p-button-success" data-pr-tooltip="Editar" onClick={() => editElement(rowData)} />
+            <Button icon="pi pi-pencil" className="p-button-rounded p-button-text p-button-success" data-pr-tooltip="Editar" onClick={() => editLinks ? navigate(`${editLinks[1]}/${Object.values(rowData)[0]}`) : editElement(rowData)} />
             <Button icon="pi pi-trash" className="p-button-rounded p-button-text p-button-danger" data-pr-tooltip="Eliminar" onClick={() => confirmDeleteElement(rowData)} />
           </div>
           }
@@ -237,9 +252,13 @@ export const Table = ({value, header, size, columns, pagination, rowNumbers, sel
       return (
           <div>
               <Button label="Nuevo" icon="pi pi-plus" className="p-button-success mr-2" onClick={() => {
-                setElement(emptyElement)
-                changeValuesFormData(emptyElement, false)
-                setEditDialog(true)
+                if(!editLinks){
+                  setElement(emptyElement)
+                  changeValuesFormData(emptyElement, false)
+                  setEditDialog(true)
+                }else {
+                  navigate(editLinks[0])
+                }
                 }
                 } />
               <Button label="Eliminar" icon="pi pi-trash" className="p-button-danger" onClick={confirmDeleteSelected} disabled={!selectedElement || !selectedElement.length} />
@@ -306,7 +325,7 @@ export const Table = ({value, header, size, columns, pagination, rowNumbers, sel
                 </div>
         </Dialog>
 
-            <Dialog visible={deleteMultipleDialog} style={{ width: '450px' }} header="Confirm" modal footer={deleteMultipleDialogFooter} onHide={hideDeleteElementsDialog}>
+            <Dialog visible={deleteMultipleDialog} style={{ width: '450px' }} header="Confirmar" modal footer={deleteMultipleDialogFooter} onHide={hideDeleteElementsDialog}>
                 <div className="flex flex-row align-content-end confirmation-content mt-3">
                     <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem'}} />
                     {element && <span>¿Está seguro que desea eliminar los elementos seleccionados?</span>}

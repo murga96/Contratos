@@ -1,20 +1,22 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Controller, useFormContext } from "react-hook-form";
 import { InputText } from "primereact/inputtext";
+import { InputNumber } from "primereact/inputnumber";
 import { InputTextarea } from "primereact/inputtextarea";
-import { ScrollPanel } from "primereact/scrollpanel";
 import { Checkbox } from "primereact/checkbox";
 import { Dropdown } from "primereact/dropdown";
 import { MultiSelect } from "primereact/multiselect";
 import { ListBox } from "primereact/listbox";
 import { Divider } from "primereact/divider";
+import { Calendar } from "primereact/calendar";
 import { classNames } from "primereact/utils";
-import "./../BasesGenerales/BaseGeneral.css";
+import "./Field.css";
+import { Password } from "primereact/password";
+import { Button } from "primereact/button";
 
 export const Field = ({ type, name, defaultValue, props, label }) => {
   const {
     control,
-    setValue,
     formState: { errors },
   } = useFormContext();
 
@@ -48,8 +50,84 @@ export const Field = ({ type, name, defaultValue, props, label }) => {
                 {...props}
                 className={classNames(
                   { "p-invalid": fieldState.invalid },
-                  "w-full mb-2", props.className
+                  "w-full mb-2",
+                  props?.className
                 )}
+              />
+            )}
+          />
+          {getFormErrorMessage(name)}
+        </div>
+      );
+    case "InputNumber":
+      return (
+        <div>
+          <label
+            htmlFor={name}
+            className={classNames(
+              { "p-error": errors.email },
+              "block text-900 font-medium mb-2"
+            )}
+          >
+            {label}
+          </label>
+          <Controller
+            name={name}
+            defaultValue={defaultValue}
+            control={control}
+            render={({ field, fieldState }) => (
+              <InputNumber
+                id={field.name}
+                // {...field}
+                {...props}
+                value={field.value}
+                onValueChange={(e) => {
+                  field.onChange(e);
+                  props.onChange && props.onChange(e);
+                }}
+                className={classNames(
+                  { "p-invalid": fieldState.invalid },
+                  "w-full mb-2",
+                  props?.className
+                )}
+              />
+            )}
+          />
+          {getFormErrorMessage(name)}
+        </div>
+      );
+    case "Password":
+      return (
+        <div>
+          <label
+            htmlFor={name}
+            className={classNames(
+              { "p-error": errors.email },
+              "block text-900 font-medium mb-2"
+            )}
+          >
+            {label}
+          </label>
+          <Controller
+            name={name}
+            defaultValue={defaultValue}
+            control={control}
+            render={({ field, fieldState }) => (
+              <Password
+                id={field.name}
+                {...field}
+                {...props}
+                value={field.value}
+                onValueChange={(e) => {
+                  field.onChange(e);
+                  props.onChange && props.onChange(e);
+                }}
+                inputClassName={classNames(
+                  { "p-invalid": fieldState.invalid },
+                  "w-full"
+                )}
+                className="w-full"
+                toggleMask
               />
             )}
           />
@@ -77,48 +155,22 @@ export const Field = ({ type, name, defaultValue, props, label }) => {
                 {...props}
                 id={field.name}
                 {...field}
+                onChange={(e) => {
+                  field.onChange(e.target.value);
+                  props.onChange && props.onChange(e.target.value);
+                }}
                 className={classNames(
                   { "p-invalid": fieldState.invalid },
                   "w-full mb-2",
-                  props.className
+                  props?.className
                 )}
+                
               />
             )}
           />
           {getFormErrorMessage(name)}
         </div>
       );
-    case "ScrollPanel":
-      <div>
-        <label
-          htmlFor={name}
-          className={classNames(
-            { "p-error": errors.email },
-            "block text-900 font-medium mb-2"
-          )}
-        >
-          {label}
-        </label>
-        <Controller
-          name={name}
-          defaultValue={defaultValue}
-          control={control}
-          render={({ field, fieldState }) => (
-            <ScrollPanel
-              {...props}
-              id={field.name}
-              {...field}
-              className={classNames(
-                { "p-invalid": fieldState.invalid },
-                "w-full mb-2 h-4rem", props.className
-              )}
-            >
-              {defaultValue}
-            </ScrollPanel>
-          )}
-        />
-        {getFormErrorMessage(name)}
-      </div>;
     case "Divider":
       return <Divider />;
     case "CheckBox":
@@ -140,10 +192,12 @@ export const Field = ({ type, name, defaultValue, props, label }) => {
             render={({ field, fieldState }) => (
               <Checkbox
                 id={field.name}
+                {...props}
                 {...field}
                 className={classNames(
                   { "p-invalid": fieldState.invalid },
-                  "w-full mb-2", props.className
+                  "w-full mb-2",
+                  props?.className
                 )}
                 inputId="binary"
                 checked={field.value}
@@ -153,6 +207,17 @@ export const Field = ({ type, name, defaultValue, props, label }) => {
           />
           {getFormErrorMessage(name)}
         </div>
+      );
+    case "Button":
+      return (
+        <Button
+          type="button"
+          {...props}
+          className={classNames(
+            " mb-2",
+            props?.className
+          )}
+        />
       );
     case "Dropdown":
       return (
@@ -183,7 +248,47 @@ export const Field = ({ type, name, defaultValue, props, label }) => {
                   id={field.name}
                   className={classNames(
                     { "p-invalid": fieldState.invalid },
-                    "w-full mb-2", props.className
+                    "w-full mb-2",
+                    props?.className
+                  )}
+                />
+              );
+            }}
+          />
+          {getFormErrorMessage(name)}
+        </div>
+      );
+    case "Calendar":
+      return (
+        <div>
+          <label
+            htmlFor={name}
+            className={classNames(
+              { "p-error": errors.email },
+              "block text-900 font-medium mb-2"
+            )}
+          >
+            {label}
+          </label>
+          <Controller
+            name={name}
+            defaultValue={defaultValue}
+            control={control}
+            render={({ field, fieldState }) => {
+              return (
+                <Calendar
+                  {...props}
+                  {...field}
+                  value={field.value}
+                  onChange={(e) => {
+                    field.onChange(e.target.value);
+                    props.onChange && props.onChange(e.target.value);
+                  }}
+                  id={field.name}
+                  className={classNames(
+                    { "p-invalid": fieldState.invalid },
+                    "w-full mb-2",
+                    props?.className
                   )}
                 />
               );
@@ -209,7 +314,6 @@ export const Field = ({ type, name, defaultValue, props, label }) => {
             defaultValue={defaultValue}
             control={control}
             render={({ field, fieldState }) => {
-              console.log(field.value);
               return (
                 <MultiSelect
                   {...props}
@@ -219,7 +323,8 @@ export const Field = ({ type, name, defaultValue, props, label }) => {
                   {...field}
                   className={classNames(
                     { "p-invalid": fieldState.invalid },
-                    "w-full mb-2", props.className
+                    "w-full mb-2",
+                    props?.className
                   )}
                 />
               );
@@ -245,7 +350,6 @@ export const Field = ({ type, name, defaultValue, props, label }) => {
             defaultValue={defaultValue}
             control={control}
             render={({ field, fieldState }) => {
-              console.log(field.value);
               return (
                 <ListBox
                   {...props}
@@ -255,7 +359,8 @@ export const Field = ({ type, name, defaultValue, props, label }) => {
                   id={field.name}
                   className={classNames(
                     { "p-invalid": fieldState.invalid },
-                    "w-full mb-2", props.className
+                    "w-full mb-2",
+                    props?.className
                   )}
                 />
               );

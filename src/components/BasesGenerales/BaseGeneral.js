@@ -1,6 +1,6 @@
 import { useQuery } from "@apollo/client";
 import { ProgressSpinner } from "primereact/progressspinner";
-import React, { useRef, useState } from "react";
+import React, { useRef } from "react";
 import { useParams } from "react-router";
 import {
   selectOneBasesGenerales,

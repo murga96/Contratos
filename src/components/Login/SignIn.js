@@ -13,18 +13,14 @@ import { useNavigate } from 'react-router-dom'
 import { Toast } from "primereact/toast"
 import { autenticarUsuario } from '../../database/GraphQLStatements'
 import { useLazyQuery} from '@apollo/client'
-import { useStateValue } from '../../StateProvider'
 import { actionTypes } from '../../Reducer'
+import { AuthContainer } from '../User/AuthContainer'
 
 export const SignIn = () => {
     const [checked1, setChecked1] = useState(false)
-    const [ {user}, dispatch] = useStateValue()
-    const navigate = useNavigate()
+    const {login} = AuthContainer.useContainer()
     const toast = useRef(null)
-
-    const [autenticacionQuery, { called, refetch }] = useLazyQuery(autenticarUsuario, {
-        fetchPolicy: "network-only"
-    })    
+   
     //React-hook-form
     const schema = yup.object().shape({
         username: yup.string().required("Nombre de usuario es requerido"),
@@ -35,42 +31,14 @@ export const SignIn = () => {
     })
 
     const handle = ({username, password}) => {
-        console.log(called,"called")
-        if(!called)
-            autenticacionQuery({variables: {"nombreUsuario": username, "contrasena": password}}).then((data) => {
-                console.log(data.data)
-                if(data.data){
-                    dispatch({
-                    type: actionTypes.SET_USER,
-                    user: data.data?.autenticarUsuarios
-                })
-                navigate("/")
-                }else {
-                    showError("Credenciales inválidas.")
-                }
-            })
-        else
-            refetch({"nombreUsuario": username, "contrasena": password}).then((data) => {
-                console.log(data.data)
-                if(data.data){
-                    dispatch({
-                    type: actionTypes.SET_USER,
-                    user: data.data?.autenticarUsuarios
-                })
-                navigate("/")
-                }else {
-                    showError("Credenciales inválidas.")
-                }
-            })
+        login(username, password, 850)
         reset();
     }
+
     const getFormErrorMessage = (name) => {
         return errors[name] && <small className="p-error">{errors[name].message}</small>
     };
 
-    const showError = (message) => {
-        toast.current.show({severity:'error', summary: 'Error', detail: message, life: 5000});
-    }
     return (
         <div className="flex flex-column align-items-center justify-content-center h-screen">
             <Toast ref={toast}/>
@@ -83,7 +51,7 @@ export const SignIn = () => {
                         <label htmlFor="username" className={classNames({ 'p-error': errors.username }, "block text-900 font-medium mb-2")}>Usuario*</label>
                         <Controller
                          name="username"
-                         defaultValue="PEP"
+                         defaultValue="PEPITO"
                          control={control}
                          render={({ field, fieldState }) => (
                             <InputText id={field.name} {...field}
@@ -94,7 +62,7 @@ export const SignIn = () => {
                         <label htmlFor="password" className={classNames({ 'p-error': errors.password }, "block text-900 font-medium my-2")}>Contraseña*</label>
                         <Controller
                             name="password"
-                            defaultValue="pepe"
+                            defaultValue="PEPITO*2022"
                             control= {control}
                             render={ ({field, fieldState}) => (
                                 <Password id={field.name} {...field} inputClassName={classNames({ 'p-invalid': fieldState.invalid}, "w-full")} className="w-full" toggleMask feedback={false}/>

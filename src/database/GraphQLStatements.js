@@ -589,6 +589,14 @@ export const autenticarUsuario = gql`
     autenticarUsuarios(nombreUsuario: $nombreUsuario, contrasena: $contrasena) {
       idUsuario
       nombreUsuario
+      idEjecutivo
+      token
+      usuarioRoles {
+        rol {
+          idRol
+          rol
+        }
+      }
     }
   }
 `;
@@ -661,9 +669,11 @@ export const selectOneBasesGenerales = gql`
       idBasesGenerales
       consecutivo
       tipoDeContrato {
+        idTipoContrato
         tipoContrato
       }
       incoterm {
+        idIncoterm
         nombre
         abreviatura
       }
@@ -675,9 +685,11 @@ export const selectOneBasesGenerales = gql`
         domicilio
       }
       pais {
+        pais
         nomb
       }
       compradores {
+        idComprador
         nombre
         representante
         domicilio
@@ -693,12 +705,64 @@ export const selectOneBasesGenerales = gql`
         clausula
         excepcional
       }
+      idIncoterm
+      idPais
+      idProveedor
+      idProforma
+      idComprador
+      vigencia
+      aprobado
+      cancelado
+      activo
       lugardeFirma
       fecha
     }
   }
 `;
 
+export const updateBaseGeneral = gql`
+  mutation createBasesGenerales(
+    $createBasesGeneraleInput: CreateBasesGeneralesInput!
+  ) {
+    createBasesGenerales(createBasesGeneraleInput: $createBasesGeneraleInput) {
+      idBasesGenerales
+    }
+  }
+`;
+
+export const actualizarClausulasFromBaseGeneral = gql`
+  mutation actualizarClausulasFromBaseGeneral($id: Float!) {
+    actualizarClausulasFromBaseGeneral(idBaseGeneral: $id) {
+      idBasesGeneralesClausulas
+      idTipoClausula
+      tiposDeClausulas {
+        idTipoClausula
+        nombre
+      }
+      orden
+      clausula
+      excepcional
+    }
+  }
+`;
+export const getClausulasFromBaseGeneral = gql`
+  mutation getClausulasFromBaseGeneral($idIncoterm: Int!, $idProveedor: Int!) {
+    actualizarClausulasFromBaseGeneral(
+      idIncoterm: $idIncoterm
+      idProveedor: $idProveedor
+    ) {
+      idBasesGeneralesClausulas
+      idTipoClausula
+      tiposDeClausulas {
+        idTipoClausula
+        nombre
+      }
+      orden
+      clausula
+      excepcional
+    }
+  }
+`;
 //Compradores
 export const selectAllCompradores = gql`
   query selectAllCompradores {
@@ -710,6 +774,42 @@ export const selectAllCompradores = gql`
       cargo
       doble
       activo
+    }
+  }
+`;
+//Proveedores
+export const selectAllProveedores = gql`
+  query selectAllProveedores {
+    findAllProveedores {
+      codigo
+      compaIa
+      siglas
+      domicilio
+      domicilioSucursal
+      ciudad
+      eMail
+      representante
+      cargo
+      pais
+      activo
+      cuentaUsd
+    }
+  }
+`;
+// export const selectOneBasesGenerales = gql`
+//   query selectOneBasesGenerales($idBasesG: Int!) {
+//     findOneBasesGenerales(id: $idBasesG) {
+//Proforma
+export const selectOneProforma = gql`
+  query selectOneProforma($id: Int!) {
+    findOneProforma(id: $id) {
+      idProforma
+      proformaClausulas {
+        idProformaClausula
+        idTipoClausula
+        orden
+        clausula
+      }
     }
   }
 `;

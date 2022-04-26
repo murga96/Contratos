@@ -1,7 +1,7 @@
 import React from "react";
 import { useQuery, useMutation } from "@apollo/client";
 import { Table } from "../ui/Table";
-import { FilterMatchMode } from "primereact/api";
+// import { FilterMatchMode } from "primereact/api";
 import * as yup from "yup";
 import {
   removeSeveralCargo,
@@ -14,11 +14,11 @@ import { ProgressSpinner } from "primereact/progressspinner";
 export const Cargos = () => {
 
   //Table
-  const filters = {
-    "global": { value: null, matchMode: FilterMatchMode.CONTAINS },
-    "cargo": { value: null, matchMode: FilterMatchMode.CONTAINS },
-    "combo": { value: null, matchMode: FilterMatchMode.CONTAINS },
-  };
+  // const filters = {
+  //   "global": { value: null, matchMode: FilterMatchMode.CONTAINS },
+  //   "cargo": { value: null, matchMode: FilterMatchMode.CONTAINS },
+  //   "combo": { value: null, matchMode: FilterMatchMode.CONTAINS },
+  // };
   let c = [
     { field: "cargo", header: "Nombre"},
   ];
