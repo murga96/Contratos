@@ -1258,6 +1258,11 @@
   resolved "https://registry.yarnpkg.com/@hookform/resolvers/-/resolvers-2.8.3.tgz#d362360f6057bcca7318ad22d49e5f0c47290e27"
   integrity sha512-9G6/vCUNvg3O4MeAK4l749syOz/2r1DF/Pq3Njuk3sI4ObHoRyV0nxio5NrNLGC+7N1Ixu9vJ/loNhaUNXTX6A==
 
+"@iconify/react@^3.2.1":
+  version "3.2.1"
+  resolved "https://registry.yarnpkg.com/@iconify/react/-/react-3.2.1.tgz#d18da31cec58c1aa8fdf4def451cc7e3196d88de"
+  integrity sha512-yKzixjC9ct9RC/aSGo1OGxkG2rpfhlr/urRz6k2YZlIBzn92PBTlqtSx8o8dFYEorr3eUFSCBZFzBy1yw5jsAA==
+
 "@istanbuljs/load-nyc-config@^1.0.0":
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/@istanbuljs/load-nyc-config/-/load-nyc-config-1.1.0.tgz#fd3db1d59ecf7cf121e80650bb86712f9b55eced"

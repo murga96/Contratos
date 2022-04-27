@@ -232,7 +232,7 @@ function App() {
               </Route>
             </Route>
             <Route path="/Inicio" element={<SignIn />} />
-            <Route path="/CambiarContraseña" element={<AuthenticateRoute component={ChangePassword} path="/CambiarContraseña"/>} />
+            <Route path="/CambiarContrasenna" element={<AuthenticateRoute component={ChangePassword} path="/CambiarContraseña"/>} />
             <Route
               path="*"
               element={

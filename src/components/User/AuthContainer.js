@@ -49,7 +49,7 @@ function useAuth() {
   const logout = useCallback(() => {
     clearToken().finally(() => {
       localStorage.clear()
-      navigate("/login");
+      navigate("/inicio");
       // fire an event to logout from all tabs
       //   window.localStorage.setItem(AuthEvents.LOGOUT, new Date().toISOString());
     });
@@ -108,7 +108,7 @@ function useAuth() {
             setToken(tokenExp, resp.data.autenticarUsuarios.token);
             navigate("/");
           }
-        }).catch(error => alert("Credenciales inválidas."));
+        }).catch(error => alert(error.message));
     }
     /* [setToken]
   ) */;
