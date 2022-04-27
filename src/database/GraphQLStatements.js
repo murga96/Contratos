@@ -600,6 +600,13 @@ export const autenticarUsuario = gql`
     }
   }
 `;
+export const refreshToken = gql`
+  mutation refreshToken {
+    refreshToken {
+      token
+    }
+  }
+`;
 
 export const forcePasswordUsuario = gql`
   mutation forcePasswordUsuario($idUsuario: Int!) {

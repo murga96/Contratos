@@ -280,8 +280,11 @@ export const BaseGeneralEdit = () => {
           label: "Claúsula:",
           props: {
             rows: 15,
-            onChange: (value) => {
-              console.log(formRef?.current.getValue("tipoClausula"));
+            onFocus: (value) => {
+              const tc = formRef?.current.getValue("tipoClausula")
+              baseG.basesGeneralesClausulas.find( (i) => i.idTipoClausula === tc).clausula = formRef?.current.getValue("clausula")
+              console.log(tc, "tc");
+              console.log(baseG, "bg");
             },
           },
           fieldLayout: { className: "col-12" },

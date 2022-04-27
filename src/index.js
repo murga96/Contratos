@@ -6,11 +6,11 @@ import { StateProvider } from "./StateProvider";
 
 
 ReactDOM.render(
-  <React.StrictMode>
+  // <React.StrictMode>
         <StateProvider initialState={initialState} reducer={reducer}>
           <App />
         </StateProvider>
     ,
-  </React.StrictMode>,
+  // </React.StrictMode>,
   document.getElementById("root")
 );

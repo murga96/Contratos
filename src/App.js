@@ -125,6 +125,7 @@ function App() {
   });
   const authLink = setContext((_, { headers }) => {
     // return the headers to the context so httpLink can read them
+    console.log(localStorage.getItem("token"))
     return {
       headers: {
         ...headers,
@@ -133,7 +134,7 @@ function App() {
     };
   });
   
-  const handlingError = (error) => {
+  const handlingGraphQLError = (error) => {
     console.log(error);
     if (error.includes("Error: Cannot insert duplicate key row")) {
       alert(
@@ -165,15 +166,22 @@ function App() {
       // console.log(graphQLErrors, networkError, response, operation)
       if (graphQLErrors) {
         graphQLErrors.map(({ message /* , locations, path */ }) => {
-          handlingError(message);
+          handlingGraphQLError(message);
           message = null;
           return undefined;
         });
       }
       // graphQLErrors = null
       if (networkError) {
-        alert(`[Network error]: ${networkError}`);
-        networkError = null;
+        if(networkError.message.includes("Failed to fetch")){
+          alert("Conexión fallida con el servidor")
+          networkError = null;
+        }
+        else{
+          alert(`[Network error]: ${networkError}`);
+          networkError = null;
+
+        }
       }
       //no salte el error en la página
       if (response) {

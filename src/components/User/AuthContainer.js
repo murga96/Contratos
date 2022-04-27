@@ -1,8 +1,11 @@
-import { useLazyQuery } from "@apollo/client";
+import { useLazyQuery, useMutation } from "@apollo/client";
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { createContainer } from "unstated-next";
-import { autenticarUsuario } from "../../database/GraphQLStatements";
+import {
+  autenticarUsuario,
+  refreshToken,
+} from "../../database/GraphQLStatements";
 import { useToken } from "./useToken";
 // import { AuthEvents } from '../services/AuthEvents';
 
@@ -17,6 +20,9 @@ function useAuth() {
       fetchPolicy: "network-only",
     }
   );
+  const [refreshTokenFunct] = useMutation(refreshToken, {
+    fetchPolicy: "network-only",
+  });
 
   const onTokenInvalid = () => {
     alert("El usuario no tiene permiso para acceder al sistema");
@@ -33,7 +39,6 @@ function useAuth() {
   //     refreshToken();
   //   }, [refreshToken]);
 
-
   useEffect(() => {
     // add listener for login or logout from other tabs
     window.addEventListener("storage", async (event) => {
@@ -48,7 +53,7 @@ function useAuth() {
 
   const logout = useCallback(() => {
     clearToken().finally(() => {
-      localStorage.clear()
+      localStorage.clear();
       navigate("/inicio");
       // fire an event to logout from all tabs
       //   window.localStorage.setItem(AuthEvents.LOGOUT, new Date().toISOString());
@@ -70,66 +75,74 @@ function useAuth() {
   // [setToken],
 
   // const login = /* useCallback( */
-     const login = async(username, password, tokenExp) => {
-      // console.log(called, "called")
-      if (!called)
+  const login = async (username, password, tokenExp) => {
+    // console.log(called, "called")
+    if (!called)
       autenticacionQuery({
         variables: { nombreUsuario: username, contrasena: password },
-      }).then((resp) => {
-        console.log(resp.data);
-        console.log(resp.data.autenticarUsuarios.usuarioRoles[0].rol.rol)
-        if (resp.data.autenticarUsuarios) {
-          setTokenExpiration(tokenExp);
-          localStorage.setItem("user", JSON.stringify({
-            idUsuario: resp.data.autenticarUsuarios.idUsuario,
-            idEjecutivo: resp.data.autenticarUsuarios.idEjecutivo,
-            nombreUsuario: resp.data.autenticarUsuarios.nombreUsuario,
-            rol: /* {
-              idRol: resp.data.autenticarUsuarios[0].rol.idRol, */
-              /* rol: */ resp.data.autenticarUsuarios.usuarioRoles[0].rol.rol,
-            // }
-            //TODO poner roles
-          }));
+      })
+        .then((resp) => {
+          console.log(resp.data);
+          if (resp.data?.autenticarUsuarios) {
+            setTokenExpiration(tokenExp);
+            localStorage.setItem(
+              "user",
+              JSON.stringify({
+                idUsuario: resp.data.autenticarUsuarios.idUsuario,
+                idEjecutivo: resp.data.autenticarUsuarios.idEjecutivo,
+                nombreUsuario: resp.data.autenticarUsuarios.nombreUsuario,
+                rol: resp.data.autenticarUsuarios.usuarioRoles[0].rol.rol,
+              })
+            );
             setToken(tokenExp, resp.data.autenticarUsuarios.token);
             navigate("/");
           }
-        }).catch(error => alert(error.message)/* alert("Credenciales inválidas.") */);
-      else
-        refetch({ nombreUsuario: username, contrasena: password }).then((resp) => {
+        })
+        .catch(
+          (error) => {
+            alert(error.message);
+          } /* alert("Credenciales inválidas.") */
+        );
+    else
+      refetch({ nombreUsuario: username, contrasena: password })
+        .then((resp) => {
           console.log(resp.data);
           if (resp.data.autenticarUsuarios) {
             setTokenExpiration(tokenExp);
-            localStorage.setItem("user", {
-              idUsuario: resp.data.autenticarUsuarios.idUsuario,
-              idEjecutivo: resp.data.autenticarUsuarios.idEjecutivo,
-              nombreUsuario: resp.data.autenticarUsuarios.nombreUsuario,
-              //TODO poner roles
-            });
+            localStorage.setItem(
+              "user",
+              JSON.stringify({
+                idUsuario: resp.data.autenticarUsuarios.idUsuario,
+                idEjecutivo: resp.data.autenticarUsuarios.idEjecutivo,
+                nombreUsuario: resp.data.autenticarUsuarios.nombreUsuario,
+                rol: resp.data.autenticarUsuarios.usuarioRoles[0].rol.rol,
+              })
+            );
             setToken(tokenExp, resp.data.autenticarUsuarios.token);
             navigate("/");
           }
-        }).catch(error => alert(error.message));
-    }
-    /* [setToken]
-  ) */;
-
+        })
+        .catch(
+          (error) => {
+            alert(error.message);
+          } /* alert("Credenciales inválidas.") */
+        );
+  };
+  /* [setToken]
+  ) */
   async function refresh() {
-    // try {
-    //     const {
-    //       data: { token },
-    //     } = await axios.post('auth/refresh', {
-    //         token: accessToken.current
-    //     });
-    //     console.log(token)
-    //     setToken(tokenExpiration, token);
-    //     //TODO hacer refresh al principio pa coger los datos si no ha expirado
-    //     // console.log("hay k hacer refresh al principio")
-    // } catch (error) {
-    //     clearToken()
-    //     setUser(null);
-    //     navigate('/login');
-    //     console.log(error)
-    // }
+    try {
+      const { data } = await refreshTokenFunct();
+      console.log(data);
+      if (data?.refreshToken) {
+        localStorage.setItem("token", data.refreshToken.token);
+      }
+    } catch (error) {
+      clearToken();
+      localStorage.removeItem("user");
+      navigate("/inicio");
+      alert(error.message);
+    }
   }
 
   return {

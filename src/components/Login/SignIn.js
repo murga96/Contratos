@@ -31,7 +31,7 @@ export const SignIn = () => {
     })
 
     const handle = ({username, password}) => {
-        login(username, password, 850)
+        login(username, password, 350)
         reset();
     }
 
