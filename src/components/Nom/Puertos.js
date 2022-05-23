@@ -1,7 +1,7 @@
 import React from "react";
 import { useQuery, useMutation } from "@apollo/client";
 import { Table } from "../ui/Table";
-import { FilterMatchMode } from "primereact/api";
+import { FilterMatchMode, FilterService } from "primereact/api";
 import * as yup from "yup";
 import {
   updatePuerto,
@@ -10,24 +10,10 @@ import {
   removeSeveralPuerto,
   selectAllPaises,
 } from "../../database/GraphQLStatements";
-import { ProgressSpinner } from 'primereact/progressspinner';
+import { ProgressSpinner } from "primereact/progressspinner";
+import { MultiSelect } from "primereact/multiselect";
 
 export const Puertos = () => {
-
-  //Table
-  const filters = {
-    "global": { value: null, matchMode: FilterMatchMode.CONTAINS },
-    "nombre": { value: null, matchMode: FilterMatchMode.CONTAINS },
-    "pais.nomb": { value: null, matchMode: FilterMatchMode.CONTAINS },
-    "deposito": { value: null, matchMode: FilterMatchMode.CONTAINS },
-  };
-  let c = [
-    { field: "nombre", header: "Nombre"},
-    { field: "pais.nomb", header: "País"},
-    { field: "deposito", header: "Depósito"},
-  ];
-  let emptyElement = {"nombre": "", "pais": "", "deposito": ""}
-
   //graphQL
   const { data, error, loading } = useQuery(selectAllPuertos);
   const [updateTC, { loadingU, errorU }] = useMutation(updatePuerto, {
@@ -41,14 +27,58 @@ export const Puertos = () => {
   });
 
   const paises = useQuery(selectAllPaises);
+  //Table
+  FilterService.register("filterArray", (value, filters) => {
+    let ret = false;
+    console.log(value, filters);
+    if (filters && value /* && value.length > 0 */ && filters.length > 0) {
+      filters.forEach((filter) => {
+        if (filter.nomb === value) ret = true;
+      });
+    } else {
+      ret = true;
+    }
+    return ret;
+  });
+  const matchModes = [{ label: "Custom", value: "filterArray" }];
+  const RepresentativeFilterTemplate = ({ options, onChange }) => {
+    return (
+      <MultiSelect
+        value={options.value}
+        options={paises.data?.findAllPaises}
+        onChange={onChange}
+        optionLabel="nomb"
+        placeholder="Seleccione el país"
+        className="p-column-filter"
+      />
+    );
+  };
+  const filters = {
+    global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+    nombre: { value: null, matchMode: FilterMatchMode.CONTAINS },
+    "pais.nomb": { value: null, matchMode: FilterMatchMode.CONTAINS },
+    deposito: { value: null, matchMode: FilterMatchMode.CONTAINS },
+  };
+  let c = [
+    { field: "nombre", header: "Nombre" },
+    {
+      field: "pais.nomb",
+      header: "País",
+      filterElement: RepresentativeFilterTemplate,
+      filterMatchModeOptions: matchModes,
+      filterField: "pais.nomb",
+    },
+    { field: "deposito", header: "Depósito" },
+  ];
+  let emptyElement = { nombre: "", pais: "", deposito: "" };
 
   //Form
   //React-hook-form
   const schema = yup.object().shape({
     nombre: yup.string().required("Nombre es requerido"),
     idPais: yup.number().required("País es requerido"),
-    deposito: yup.string()/* .required("Depósito es requerido") */,
-});
+    deposito: yup.string() /* .required("Depósito es requerido") */,
+  });
 
   let dataStruct = [
     {
@@ -64,19 +94,23 @@ export const Puertos = () => {
       defaultValue: "",
     },
     {
-        id: 3,
-        component: "label",
-        name: "idPais",
-        defaultValue: "País*",
+      id: 3,
+      component: "label",
+      name: "idPais",
+      defaultValue: "País*",
+    },
+    {
+      id: 4,
+      component: "Dropdown",
+      name: "idPais",
+      defaultValue: "",
+      props: {
+        options: paises.data?.findAllPaises,
+        optionLabel: "nomb",
+        optionValue: "pais",
+        placeholder: "Seleccione un país",
       },
-      {
-        id: 4,
-        component: "Dropdown",
-        name: "idPais",
-        defaultValue: "",
-        props: {options: paises.data?.findAllPaises,  optionLabel: "nomb", optionValue: "pais", placeholder: "Seleccione un país"}
-
-      },
+    },
     {
       id: 5,
       component: "label",
@@ -90,11 +124,21 @@ export const Puertos = () => {
       defaultValue: "",
     },
   ];
-  const formProps = {"data": dataStruct, "schema": schema, "handle": updateTC, "variables": { puerto: {} }, "buttonsNames": ["Guardar", "Cancelar"]}
+  const formProps = {
+    data: dataStruct,
+    schema: schema,
+    handle: updateTC,
+    variables: { puerto: {} },
+    buttonsNames: ["Guardar", "Cancelar"],
+  };
   return (
     <div>
-      {loading &&  (<div className="flex h-30rem justify-content-center align-items-center"><ProgressSpinner strokeWidth="3" /></div>)}      
-      {error && <h5 style={{margin: "100px"}}>{error}</h5>}
+      {loading && (
+        <div className="flex h-30rem justify-content-center align-items-center">
+          <ProgressSpinner strokeWidth="3" />
+        </div>
+      )}
+      {error && <h5 style={{ margin: "100px" }}>{error}</h5>}
       {!(loading || error || loadingU || errorU) ? (
         <div>
           <Table
@@ -112,17 +156,14 @@ export const Puertos = () => {
             filtersValues={filters}
             edit={true}
             exportData={true}
-            removeOne={ [removeTC, {id: -1}] }
-            removeSeveral={ [removeSeverTC, {id: -1}] }
+            removeOne={[removeTC, { id: -1 }]}
+            removeSeveral={[removeSeverTC, { id: -1 }]}
             formProps={formProps}
             emptyElement={emptyElement}
           />
         </div>
-      ) : (
-        //poner cargar
-        undefined
-      )}
+      ) : //poner cargar
+      undefined}
     </div>
   );
 };
-

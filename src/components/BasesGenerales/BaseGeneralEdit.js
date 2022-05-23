@@ -39,6 +39,7 @@ export const BaseGeneralEdit = () => {
   useEffect(() => {
     console.log("first render");
     loadData();
+    console.log(findAllProveedores);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -67,9 +68,11 @@ export const BaseGeneralEdit = () => {
     temp.aprobado = baseG.aprobado;
     temp.cancelado = baseG.cancelado;
     temp.activo = baseG.activo;
-    temp.basesGeneralesClausulas = baseG.basesGeneralesClausulas;
+    temp.basesGeneralesClausulas = baseG.basesGeneralesClausulas.map((i) =>
+      _.omit(i, ["tiposDeClausulas"])
+    );
     console.log(temp);
-    // updateBG({variables: {createBasesGeneraleInput: temp}})
+    updateBG({ variables: { createBasesGeneraleInput: temp } }).then((resp) => navigate(-1)).catch((error) => console.log(error));
   };
 
   useEffect(() => {
@@ -280,9 +283,11 @@ export const BaseGeneralEdit = () => {
           label: "Claúsula:",
           props: {
             rows: 15,
-            onFocus: (value) => {
-              const tc = formRef?.current.getValue("tipoClausula")
-              baseG.basesGeneralesClausulas.find( (i) => i.idTipoClausula === tc).clausula = formRef?.current.getValue("clausula")
+            onChange: (value) => {
+              const tc = formRef?.current.getValue("tipoClausula");
+              baseG.basesGeneralesClausulas.find(
+                (i) => i.idTipoClausula === tc
+              ).clausula = formRef?.current.getValue("clausula");
               console.log(tc, "tc");
               console.log(baseG, "bg");
             },
@@ -373,7 +378,7 @@ export const BaseGeneralEdit = () => {
             data={formProps.data}
             schema={formProps.schema}
             handle={save}
-            cancel={() => navigate("BasesGenerales")}
+            cancel={() => navigate(-1)}
             buttonsNames={formProps.buttonsNames}
             formLayout={{ className: "grid" }}
           />

@@ -703,6 +703,9 @@ export const selectOneBasesGenerales = gql`
         cargo
       }
       basesGeneralesClausulas {
+        idBasesGeneralesClausulas
+        idBasesGenerales
+        idProformaClausula
         idTipoClausula
         tiposDeClausulas {
           idTipoClausula
@@ -711,6 +714,7 @@ export const selectOneBasesGenerales = gql`
         orden
         clausula
         excepcional
+        modificado
       }
       idIncoterm
       idPais
@@ -803,9 +807,7 @@ export const selectAllProveedores = gql`
     }
   }
 `;
-// export const selectOneBasesGenerales = gql`
-//   query selectOneBasesGenerales($idBasesG: Int!) {
-//     findOneBasesGenerales(id: $idBasesG) {
+
 //Proforma
 export const selectOneProforma = gql`
   query selectOneProforma($id: Int!) {
@@ -820,3 +822,42 @@ export const selectOneProforma = gql`
     }
   }
 `;
+export const selectAllProforma = gql`
+  query selectAllProforma {
+    findAllProforma {
+      idProforma
+      proformaClausulas {
+        idProformaClausula
+        idProforma
+        idTipoClausula
+        orden
+        clausula
+        tiposDeClausulas {
+          idTipoClausula
+          nombre
+        }
+      }
+      nombreProfoma
+      idTipoContrato
+      idIncoterm
+      activa
+      cMarcoF
+    }
+  }
+`;
+//ProformaClausula
+// export const selectAllProformaClausulas = gql`
+//   query selectAllProformaClausulas {
+//     findAllProformaClausulas {
+//       idProformaClausula
+//       idProforma
+//       idTipoClausula
+//       orden
+//       clausula
+//       tiposDeClausulas {
+//         idTipoClausula
+//         nombre
+//       }
+//     }
+//   }
+// `;

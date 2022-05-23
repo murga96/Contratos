@@ -273,6 +273,8 @@ export const Navbar = (url) => {
       MenuModel = MenuModel.filter((item) => item);
       MenuModel = MenuModel.map((item) => {
           recursiveMenuCheck(item)
+          if(item.items?.length === 0) item = false
+          MenuModel = MenuModel.filter((item) => item);
           return item
         });
   };

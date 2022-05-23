@@ -10,24 +10,40 @@ import {
   updateTipoContrato,
 } from "../../database/GraphQLStatements";
 import { ProgressSpinner } from "primereact/progressspinner";
+import { TriStateCheckbox } from "primereact/tristatecheckbox";
 
 export const ContractTypes = () => {
-
   const filters = {
-    "global": { value: null, matchMode: FilterMatchMode.CONTAINS },
-    "tipoContrato": { value: null, matchMode: FilterMatchMode.CONTAINS },
-    "ambasPartes": { value: null, matchMode: FilterMatchMode.CONTAINS },
-    "encabezado": { value: null, matchMode: FilterMatchMode.CONTAINS },
-    "visible": { value: null, matchMode: FilterMatchMode.CONTAINS },
+    global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+    tipoContrato: { value: null, matchMode: FilterMatchMode.CONTAINS },
+    ambasPartes: { value: null, matchMode: FilterMatchMode.CONTAINS },
+    encabezado: { value: null, matchMode: FilterMatchMode.CONTAINS },
+    visible: { value: null, matchMode: FilterMatchMode.EQUALS },
   };
 
   let c = [
-    { field: "tipoContrato", header: "Tipo Contrato"},
-    { field: "encabezado", header: "Encabezado"},
-    { field: "ambasPartes", header: "Ambas partes"},
-    { field: "visible", header: "Visible"},
+    { field: "tipoContrato", header: "Tipo Contrato" },
+    { field: "encabezado", header: "Encabezado" },
+    { field: "ambasPartes", header: "Ambas partes" },
+    {
+      field: "visible",
+      header: "Visible",
+      filterElement1: (options) => {
+        return (
+          <TriStateCheckbox
+            value={options.value}
+            onChange={(e) => options.filterApplyCallback(e.value)}
+          />
+        );
+      },
+    },
   ];
-  let emptyElement = {"tipoContrato": "", "encabezado": "", "ambasPartes": "", "visible": false}
+  let emptyElement = {
+    tipoContrato: "",
+    encabezado: "",
+    ambasPartes: "",
+    visible: false,
+  };
 
   //graphQL
   const { data, error, loading } = useQuery(selectAllTipoContrato);
@@ -49,7 +65,7 @@ export const ContractTypes = () => {
     ambasPartes: yup.string().required("Ambas partes es requerido"),
     visible: yup.boolean(),
   });
-  
+
   const dataStruct = [
     {
       id: 1,
@@ -100,11 +116,21 @@ export const ContractTypes = () => {
       defaultValue: "",
     },
   ];
-  
-  const formProps = {"data": dataStruct, "schema": schema, "handle": updateTC, "variables": { tipoContrato: {} }, "buttonsNames": ["Guardar", "Cancelar"]}
+
+  const formProps = {
+    data: dataStruct,
+    schema: schema,
+    handle: updateTC,
+    variables: { tipoContrato: {} },
+    buttonsNames: ["Guardar", "Cancelar"],
+  };
   return (
     <div>
-      {loading &&  (<div className="flex h-30rem justify-content-center align-items-center"><ProgressSpinner strokeWidth="3" /></div>)}   
+      {loading && (
+        <div className="flex h-30rem justify-content-center align-items-center">
+          <ProgressSpinner strokeWidth="3" />
+        </div>
+      )}
       {error && errorU && <h5>{error}</h5>}
       {!(loading || error || loadingU || errorU) ? (
         <div>
@@ -123,16 +149,14 @@ export const ContractTypes = () => {
             filtersValues={filters}
             edit={true}
             exportData={true}
-            removeOne={ [removeTC, {id: -1}] }
-            removeSeveral={ [removeSeverTC, {id: -1}] }
+            removeOne={[removeTC, { id: -1 }]}
+            removeSeveral={[removeSeverTC, { id: -1 }]}
             formProps={formProps}
             emptyElement={emptyElement}
           />
         </div>
-      ) : (
-        //poner cargar
-        undefined
-      )}
+      ) : //poner cargar
+      undefined}
     </div>
   );
 };

@@ -18,17 +18,15 @@ export const Form = forwardRef(({
     resolver: yupResolver(schema),
   });
   useImperativeHandle(ref, () => ({
-      setValues: (name, value) => {
-        methods.setValue(name, value)
-      }
-    })
-  )
-  useImperativeHandle(ref, () => ({
-      getValue: (name) => {
-        return methods.getValues(name)
-      }
-    })
-  )
+    getValue: (name) => {
+      return methods.getValues(name)
+    },
+    setValues: (name, value) => {
+      methods.setValue(name, value)
+    }
+  })
+)
+ 
   // console.log(methods.formState.errors, "errors")
   return (
     <FormProvider {...methods}>

@@ -10,6 +10,7 @@ import {
   updateIncoterm,
 } from "../../database/GraphQLStatements";
 import { ProgressSpinner } from 'primereact/progressspinner';
+import { TriStateCheckbox } from "primereact/tristatecheckbox";
 
 export const Incoterms = () => {
 
@@ -25,7 +26,14 @@ export const Incoterms = () => {
     { field: "nombre", header: "Nombre"},
     { field: "abreviatura", header: "Abreviatura"},
     { field: "nota", header: "Nota"},
-    { field: "activo", header: "Activo"},
+    { field: "activo", header: "Activo",filterElement1: (options) => {
+      return (
+        <TriStateCheckbox
+          value={options.value}
+          onChange={(e) => options.filterApplyCallback(e.value)}
+        />
+      );
+    },},
   ];
   let emptyElement = {"nombre": "", "abreviatura": "", "nota": "",  "activo": false}
 

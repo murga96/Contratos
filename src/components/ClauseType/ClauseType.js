@@ -10,28 +10,79 @@ import {
   updateTiposDeClausulas,
 } from "../../database/GraphQLStatements";
 import { ProgressSpinner } from "primereact/progressspinner";
+import { TriStateCheckbox } from "primereact/tristatecheckbox";
 
 export const ClauseTypes = () => {
-
   //Table
   const filters = {
-    "global": { value: null, matchMode: FilterMatchMode.CONTAINS },
-    "nombre": { value: null, matchMode: FilterMatchMode.CONTAINS },
-    "orden": { value: null, matchMode: FilterMatchMode.EQUALS },
-    "basesG": { value: null, matchMode: FilterMatchMode.CONTAINS },
-    "compras": { value: null, matchMode: FilterMatchMode.CONTAINS },
-    "cMarco": { value: null, matchMode: FilterMatchMode.EQUALS },
-    "excepcional": { value: null, matchMode: FilterMatchMode.CONTAINS },
+    global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+    nombre: { value: null, matchMode: FilterMatchMode.CONTAINS },
+    orden: { value: null, matchMode: FilterMatchMode.EQUALS },
+    basesG: { value: null, matchMode: FilterMatchMode.EQUALS },
+    compras: { value: null, matchMode: FilterMatchMode.EQUALS },
+    cMarco: { value: null, matchMode: FilterMatchMode.EQUALS },
+    excepcional: { value: null, matchMode: FilterMatchMode.EQUALS },
   };
   let c = [
-    { field: "nombre", header: "Nombre"},
-    { field: "orden", header: "Orden"},
-    { field: "basesG", header: "Bases Generales"},
-    { field: "compras", header: "Compras"},
-    { field: "cMarco", header: "Contrato Marco"},
-    { field: "excepcional", header: "Excepcional"},
+    { field: "nombre", header: "Nombre" },
+    { field: "orden", header: "Orden" },
+    {
+      field: "basesG",
+      header: "Bases Generales",
+      filterElement1: (options) => {
+        return (
+          <TriStateCheckbox
+            value={options.value}
+            onChange={(e) => options.filterApplyCallback(e.value)}
+          />
+        );
+      },
+    },
+    {
+      field: "compras",
+      header: "Compras",
+      filterElement1: (options) => {
+        return (
+          <TriStateCheckbox
+            value={options.value}
+            onChange={(e) => options.filterApplyCallback(e.value)}
+          />
+        );
+      },
+    },
+    {
+      field: "cMarco",
+      header: "Contrato Marco",
+      filterElement1: (options) => {
+        return (
+          <TriStateCheckbox
+            value={options.value}
+            onChange={(e) => options.filterApplyCallback(e.value)}
+          />
+        );
+      },
+    },
+    {
+      field: "excepcional",
+      header: "Excepcional",
+      filterElement1: (options) => {
+        return (
+          <TriStateCheckbox
+            value={options.value}
+            onChange={(e) => options.filterApplyCallback(e.value)}
+          />
+        );
+      },
+    },
   ];
-  let emptyElement = {"nombre": "", "orden": "", "basesG": false, "compras": false, "cMarco": false, "excepcional": false}
+  let emptyElement = {
+    nombre: "",
+    orden: "",
+    basesG: false,
+    compras: false,
+    cMarco: false,
+    excepcional: false,
+  };
 
   //graphQL
   const { data, error, loading } = useQuery(selectAllTiposDeClausulas);
@@ -49,14 +100,18 @@ export const ClauseTypes = () => {
   //React-hook-form
   const schema = yup.object().shape({
     nombre: yup.string().required("Nombre es requerido"),
-    orden: yup.number().required("Orden es requerido").typeError("Orden tiene que ser de tipo númerico").integer("Orden tiene que ser un número entero")
-                      .positive("Orden tiene que ser un número positivo"),
+    orden: yup
+      .number()
+      .required("Orden es requerido")
+      .typeError("Orden tiene que ser de tipo númerico")
+      .integer("Orden tiene que ser un número entero")
+      .positive("Orden tiene que ser un número positivo"),
     basesG: yup.bool(),
     compras: yup.bool(),
     cMarco: yup.bool(),
-    excepcional: yup.bool()
+    excepcional: yup.bool(),
   });
-  
+
   let dataStruct = [
     {
       id: 1,
@@ -131,10 +186,20 @@ export const ClauseTypes = () => {
       defaultValue: "",
     },
   ];
-  const formProps = {"data": dataStruct, "schema": schema, "handle": updateTC, "variables": { tipoClausula: {} }, "buttonsNames": ["Guardar", "Cancelar"]}
+  const formProps = {
+    data: dataStruct,
+    schema: schema,
+    handle: updateTC,
+    variables: { tipoClausula: {} },
+    buttonsNames: ["Guardar", "Cancelar"],
+  };
   return (
     <div>
-      {loading &&  (<div className="flex h-30rem justify-content-center align-items-center"><ProgressSpinner strokeWidth="3" /></div>)}   
+      {loading && (
+        <div className="flex h-30rem justify-content-center align-items-center">
+          <ProgressSpinner strokeWidth="3" />
+        </div>
+      )}
       {error && errorU && <h5>{error}</h5>}
       {!(loading || error || loadingU || errorU) ? (
         <div>
@@ -153,17 +218,14 @@ export const ClauseTypes = () => {
             filtersValues={filters}
             edit={true}
             exportData={true}
-            removeOne={ [removeTC, {id: -1}] }
-            removeSeveral={ [removeSeverTC, {id: -1}] }
+            removeOne={[removeTC, { id: -1 }]}
+            removeSeveral={[removeSeverTC, { id: -1 }]}
             formProps={formProps}
             emptyElement={emptyElement}
           />
         </div>
-      ) : (
-        //poner cargar
-        undefined
-      )}
+      ) : //poner cargar
+      undefined}
     </div>
   );
 };
-
