@@ -32,7 +32,7 @@ export const SignIn = () => {
 
     const handle = ({username, password}) => {
         login(username, password, 350)
-        reset();
+        // reset();
     }
 
     const getFormErrorMessage = (name) => {

@@ -129,7 +129,8 @@ function App() {
     return {
       headers: {
         ...headers,
-        authorization: localStorage.getItem("token") ? `Bearer ${localStorage.getItem("token")}` : "",
+        // authorization: localStorage.getItem("token") ? `Bearer ${localStorage.getItem("token")}` : "",
+        authorization:  `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3VhcmlvIjp7ImlkVXN1YXJpbyI6MTAzNywiaWRFamVjdXRpdm8iOjI5Mywibm9tYnJlVXN1YXJpbyI6ImRhbmllbC5hY29zdGEiLCJjb250cmFzZW5hIjoiOFVTTTEyNG0xWXlIeUU2bWhOOTZTZWNzNEFZNTc5T1NMdzhtY2JCbEUuODlXSDJYaDlLUDIiLCJ1c3VhcmlvUm9sZXMiOlt7ImlkVXN1YXJpb1JvbCI6MTA5NiwiaWRVc3VhcmlvIjoxMDM3LCJpZFJvbCI6MX0seyJpZFVzdWFyaW9Sb2wiOjEwOTUsImlkVXN1YXJpbyI6MTAzNywiaWRSb2wiOjJ9XSwiZWplY3V0aXZvIjp7ImlkRWplY3V0aXZvIjoyOTMsImlkR3J1cG8iOjEsIm5vbWJyZSI6IkRhbmllbCBEYXZpZCBBY29zdGEgSGVycmVyYSIsImlkQ2FyZ28iOjYsImNvcnJlbyI6ImRhbmllbC5hY29zdGFAdHJkY2FyaWJlLmNvLmN1IiwiYWN0aXZvIjp0cnVlfX0sImlhdCI6MTY0ODczOTMxNH0.y2mfS24RqG1U9s4sVBlMWNb1dg4m-4yXNYAa43co8mI`,
       },
     };
   });
@@ -151,7 +152,8 @@ function App() {
     } else if (
       error.includes('Unexpected error value: "Usuario o contraseña incorrectos"')
     ) {
-      return;
+      // return;
+      alert("Usuario o contraseña incorrectos")
     } else if (error.includes("Unexpected error value:")) {
       alert(error.split("value: ")[1]);
     } else if (error.includes("Forbidden resource")) {

@@ -33,7 +33,6 @@ export const Ejecutivos = () => {
   //Table
   FilterService.register("filterArray", (value, filters) => {
     let ret = false;
-    console.log(value, filters);
     if (filters && value && filters.length > 0) {
       filters.forEach((filter) => {
         if (filter.cargo === value) ret = true;
@@ -57,7 +56,6 @@ export const Ejecutivos = () => {
   };
   FilterService.register("filterArray1", (value, filters) => {
     let ret = false;
-    console.log(value, filters);
     if (filters && value /* && value.length > 0 */ && filters.length > 0) {
       filters.forEach((filter) => {
         if (filter.grupos === value) ret = true;

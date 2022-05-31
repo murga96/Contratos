@@ -30,6 +30,7 @@ export const BaseGeneralAdd = () => {
   const { data: findAllProveedores, loading:loadingProv } = useQuery(selectAllProveedores);
   const { data: findAllCompradores, loading:loadingComp } = useQuery(selectAllCompradores);
   const { data: findAllIncoterm, loading:loadingInc } = useQuery(selectAllIncoterm);
+  console.log(findAllTipoContrato)
   useEffect(() => {
     console.log("first render");
     loadData();
@@ -98,22 +99,22 @@ export const BaseGeneralAdd = () => {
     console.log("baseG change");
     if (baseG) {
       const schema = yup.object().shape({
-        // idTipoContrato: yup
-        //   .number()
-        //   .typeError("Seleccione un tipo de contrato")
-        //   .required("Seleccione un tipo de contrato"),
-        // fecha: yup
-        //   .date()
-        //   .typeError("Fecha es requerido")
-        //   .required("Fecha es requerido"),
-        // idPais: yup.number().required("Seleccione un país"),
-        // lugardeFirma: yup.string().required("Firma es requerida"),
-        // idProveedor: yup.number().required("Seleccione un vendedor"),
-        // idComprador: yup.number().required("Seleccione un comprador"),
-        // idIncoterm: yup.number().required("Seleccione una condición de compra"),
-        // tipoClausula: yup
-        //   .number()
-        //   .typeError("Debe importar las claúsulas de una proforma"),
+        idTipoContrato: yup
+          .number()
+          .typeError("Seleccione un tipo de contrato")
+          .required("Seleccione un tipo de contrato"),
+        fecha: yup
+          .date()
+          .typeError("Fecha es requerido")
+          .required("Fecha es requerido"),
+        idPais: yup.number().required("Seleccione un país"),
+        lugardeFirma: yup.string().required("Firma es requerida"),
+        idProveedor: yup.number().required("Seleccione un vendedor"),
+        idComprador: yup.number().required("Seleccione un comprador"),
+        idIncoterm: yup.number().required("Seleccione una condición de compra"),
+        tipoClausula: yup
+          .number()
+          .typeError("Debe importar las claúsulas de una proforma"),
       });
       dataStruct = [
         {
@@ -336,7 +337,7 @@ export const BaseGeneralAdd = () => {
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [baseG]);
+  }, [baseG,loadingComp, loadingP, loadingPa, loadingProv, loadingTC, loadingInc]);
 
   const schemaP = yup.object().shape({
     proforma: yup.object().typeError("Seleccione una proforma"),

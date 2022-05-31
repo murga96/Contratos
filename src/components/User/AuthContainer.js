@@ -107,7 +107,7 @@ function useAuth() {
       refetch({ nombreUsuario: username, contrasena: password })
         .then((resp) => {
           console.log(resp.data);
-          if (resp.data.autenticarUsuarios) {
+          if (resp.data?.autenticarUsuarios) {
             setTokenExpiration(tokenExp);
             localStorage.setItem(
               "user",

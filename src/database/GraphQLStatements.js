@@ -658,12 +658,14 @@ export const selectAllBasesGenerales = gql`
       }
       proveedor {
         codigo
+        compaIa
       }
       pais {
         nomb
       }
       compradores {
         nombre
+        representante
       }
       fecha
     }
@@ -742,9 +744,8 @@ export const updateBaseGeneral = gql`
 `;
 
 export const actualizarClausulasFromBaseGeneral = gql`
-  mutation actualizarClausulasFromBaseGeneral($id: Float!) {
+  query actualizarClausulasFromBaseGeneral($id: Float!) {
     actualizarClausulasFromBaseGeneral(idBaseGeneral: $id) {
-      idBasesGeneralesClausulas
       idTipoClausula
       tiposDeClausulas {
         idTipoClausula
@@ -757,7 +758,7 @@ export const actualizarClausulasFromBaseGeneral = gql`
   }
 `;
 export const getClausulasFromBaseGeneral = gql`
-  mutation getClausulasFromBaseGeneral($idIncoterm: Int!, $idProveedor: Int!) {
+  query getClausulasFromBaseGeneral($idIncoterm: Int!, $idProveedor: Int!) {
     actualizarClausulasFromBaseGeneral(
       idIncoterm: $idIncoterm
       idProveedor: $idProveedor
