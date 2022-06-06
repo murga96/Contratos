@@ -1,6 +1,7 @@
 import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import { ProgressSpinner } from "primereact/progressspinner";
 import { confirmDialog } from "primereact/confirmdialog";
+import { Toolbar } from "primereact/toolbar";
 import React, { useRef, useState, useEffect } from "react";
 import { useParams } from "react-router";
 import { useNavigate } from "react-router-dom";
@@ -19,6 +20,8 @@ import { Form } from "../ui/Form";
 import * as yup from "yup";
 import moment from "moment";
 import _ from "lodash";
+import { Tooltip } from "primereact/tooltip";
+import { Button } from "primereact/button";
 
 export const BaseGeneralEdit = () => {
   const bg = useParams();
@@ -279,15 +282,10 @@ export const BaseGeneralEdit = () => {
     },
   ];
 
-  // console.log(schema, "schema");
-  // let formProps = {
-  //   data: dataStruct,
-  //   schema: schema,
-  //   buttonsNames: ["Guardar", "Cancelar"], //TODO Poner botones en todos los componentes en vez del texto
-  // }
   
   const [formProps, setFormProps] = useState(null);
   useEffect(() => {
+    console.log("change bg")
     if (baseG) {
       setFormProps({
         data: dataStruct,
@@ -297,7 +295,7 @@ export const BaseGeneralEdit = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
-    baseG /* , loadingComp, loadingPa, loadingProv, loadingTC, loadingInc */,
+    baseG /* , loadingComp, loadingPa, loadingProv, loadingTC, loadingInc */
   ]);
 
   //methods
@@ -322,16 +320,18 @@ export const BaseGeneralEdit = () => {
           variables: { id: baseG.idBasesGenerales },
         }).then(({ data }) => {
           if (data) {
-            setBaseG(baseG);
-            console.log(data);
-            const value = formProps["data"][11]?.defaultValue;
             baseG.basesGeneralesClausulas =
-              data.actualizarClausulasFromBaseGeneral;
-            //actualizar campo que se visualiza
+            data.actualizarClausulasFromBaseGeneral;
+            console.log(data.actualizarClausulasFromBaseGeneral)
+            setBaseG(baseG);
+            formRef?.current.setValues(
+              "tipoClausula",
+              baseG?.basesGeneralesClausulas[0].idTipoClausula
+            );
             formRef?.current.setValues(
               "clausula",
               baseG.basesGeneralesClausulas.find(
-                (item) => item.idTipoClausula === value
+                (item) => item.idTipoClausula === baseG?.basesGeneralesClausulas[0].idTipoClausula
               ).clausula
             );
           }
@@ -385,7 +385,74 @@ export const BaseGeneralEdit = () => {
       .then((resp) => navigate(-1))
       .catch((error) => console.log(error));
   };
-console.log("render")
+
+  //imprimir
+const exportPdf = () => {
+    import("jspdf").then((jsPDF) => {
+      const doc = new jsPDF.default(0, 0, "letter", true);
+      doc.text("Bases Generales para la Compraventa Internacional ", 35, 25);
+      doc.text("No.: "+baseG?.noContrato+ 35, 25);
+      doc.save(`BaseGeneral.pdf`);
+
+    //   import("jspdf-autotable").then(() => {
+    //     const doc = new jsPDF.default(0, 0, "letter", true);
+    //     let arr = [];
+    //     let temp = [];
+    //     value.map((index) => {
+    //       exportColumns.map((x) => {
+    //         const havePoint = x.dataKey.split(".").length !== 0;
+    //         if (
+    //           havePoint &&
+    //           Array.isArray(get(index, x.dataKey.split(".")[0]))
+    //         ) {
+    //           const array = get(index, x.dataKey.split(".")[0]);
+    //           if (array.length > 0) {
+    //             //llave del objeto
+    //             console.log("bodyArray");
+    //             const objectKey = Object.keys(array[0]);
+    //             console.log(objectKey);
+    //             //Obtengo el segundo item del arreglo para mostrarlo en la cadena
+    //             // console.log(get(rowData, item.field).map((i) =>  Object.keys(i).length === 1 ? i[objectKey][Object.keys(i[objectKey])[1]] : i[Object.keys(i)[1]]).toString())
+    //             temp.push(
+    //               array
+    //                 .map((i) =>
+    //                   Object.keys(i).length === 1
+    //                     ? i[objectKey][Object.keys(i[objectKey])[1]]
+    //                     : i[Object.keys(i)[1]]
+    //                 )
+    //                 .toString()
+    //             );
+    //           }
+    //         } else {
+    //           temp.push(get(index, x.dataKey));
+    //         }
+    //       });
+    //       arr.push(temp);
+    //       temp = [];
+    //     });
+    //     console.log(arr);
+    //     // doc.autoTableSetDefaults(
+    //     //   {
+    //     //     headStyles: { fillColor: "#ed2939" }, // Purple
+    //     //   },
+    //     //   doc
+    //     // )
+    //     doc.autoTable({
+    //       head: [exportColumns.map((i) => i.title)],
+    //       startY: doc.autoTable() + 50,
+    //       margin: { horizontal: 10 },
+    //       styles: { overflow: "linebreak"},
+    //       bodyStyles: { valign: "top" },
+    //       theme: "striped",
+    //       showHead: "everyPage",
+    //       body: arr,
+    //     });
+
+    //     doc.save(`${header}.pdf`);
+    //   });
+    });
+  };
+
   return (
     <div>
       {!baseG && (
@@ -395,6 +462,17 @@ console.log("render")
       )}
       {baseG && formProps ? (
         <div className="m-5">
+          <div className="flex justify-content-end">
+          <Button
+            type="button"
+            icon="pi pi-print"
+            iconPos="left"
+            onClick={exportPdf}
+            className="mb-3"
+            tooltip="Imprimir"
+            tooltipOptions={{position: 'bottom'}}
+          ></Button>
+          </div>
           <Form
             ref={formRef}
             data={formProps.data}

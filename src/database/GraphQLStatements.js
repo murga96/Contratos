@@ -677,6 +677,7 @@ export const selectOneBasesGenerales = gql`
     findOneBasesGenerales(id: $idBasesG) {
       idBasesGenerales
       consecutivo
+      noContrato
       tipoDeContrato {
         idTipoContrato
         tipoContrato
