@@ -156,39 +156,24 @@ export const Ejecutivos = () => {
 
   let dataStruct = [
     {
-      id: 1,
-      component: "label",
-      name: "nombre",
-      defaultValue: "Nombre*",
-    },
-    {
       id: 2,
       component: "InputText",
       name: "nombre",
+      label: "Nombre*",
       defaultValue: "",
-    },
-    {
-      id: 3,
-      component: "label",
-      name: "correo",
-      defaultValue: "Correo*",
     },
     {
       id: 4,
       component: "InputText",
       name: "correo",
+      label: "Correo*",
       defaultValue: "",
-    },
-    {
-      id: 5,
-      component: "label",
-      name: "idCargo",
-      defaultValue: "Cargo*",
     },
     {
       id: 6,
       component: "Dropdown",
       name: "idCargo",
+      label: "Cargo*",
       defaultValue: "",
       props: {
         options: cargos.data?.findAllCargos,
@@ -198,15 +183,10 @@ export const Ejecutivos = () => {
       },
     },
     {
-      id: 7,
-      component: "label",
-      name: "idGrupo",
-      defaultValue: "Grupo*",
-    },
-    {
       id: 8,
       component: "Dropdown",
       name: "idGrupo",
+      label: "Grupo*",
       defaultValue: 1,
       props: {
         options: grupos.data?.findAllGrupos,
@@ -216,15 +196,10 @@ export const Ejecutivos = () => {
       },
     },
     {
-      id: 9,
-      component: "label",
-      name: "activo",
-      defaultValue: "Activo",
-    },
-    {
       id: 10,
       component: "CheckBox",
       name: "activo",
+      label: "Activo",
       defaultValue: "",
     },
   ];

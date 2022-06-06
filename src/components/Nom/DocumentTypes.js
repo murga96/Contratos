@@ -43,14 +43,9 @@ export const DocumentTypes = () => {
   
   let dataStruct = [
     {
-      id: 1,
-      component: "label",
-      name: "nombreDoc",
-      defaultValue: "Documento*",
-    },
-    {
       id: 2,
       component: "InputText",
+      label: "Documento*",
       name: "nombreDoc",
       defaultValue: "",
     },

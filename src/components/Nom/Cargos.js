@@ -44,15 +44,10 @@ export const Cargos = () => {
   
   let dataStruct = [
     {
-      id: 1,
-      component: "label",
-      name: "cargo",
-      defaultValue: "Cargo*",
-    },
-    {
       id: 2,
       component: "InputText",
       name: "cargo",
+      label: "Cargo*",
       defaultValue: "",
     },
   ];

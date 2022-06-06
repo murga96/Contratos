@@ -43,15 +43,10 @@ export const GruposDeCompras = () => {
   
   let dataStruct = [
     {
-      id: 1,
-      component: "label",
-      name: "grupos",
-      defaultValue: "Grupo*",
-    },
-    {
       id: 2,
       component: "InputText",
       name: "grupos",
+      label: "Grupo*",
       defaultValue: "",
     },
     

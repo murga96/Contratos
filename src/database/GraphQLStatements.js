@@ -744,6 +744,21 @@ export const updateBaseGeneral = gql`
   }
 `;
 
+export const removeBaseGeneral = gql`
+  mutation removeBasesGenerales($id: Int!) {
+    removeBasesGenerales(id: $id) {
+      idBasesGenerales
+    }
+  }
+`;
+export const removeSeveralBasesGenerales = gql`
+  mutation removeSeveralBasesGenerales($id: [Int!]!) {
+    removeSeveralBasesGenerales(id: $id) {
+      idBasesGenerales
+    }
+  }
+`;
+
 export const actualizarClausulasFromBaseGeneral = gql`
   query actualizarClausulasFromBaseGeneral($id: Float!) {
     actualizarClausulasFromBaseGeneral(idBaseGeneral: $id) {

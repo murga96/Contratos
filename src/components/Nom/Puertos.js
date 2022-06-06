@@ -77,32 +77,22 @@ export const Puertos = () => {
   const schema = yup.object().shape({
     nombre: yup.string().required("Nombre es requerido"),
     idPais: yup.number().required("País es requerido"),
-    deposito: yup.string() /* .required("Depósito es requerido") */,
+    deposito: yup.string().nullable() /* .required("Depósito es requerido") */,
   });
 
   let dataStruct = [
     {
-      id: 1,
-      component: "label",
-      name: "nombre",
-      defaultValue: "Nombre*",
-    },
-    {
       id: 2,
       component: "InputText",
       name: "nombre",
+      label: "Nombre*",
       defaultValue: "",
-    },
-    {
-      id: 3,
-      component: "label",
-      name: "idPais",
-      defaultValue: "País*",
     },
     {
       id: 4,
       component: "Dropdown",
       name: "idPais",
+      label: "País*",
       defaultValue: "",
       props: {
         options: paises.data?.findAllPaises,
@@ -112,15 +102,10 @@ export const Puertos = () => {
       },
     },
     {
-      id: 5,
-      component: "label",
-      name: "deposito",
-      defaultValue: "Depósito",
-    },
-    {
       id: 6,
       component: "InputText",
       name: "deposito",
+      label: "Depósito",
       defaultValue: "",
     },
   ];

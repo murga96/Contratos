@@ -102,27 +102,17 @@ export const Users = () => {
   });
   let dataStruct = [
     {
-      id: 1,
-      component: "label",
-      name: "nombreUsuario",
-      defaultValue: "Nombre de usuario*",
-    },
-    {
       id: 2,
       component: "InputText",
+      label: "Nombre de usuario*",
       name: "nombreUsuario",
       defaultValue: "",
-    },
-    {
-      id: 3,
-      component: "label",
-      name: "idEjecutivo",
-      defaultValue: "Ejecutivo*",
     },
     {
       id: 4,
       component: "Dropdown",
       name: "idEjecutivo",
+      label: "Ejecutivo*",
       defaultValue: 1,
       props: {
         options: ejecutivos.data?.findAllEjecutivos,
@@ -133,15 +123,10 @@ export const Users = () => {
       },
     },
     {
-      id: 5,
-      component: "label",
-      name: "roles",
-      defaultValue: "Roles*",
-    },
-    {
       id: 6,
       component: "MultiSelect",
       name: "roles",
+      label: "Roles*",
       defaultValue: [],
       props: {
         options: roles.data?.findAllRoles,

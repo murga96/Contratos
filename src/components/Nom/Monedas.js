@@ -46,27 +46,17 @@ export const Monedas = () => {
 
   let dataStruct = [
     {
-      id: 1,
-      component: "label",
-      name: "moneda",
-      defaultValue: "Moneda*",
-    },
-    {
       id: 2,
       component: "InputText",
       name: "moneda",
+      label: "Moneda*",
       defaultValue: "",
-    },
-    {
-      id: 3,
-      component: "label",
-      name: "abreviatura",
-      defaultValue: "Abreviatura*",
     },
     {
       id: 4,
       component: "InputText",
       name: "abreviatura",
+      label: "Abreviatura*",
       defaultValue: "",
     },
   ];

@@ -1,9 +1,11 @@
 import React from "react";
-import { useState, useEffect} from "react";
-import { useQuery } from "@apollo/client";
+import { useState, useEffect } from "react";
+import { useMutation, useQuery } from "@apollo/client";
 import { Table } from "../ui/Table";
 import { FilterMatchMode, FilterService, FilterOperator } from "primereact/api";
 import {
+  removeBaseGeneral,
+  removeSeveralBasesGenerales,
   selectAllBasesGenerales,
   selectAllCompradores,
   selectAllIncoterm,
@@ -25,10 +27,12 @@ export const BasesGenerales = () => {
   //graphQL
   const { data, error, loading } = useQuery(selectAllBasesGenerales, {
     onCompleted: (data) => {
-      setBasesGenerales(JSON.parse(JSON.stringify(data?.findAllBasesGenerales)));
+      setBasesGenerales(
+        JSON.parse(JSON.stringify(data?.findAllBasesGenerales))
+      );
     },
     // onError: (error) => console.log(error),
-    fetchPolicy: 'network-only'
+    fetchPolicy: "network-only",
   });
   const { data: findAllTipoContrato, loading: loadingTC } = useQuery(
     selectAllTipoContrato
@@ -40,6 +44,12 @@ export const BasesGenerales = () => {
     useQuery(selectAllCompradores);
   const { data: findAllIncoterm, loading: loadingInc } =
     useQuery(selectAllIncoterm);
+  const [remove] = useMutation(removeBaseGeneral, {
+    refetchQueries: ["selectAllBasesGenerales"],
+  });
+  const [removeSeveral] = useMutation(removeSeveralBasesGenerales, {
+    refetchQueries: ["selectAllBasesGenerales"],
+  });
 
   FilterService.register("filterTipoContrato", (value, filters) => {
     let ret = false;
@@ -263,8 +273,8 @@ export const BasesGenerales = () => {
       bg.fecha = moment(bg.fecha, moment.ISO_8601).toDate();
       return bg;
     });
-  })
-  
+  });
+
   return (
     <div>
       {loading && (
@@ -291,6 +301,8 @@ export const BasesGenerales = () => {
             edit={true}
             exportData={true}
             emptyElement={emptyElement}
+            removeOne={[remove, { id: -1 }]}
+            removeSeveral={[removeSeveral, { id: -1 }]}
             additionalButtons={[
               [
                 <Button

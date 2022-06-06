@@ -68,50 +68,30 @@ export const ContractTypes = () => {
 
   const dataStruct = [
     {
-      id: 1,
-      component: "label",
-      name: "tipoContrato",
-      defaultValue: "Tipo de contrato*",
-    },
-    {
       id: 2,
       component: "InputText",
       name: "tipoContrato",
+      label: "Tipo de contrato*",
       defaultValue: "",
-    },
-    {
-      id: 3,
-      component: "label",
-      name: "encabezado",
-      defaultValue: "Encabezado*",
     },
     {
       id: 4,
       component: "InputText",
+      label: "Encabezado*",
       name: "encabezado",
       defaultValue: "",
     },
     {
-      id: 5,
-      component: "label",
-      name: "ambasPartes",
-      defaultValue: "Ambas partes*",
-    },
-    {
       id: 6,
       component: "InputText",
+      label: "Ambas partes*",
       name: "ambasPartes",
       defaultValue: "",
     },
     {
-      id: 7,
-      component: "label",
-      name: "visible",
-      defaultValue: "Visible*",
-    },
-    {
       id: 8,
       component: "CheckBox",
+      label: "Visible*",
       name: "visible",
       defaultValue: "",
     },

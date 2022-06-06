@@ -43,14 +43,9 @@ export const TiposContenedor = () => {
   
   let dataStruct = [
     {
-      id: 1,
-      component: "label",
-      name: "tipoContenedor",
-      defaultValue: "Tipo de contenedor*",
-    },
-    {
       id: 2,
       component: "InputText",
+      label: "Tipo de contenedor*",
       name: "tipoContenedor",
       defaultValue: "",
     },

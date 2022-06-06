@@ -43,14 +43,9 @@ export const TiposDeCompras = () => {
   
   let dataStruct = [
     {
-      id: 1,
-      component: "label",
-      name: "compras",
-      defaultValue: "Compra*",
-    },
-    {
       id: 2,
       component: "InputText",
+      label: "Compra*",
       name: "compras",
       defaultValue: "",
     },

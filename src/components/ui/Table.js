@@ -14,7 +14,6 @@ import { saveAs } from "file-saver";
 import { MultiSelect } from "primereact/multiselect";
 import { FilterService } from "primereact/api";
 
-
 export const Table = ({
   value,
   header,
@@ -47,7 +46,7 @@ export const Table = ({
   const [formData, setFormData] = useState(null);
   //header and columns
   const h = <div className="table-header">{header}</div>;
-console.log(value)
+  console.log(value);
   const bodyChecker = (rowData, item) => {
     const havePoint = item.field.split(".").length !== 0;
     if (typeof get(rowData, item.field) === "boolean") {
@@ -63,9 +62,7 @@ console.log(value)
         ></i>
       );
     } else if (item.column.props.dataType === "date") {
-      return moment(get(rowData, item.field)).format(
-        "DD/MM/YYYY"
-      );
+      return moment(get(rowData, item.field)).format("DD/MM/YYYY");
     } else if (
       havePoint &&
       Array.isArray(get(rowData, item.field.split(".")[0]))
@@ -129,7 +126,11 @@ console.log(value)
             ? (options) =>
                 React.cloneElement(<col.filterElement options={options} />, {
                   onChange: (e) =>
-                    dt.current.filter(e.value, col.filterField, col.filterMatchModeOptions[0].value),
+                    dt.current.filter(
+                      e.value,
+                      col.filterField,
+                      col.filterMatchModeOptions[0].value
+                    ),
                 })
             : col.filterElement1
             ? col.filterElement1
@@ -146,12 +147,13 @@ console.log(value)
     dataKey: col.field,
   }));
   const changeValuesFormData = (elem, edit) => {
+    let i = edit ? 1 : 0;
     console.log(elem, "elem");
     let fp = formProps?.data;
     if (Array.isArray(formProps?.data[0])) {
       if (
         Object.keys(elem).length === 0 ||
-        !Object.keys(elem)[0].includes("pk")
+        !Object.keys(elem)[0].includes("id")
       ) {
         fp = formProps?.data[0];
       } else {
@@ -160,32 +162,36 @@ console.log(value)
     }
     for (let index = 0; index < formProps.data.length; index++) {
       // delete fp[0].defaultValue
-      const value = get(elem, fp[index].name);
-      console.log(value, "value");
-      if (Array.isArray(value)) {
-        if (value.length > 0) {
-          console.log("array");
-          //llaves del objeto
-          const objectKey = Object.keys(value[0]);
-          //Obtengo el primer item dependiendo si es un objeto con llave o no
-          fp[index].defaultValue = value.map((item) => {
-            return Object.keys(item).length === 1
-              ? item[objectKey][Object.keys(item[objectKey])[0]]
-              : item;
-          });
+      console.log(element);
+      const entries = Object.entries(elem);
+
+        let value = entries[i][1];
+        if (Array.isArray(value)) {
+          if (value.length > 0) {
+            console.log("array");
+            //llaves del objeto
+            const objectKey = Object.keys(value[0]);
+            //Obtengo el primer item dependiendo si es un objeto con llave o no
+            fp[index].defaultValue = value.map((item) => {
+              return Object.keys(item).length === 1
+                ? item[objectKey][Object.keys(item[objectKey])[0]]
+                : item;
+            });
+          } else {
+            fp[index].defaultValue = value;
+          }
+        } else if (typeof value === "object" && value) {
+          //Es objeto el valor
+          console.log("object");
+          //Obtener el id en vez del nombre (el id siempre ira primero en la consulta graphql)
+          formProps.data[index].defaultValue = Object.values(value)[0];
         } else {
+          console.log("normal");
           fp[index].defaultValue = value;
         }
-      } /* else if (typeof value === "object") {
-        //Es objeto el valor
-        console.log("object");
-        //Obtener el id en vez del nombre (el id siempre ira primero en la consulta graphql)
-        formProps.data[index].defaultValue = Object.values(value)[0];
-      } */ else {
-        console.log("normal");
-        fp[index].defaultValue = value;
+        i++;
       }
-    }
+    
     setFormData(fp);
   };
 
@@ -203,9 +209,10 @@ console.log(value)
 
   //deleting elements
   const deleteElement = () => {
+    removeOne[1][Object.keys(removeOne[1])[0]] =
+      element[Object.keys(element)[0]];
     try {
-      removeOne(element[Object.keys(element)[0]]);
-      setSelectedElement([]);
+      removeOne[0]({ variables: removeOne[1] });
     } catch (error) {
       alert(error);
     }
@@ -224,11 +231,10 @@ console.log(value)
   const deleteElements = () => {
     //bulk delete
     const arr = [];
-    dt.current.props.selection.map((item) => {
-      arr.push(Object.values(item)[0]);
-    });
+    dt.current.props.selection.map((item) => arr.push(Object.values(item)[0]));
+    removeSeveral[1][Object.keys(removeSeveral[1])[0]] = arr;
     try {
-      removeSeveral(arr);
+      removeSeveral[0]({ variables: removeSeveral[1] });
     } catch (error) {
       alert(error);
     }
@@ -244,26 +250,21 @@ console.log(value)
   const saveElement = (data) => {
     console.log("handle", data);
     let temp = {};
-    console.log(element, "element");
-    //Modificar
-    if (Object.keys(element)[0].includes("pk")) {
-      Object.assign(temp, element);
-      Object.assign(temp, data);
-      try {
-        formProps.handle[1](temp);
-      } catch (error) {
-        console.log("object");
-        alert(error);
-      }
-    } else {
-      //Insertar
-      Object.assign(temp, data);
-      try {
-        formProps.handle[0](temp);
-      } catch (error) {
-        console.log("object");
-        alert(error);
-      }
+    if (Object.keys(element)[0].includes("id")) {
+      Object.assign(temp, pick(element, Object.keys(element)[0]));
+    }
+    Object.assign(temp, data);
+    console.log(temp, "temp");
+    Object.assign(
+      formProps.variables[Object.keys(formProps.variables)[0]],
+      temp
+    );
+    console.log(formProps.variables, "formVariables");
+    try {
+      formProps.handle({ variables: formProps.variables });
+    } catch (error) {
+      console.log("object");
+      alert(error);
     }
     setEditDialog(false);
   };
@@ -317,7 +318,7 @@ console.log(value)
           head: [exportColumns.map((i) => i.title)],
           startY: doc.autoTable() + 50,
           margin: { horizontal: 10 },
-          styles: { overflow: "linebreak"},
+          styles: { overflow: "linebreak" },
           bodyStyles: { valign: "top" },
           theme: "striped",
           showHead: "everyPage",

@@ -60,51 +60,31 @@ export const Incoterms = () => {
 
   let dataStruct = [
     {
-      id: 1,
-      component: "label",
-      name: "nombre",
-      defaultValue: "Nombre*",
-    },
-    {
       id: 2,
       component: "InputText",
       name: "nombre",
+      label: "Nombre*",
       defaultValue: "",
-    },
-    {
-      id: 3,
-      component: "label",
-      name: "abreviatura",
-      defaultValue: "abreviatura*",
     },
     {
       id: 4,
       component: "InputText",
       name: "abreviatura",
+      label: "Abreviatura*",
       defaultValue: "",
-    },
-    {
-      id: 5,
-      component: "label",
-      name: "nota",
-      defaultValue: "Nota*",
     },
     {
       id: 6,
-      component: "InputText",
+      component: "InputTextArea",
       name: "nota",
+      label: "Nota*",
       defaultValue: "",
-    },
-    {
-      id: 7,
-      component: "label",
-      name: "activo",
-      defaultValue: "Activo",
     },
     {
       id: 8,
       component: "CheckBox",
       name: "activo",
+      label: "Activo",
       defaultValue: "",
     },
   ];

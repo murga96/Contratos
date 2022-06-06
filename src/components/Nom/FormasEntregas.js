@@ -47,26 +47,16 @@ export const FormasEntrega = () => {
   
   let dataStruct = [
     {
-      id: 1,
-      component: "label",
-      name: "formaEntrega",
-      defaultValue: "Formas de entrega*",
-    },
-    {
       id: 2,
       component: "InputText",
       name: "formaEntrega",
+      label: "Formas de entrega*",
       defaultValue: "",
-    },
-    {
-      id: 3,
-      component: "label",
-      name: "dias",
-      defaultValue: "Días*",
     },
     {
       id: 4,
       component: "InputText",
+      label: "Días*",
       name: "dias",
       defaultValue: "",
     },

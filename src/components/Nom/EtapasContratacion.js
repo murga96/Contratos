@@ -54,50 +54,30 @@ export const EtapasContratacion = () => {
   
   let dataStruct = [
     {
-      id: 1,
-      component: "label",
-      name: "etapa",
-      defaultValue: "Etapa*",
-    },
-    {
       id: 2,
       component: "InputText",
+      label: "Etapa*",
       name: "etapa",
       defaultValue: "",
-    },
-    {
-      id: 1,
-      component: "label",
-      name: "calculos",
-      defaultValue: "Cálculo",
     },
     {
       id: 2,
       component: "InputText",
       name: "calculos",
+      label: "Cálculo",
       defaultValue: "",
-    },
-    {
-      id: 3,
-      component: "label",
-      name: "tiempoMax",
-      defaultValue: "Tiempo máximo*",
     },
     {
       id: 4,
       component: "InputText",
       name: "tiempoMax",
+      label: "Tiempo máximo*",
       defaultValue: "",
-    },
-    {
-      id: 5,
-      component: "label",
-      name: "tiempoReal",
-      defaultValue: "Tiempo real*",
     },
     {
       id: 6,
       component: "InputText",
+      label: "Tiempo real*",
       name: "tiempoReal",
       defaultValue: "",
     },
