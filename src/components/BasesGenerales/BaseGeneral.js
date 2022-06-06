@@ -14,6 +14,7 @@ export const BaseGeneral = ({ idBG }) => {
   const formRef = useRef();
   const { data, error, loading } = useQuery(selectOneBasesGenerales, {
     variables: { idBasesG: parseInt(bg.BaseGeneral) },
+    fetchPolicy: "network-only",
   });
 
   const schema = yup.object().shape({

@@ -292,7 +292,7 @@ export const BasesGenerales = () => {
             columns={c}
             pagination={true}
             rowNumbers={[10, 20, 30]}
-            selectionType="single"
+            selectionType="multiple"
             sortRemove
             orderSort={1}
             fieldSort="consecutivo"

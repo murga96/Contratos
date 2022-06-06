@@ -747,14 +747,14 @@ export const updateBaseGeneral = gql`
 export const removeBaseGeneral = gql`
   mutation removeBasesGenerales($id: Int!) {
     removeBasesGenerales(id: $id) {
-      idBasesGenerales
+      consecutivo
     }
   }
 `;
 export const removeSeveralBasesGenerales = gql`
   mutation removeSeveralBasesGenerales($id: [Int!]!) {
     removeSeveralBasesGenerales(id: $id) {
-      idBasesGenerales
+       consecutivo
     }
   }
 `;
