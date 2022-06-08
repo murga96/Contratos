@@ -20,8 +20,6 @@ import { Form } from "../ui/Form";
 import * as yup from "yup";
 import moment from "moment";
 import _ from "lodash";
-import { Tooltip } from "primereact/tooltip";
-import { Button } from "primereact/button";
 
 export const BaseGeneralEdit = () => {
   const bg = useParams();
@@ -386,72 +384,6 @@ export const BaseGeneralEdit = () => {
       .catch((error) => console.log(error));
   };
 
-  //imprimir
-const exportPdf = () => {
-    import("jspdf").then((jsPDF) => {
-      const doc = new jsPDF.default(0, 0, "letter", true);
-      doc.text("Bases Generales para la Compraventa Internacional ", 35, 25);
-      doc.text("No.: "+baseG?.noContrato+ 35, 25);
-      doc.save(`BaseGeneral.pdf`);
-
-    //   import("jspdf-autotable").then(() => {
-    //     const doc = new jsPDF.default(0, 0, "letter", true);
-    //     let arr = [];
-    //     let temp = [];
-    //     value.map((index) => {
-    //       exportColumns.map((x) => {
-    //         const havePoint = x.dataKey.split(".").length !== 0;
-    //         if (
-    //           havePoint &&
-    //           Array.isArray(get(index, x.dataKey.split(".")[0]))
-    //         ) {
-    //           const array = get(index, x.dataKey.split(".")[0]);
-    //           if (array.length > 0) {
-    //             //llave del objeto
-    //             console.log("bodyArray");
-    //             const objectKey = Object.keys(array[0]);
-    //             console.log(objectKey);
-    //             //Obtengo el segundo item del arreglo para mostrarlo en la cadena
-    //             // console.log(get(rowData, item.field).map((i) =>  Object.keys(i).length === 1 ? i[objectKey][Object.keys(i[objectKey])[1]] : i[Object.keys(i)[1]]).toString())
-    //             temp.push(
-    //               array
-    //                 .map((i) =>
-    //                   Object.keys(i).length === 1
-    //                     ? i[objectKey][Object.keys(i[objectKey])[1]]
-    //                     : i[Object.keys(i)[1]]
-    //                 )
-    //                 .toString()
-    //             );
-    //           }
-    //         } else {
-    //           temp.push(get(index, x.dataKey));
-    //         }
-    //       });
-    //       arr.push(temp);
-    //       temp = [];
-    //     });
-    //     console.log(arr);
-    //     // doc.autoTableSetDefaults(
-    //     //   {
-    //     //     headStyles: { fillColor: "#ed2939" }, // Purple
-    //     //   },
-    //     //   doc
-    //     // )
-    //     doc.autoTable({
-    //       head: [exportColumns.map((i) => i.title)],
-    //       startY: doc.autoTable() + 50,
-    //       margin: { horizontal: 10 },
-    //       styles: { overflow: "linebreak"},
-    //       bodyStyles: { valign: "top" },
-    //       theme: "striped",
-    //       showHead: "everyPage",
-    //       body: arr,
-    //     });
-
-    //     doc.save(`${header}.pdf`);
-    //   });
-    });
-  };
 
   return (
     <div>
@@ -462,17 +394,6 @@ const exportPdf = () => {
       )}
       {baseG && formProps ? (
         <div className="m-5">
-          <div className="flex justify-content-end">
-          <Button
-            type="button"
-            icon="pi pi-print"
-            iconPos="left"
-            onClick={exportPdf}
-            className="mb-3"
-            tooltip="Imprimir"
-            tooltipOptions={{position: 'bottom'}}
-          ></Button>
-          </div>
           <Form
             ref={formRef}
             data={formProps.data}

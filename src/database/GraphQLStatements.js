@@ -650,23 +650,73 @@ export const selectAllBasesGenerales = gql`
     findAllBasesGenerales {
       idBasesGenerales
       consecutivo
+      noContrato
       tipoDeContrato {
+        idTipoContrato
         tipoContrato
+        encabezado
+        ambasPartes
       }
       incoterm {
+        idIncoterm
+        nombre
         abreviatura
       }
       proveedor {
         codigo
         compaIa
+        cargo
+        representante
+        domicilio
+        cuentaMn
+        cuentaUsd
+        agenciaMn
+        agenciaUsd
+        cargo
       }
       pais {
+        pais
         nomb
       }
       compradores {
+        idComprador
         nombre
         representante
+        domicilio
+        cargo
+        entidad {
+          codigoEnt
+          cuentaUsd
+          agenciaUsd
+          cuentaMn
+          agenciaMn
+        }
       }
+      basesGeneralesClausulas {
+        idBasesGeneralesClausulas
+        numero
+        idBasesGenerales
+        idProformaClausula
+        idTipoClausula
+        tiposDeClausulas {
+          idTipoClausula
+          nombre
+        }
+        orden
+        clausula
+        excepcional
+        modificado
+      }
+      idIncoterm
+      idPais
+      idProveedor
+      idProforma
+      idComprador
+      vigencia
+      aprobado
+      cancelado
+      activo
+      lugardeFirma
       fecha
     }
   }
@@ -681,6 +731,8 @@ export const selectOneBasesGenerales = gql`
       tipoDeContrato {
         idTipoContrato
         tipoContrato
+        encabezado
+        ambasPartes
       }
       incoterm {
         idIncoterm
@@ -693,6 +745,11 @@ export const selectOneBasesGenerales = gql`
         cargo
         representante
         domicilio
+        cuentaMn
+        cuentaUsd
+        agenciaMn
+        agenciaUsd
+        cargo
       }
       pais {
         pais
@@ -704,9 +761,17 @@ export const selectOneBasesGenerales = gql`
         representante
         domicilio
         cargo
+        entidad {
+          codigoEnt
+          cuentaUsd
+          agenciaUsd
+          cuentaMn
+          agenciaMn
+        }
       }
       basesGeneralesClausulas {
         idBasesGeneralesClausulas
+        numero
         idBasesGenerales
         idProformaClausula
         idTipoClausula

@@ -19,6 +19,7 @@ import { Button } from "primereact/button";
 import { MultiSelect } from "primereact/multiselect";
 import { Calendar } from "primereact/calendar";
 import moment from "moment";
+import {generateBGDocumentInternacional, generateBGDocumentNacional, generateBGDocumentExcepcional} from "./../utils"
 
 export const BasesGenerales = () => {
   const navigate = useNavigate();
@@ -275,6 +276,19 @@ export const BasesGenerales = () => {
     });
   });
 
+  const generateDocument = (rowData) => {
+    console.log(rowData)
+    if(rowData.tipoDeContrato.tipoContrato.includes("IMPORTACION")){
+      generateBGDocumentInternacional(rowData)
+    }else if(rowData.tipoDeContrato.tipoContrato.includes("PLAZA")){
+      console.log("PLAZA")
+    }else if(rowData.tipoDeContrato.tipoContrato.includes("EXCEPCIONAL")){
+      generateBGDocumentExcepcional(rowData)
+    }else if(rowData.tipoDeContrato.tipoContrato.includes("NAC")){
+      generateBGDocumentNacional(rowData)
+    }
+  }
+
   return (
     <div>
       {loading && (
@@ -306,15 +320,24 @@ export const BasesGenerales = () => {
             additionalButtons={[
               [
                 <Button
-                  icon="pi pi-eye"
-                  className="p-button-rounded p-button-text"
-                  data-pr-tooltip="Ver"
+                icon="pi pi-eye"
+                className="p-button-rounded p-button-text"
+                data-pr-tooltip="Ver"
                 />,
                 (rowData) =>
-                  navigate(
-                    `/BasesGenerales/Detalle/${rowData.idBasesGenerales}`
-                  ),
-              ],
+                navigate(
+                  `/BasesGenerales/Detalle/${rowData.idBasesGenerales}`
+                ),
+                ],
+                [
+                  <Button
+                    icon="pi pi-upload"
+                    className="p-button-rounded p-button-text"
+                    data-pr-tooltip="Exportar"
+                  />,
+                  (rowData) =>
+                  generateDocument(rowData)
+                ],
             ]}
             editLinks={["Add", "Edit"]}
           />
