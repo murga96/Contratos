@@ -158,7 +158,7 @@ export const Field = ({ type, name, defaultValue, props, label }) => {
                 // value={defaultValue}
                 onChange={(e) => {
                   field.onChange(e.target.value);
-                  props.onChange && props.onChange(e.target.value);
+                  props?.onChange && props.onChange(e.target.value);
                 }}
                 className={classNames(
                   { "p-invalid": fieldState.invalid },

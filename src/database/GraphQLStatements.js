@@ -927,19 +927,50 @@ export const selectAllProforma = gql`
     }
   }
 `;
-//ProformaClausula
-// export const selectAllProformaClausulas = gql`
-//   query selectAllProformaClausulas {
-//     findAllProformaClausulas {
-//       idProformaClausula
-//       idProforma
-//       idTipoClausula
-//       orden
-//       clausula
-//       tiposDeClausulas {
-//         idTipoClausula
-//         nombre
-//       }
-//     }
-//   }
-// `;
+
+// ProformaClausula
+export const selectAllProformaClausulas = gql`
+  query selectAllProformaClausulas {
+    findAllProformaClausulas {
+      idProformaClausula
+      idTipoClausula
+      orden
+      proformas {
+        idProforma
+        nombreProfoma
+      }
+      clausula
+      tiposDeClausulas {
+        idTipoClausula
+        nombre
+      }
+    }
+  }
+`;
+
+export const createProformaClausula = gql`
+  mutation createProformaClausula(
+    $createProformaClausulaInput: CreateProformaClausulaInput!
+  ) {
+    createProformaClausula(createProformaClausulaInput: $createProformaClausulaInput) {
+      orden
+    }
+  }
+`;
+
+
+export const removeProformasClausulas = gql`
+  mutation removeProformaClausula($id: Int!) {
+    removeProformaClausula(id: $id) {
+      orden
+    }
+  }
+`;
+
+export const removeSeveralProformasClausulas = gql`
+  mutation removeProformaClausula($id: [Int!]!) {
+    removeSeveralProformaClausula(id: $id) {
+      orden
+    }
+  }
+`;

@@ -20,7 +20,8 @@ export const roles_pages = {
     "/BasesGenerales/Edit",
     "/BasesGenerales/Detalle",
     "/CambiarContraseña",
-    "/BasesGenerales/Preview",
+    "/Proformas",
+    "/ProformasClausulas",
   ],
   ROLE_ENTRENADOR: [
     "/calendario",

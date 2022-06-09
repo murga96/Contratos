@@ -83,7 +83,7 @@ export const ContractTypes = () => {
     },
     {
       id: 6,
-      component: "InputText",
+      component: "InputTextArea",
       label: "Ambas partes*",
       name: "ambasPartes",
       defaultValue: "",

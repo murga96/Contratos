@@ -162,7 +162,7 @@ export const Table = ({
     }
     for (let index = 0; index < formProps.data.length; index++) {
       // delete fp[0].defaultValue
-      console.log(element);
+      console.log(formProps.data[index].name)
       const entries = Object.entries(elem);
 
         let value = entries[i][1];

@@ -38,6 +38,7 @@ import {
 } from "@apollo/client";
 import { onError } from "@apollo/client/link/error";
 import { setContext } from "@apollo/client/link/context";
+import { ProformaClausulas } from "./components/Nom/ProformaClausulas";
 
 function App() {
   addLocale("es", {
@@ -220,6 +221,8 @@ function App() {
               <Route path="/GruposCompra" element={<AuthenticateRoute component={GruposDeCompras} path="/GruposCompra"/>} />
               <Route path="/FormasPago" element={<AuthenticateRoute component={FormasPago} path="/FormasPago"/>} />
               <Route path="/FormasEntrega" element={<AuthenticateRoute component={FormasEntrega} path="/FormasEntrega"/>} />
+              <Route path="/Proformas" element={<AuthenticateRoute component={FormasEntrega} path="/Proformas"/>} />
+              <Route path="/ProformasClausulas" element={<AuthenticateRoute component={ProformaClausulas} path="/ProformasClausulas"/>} />
               <Route
                 path="/EtapasContratacion"
                 element={<AuthenticateRoute component={EtapasContratacion} path="/EtapasContratacion"/>}

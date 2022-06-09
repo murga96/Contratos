@@ -99,18 +99,38 @@ export const Navbar = (url) => {
           label: "Formas",
           icon: "pi pi-fw pi-bookmark",
           items: [
-            {
+            havePermissionNavBar(user?.rol, "FormasPago") &&{
               label: "Formas de pago",
               icon: "pi pi-fw pi-bookmark",
               command: () => {
                 navigate(`/FormasPago`);
               },
             },
-            {
+            havePermissionNavBar(user?.rol, "FormasEntrega") &&{
               label: "Formas de entrega",
               icon: "pi pi-fw pi-bookmark",
               command: () => {
                 navigate(`/FormasEntrega`);
+              },
+            },
+          ],
+        },
+        {
+          label: "Proformas",
+          icon: "pi pi-fw pi-bookmark",
+          items: [
+            havePermissionNavBar(user?.rol, "Proformas") &&{
+              label: "Proformas",
+              icon: "pi pi-fw pi-bookmark",
+              command: () => {
+                navigate(`/Proformas`);
+              },
+            },
+            havePermissionNavBar(user?.rol, "ProformasClausulas") &&{
+              label: "Clausulas de proformas",
+              icon: "pi pi-fw pi-bookmark",
+              command: () => {
+                navigate(`/ProformasClausulas`);
               },
             },
           ],
