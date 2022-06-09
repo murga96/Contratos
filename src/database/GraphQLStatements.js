@@ -819,7 +819,7 @@ export const removeBaseGeneral = gql`
 export const removeSeveralBasesGenerales = gql`
   mutation removeSeveralBasesGenerales($id: [Int!]!) {
     removeSeveralBasesGenerales(id: $id) {
-       consecutivo
+      consecutivo
     }
   }
 `;
@@ -895,19 +895,7 @@ export const selectOneProforma = gql`
   query selectOneProforma($id: Int!) {
     findOneProforma(id: $id) {
       idProforma
-      proformaClausulas {
-        idProformaClausula
-        idTipoClausula
-        orden
-        clausula
-      }
-    }
-  }
-`;
-export const selectAllProforma = gql`
-  query selectAllProforma {
-    findAllProforma {
-      idProforma
+      nombreProfoma
       proformaClausulas {
         idProformaClausula
         idProforma
@@ -919,11 +907,71 @@ export const selectAllProforma = gql`
           nombre
         }
       }
+      tipoDeContrato {
+        tipoContrato
+      }
+      incoterm {
+        nombre
+        abreviatura
+      }
+      idTipoContrato
+      idIncoterm
+      activa
+      cMarcoF
+    }
+  }
+`;
+export const selectAllProforma = gql`
+  query selectAllProforma {
+    findAllProforma {
+      idProforma
       nombreProfoma
       idTipoContrato
       idIncoterm
       activa
       cMarcoF
+      tipoDeContrato {
+        tipoContrato
+      }
+      proformaClausulas {
+        idProformaClausula
+        idProforma
+        idTipoClausula
+        orden
+        clausula
+        tiposDeClausulas {
+          idTipoClausula
+          nombre
+        }
+      }
+      incoterm {
+        nombre
+        abreviatura
+      }
+    }
+  }
+`;
+
+export const createProforma = gql`
+  mutation createProforma($createProformaInput: CreateProformaInput!) {
+    createProforma(createProformaInput: $createProformaInput) {
+      nombreProfoma
+    }
+  }
+`;
+
+export const removeProforma = gql`
+  mutation removeProforma($id: Int!) {
+    removeProforma(id: $id) {
+      nombreProfoma
+    }
+  }
+`;
+
+export const removeSeveralProforma = gql`
+  mutation removeSeveralProforma($id: [Int!]!) {
+    removeSeveralProforma(id: $id) {
+      nombreProfoma
     }
   }
 `;
@@ -952,12 +1000,13 @@ export const createProformaClausula = gql`
   mutation createProformaClausula(
     $createProformaClausulaInput: CreateProformaClausulaInput!
   ) {
-    createProformaClausula(createProformaClausulaInput: $createProformaClausulaInput) {
+    createProformaClausula(
+      createProformaClausulaInput: $createProformaClausulaInput
+    ) {
       orden
     }
   }
 `;
-
 
 export const removeProformasClausulas = gql`
   mutation removeProformaClausula($id: Int!) {
