@@ -163,6 +163,13 @@ export const Navbar = (url) => {
             navigate(`/Ejecutivos`);
           },
         },
+        havePermissionNavBar(user?.rol, "Compradores") && {
+          label: "Compradores",
+          icon: "pi pi-fw pi-bookmark",
+          command: () => {
+            navigate(`/Compradores`);
+          },
+        },
         havePermissionNavBar(user?.rol, "Incoterms") && {
           label: "Incoterms",
           icon: "pi pi-fw pi-bookmark",

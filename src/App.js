@@ -41,6 +41,7 @@ import { setContext } from "@apollo/client/link/context";
 import { ProformaClausulas } from "./components/Nom/ProformaClausulas";
 import { Proformas } from "./components/Proformas/Proformas";
 import { Proforma } from "./components/Proformas/Proforma";
+import { Compradores } from "./components/Nom/Compradores";
 
 function App() {
   addLocale("es", {
@@ -223,6 +224,7 @@ function App() {
               <Route path="/GruposCompra" element={<AuthenticateRoute component={GruposDeCompras} path="/GruposCompra"/>} />
               <Route path="/FormasPago" element={<AuthenticateRoute component={FormasPago} path="/FormasPago"/>} />
               <Route path="/FormasEntrega" element={<AuthenticateRoute component={FormasEntrega} path="/FormasEntrega"/>} />
+              <Route path="/Compradores" element={<AuthenticateRoute component={Compradores} path="/Compradores"/>} />
               <Route path="/ProformasClausulas" element={<AuthenticateRoute component={ProformaClausulas} path="/ProformasClausulas"/>} />
               <Route
                 path="/EtapasContratacion"

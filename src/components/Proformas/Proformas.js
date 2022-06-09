@@ -267,8 +267,8 @@ export const Proformas = () => {
             sortRemove
             orderSort={1}
             fieldSort="nombreProfoma"
-            // filterDplay="menu"
-            // filtersValues={filters}
+            filterDplay="menu"
+            filtersValues={filters}
             edit={true}
             exportData={true}
             emptyElement={emptyElement}

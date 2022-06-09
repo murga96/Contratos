@@ -21,10 +21,9 @@ export const roles_pages = {
     "/BasesGenerales/Detalle",
     "/CambiarContraseña",
     "/Proformas",
-    "/Proformas/Add",
-    "/Proformas/Edit",
     "/Proformas/Detalle",
     "/ProformasClausulas",
+    "/Compradores",
   ],
   ROLE_ENTRENADOR: [
     "/calendario",

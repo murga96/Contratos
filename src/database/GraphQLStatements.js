@@ -864,12 +864,125 @@ export const selectAllCompradores = gql`
       nombre
       representante
       domicilio
+      entidad {
+        codigo
+        nombre
+      }
       cargo
-      doble
       activo
+      doble
     }
   }
 `;
+
+export const selectOneCompradores = gql`
+  query selectOneCompradores($id: Int!) {
+    findOneCompradores(id: $id) {
+      idComprador
+      nombre
+      representante
+      domicilio
+      cargo
+      entidad {
+        nombre
+      }
+      activo
+      doble
+    }
+  }
+`;
+
+export const createCompradores = gql`
+  mutation createCompradores($createCompradoreInput: CreateCompradoresInput!) {
+    createCompradore(createCompradoreInput: $createCompradoreInput) {
+      representante
+    }
+  }
+`;
+
+export const removeCompradores = gql`
+  mutation removeCompradores($id: Int!) {
+    removeCompradores(id: $id) {
+      representante
+    }
+  }
+`;
+
+export const removeSeveralCompradores = gql`
+  mutation removeSeveralCompradores($id: [Int!]!) {
+    removeSeveralCompradores(id: $id) {
+      representante
+    }
+  }
+`;
+
+//Datos Entidad
+export const selectAllDatosEntidadEntidades = gql`
+  query findAllDatosEntidad {
+    findAllDatosEntidad {
+      codigo
+      cuentaUsd
+      codAgenciaUsd
+      agenciaUsd
+      faxAgenciaUsd
+      cuentaMn
+      codAgenciaMn
+      agenciaMn
+      faxAgenciaMn
+      codigoEnt
+      codigoMincex
+      licCComercio
+      nombre
+      compaIa
+    }
+  }
+`;
+
+export const selectDatosEntidad = gql`
+  query selectOneDatosEntidad($id: Int!) {
+    findOneDatosEntidad(id: $id) {
+      codigo
+      cuentaUsd
+      codAgenciaUsd
+      agenciaUsd
+      faxAgenciaUsd
+      cuentaMn
+      codAgenciaMn
+      agenciaMn
+      faxAgenciaMn
+      codigoEnt
+      codigoMincex
+      licCComercio
+      nombre
+      compaIa
+    }
+  }
+`;
+
+export const createDatosEntidad = gql`
+  mutation createDatosEntidad($createDatosEntidadInput: CreateDatosEntidadInput!) {
+    createCompradore(createDatosEntidadInput: $createDatosEntidadInput) {
+      nombre
+    }
+  }
+`;
+
+export const removeDatosEntidad = gql`
+  mutation removeDatosEntidad($id: Int!) {
+    removeDatosEntidad(id: $id) {
+      nombre
+    }
+  }
+`;
+
+export const removeSeveralDatosEntidad = gql`
+  mutation removeSeveralDatosEntidad($id: [Int!]!) {
+    removeSeveralDatosEntidad(id: $id) {
+      nombre
+    }
+  }
+`;
+
 //Proveedores
 export const selectAllProveedores = gql`
   query selectAllProveedores {
