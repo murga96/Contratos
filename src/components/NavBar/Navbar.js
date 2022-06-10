@@ -149,6 +149,13 @@ export const Navbar = (url) => {
             navigate(`/EtapasContratacion`);
           },
         },
+        havePermissionNavBar(user?.rol, "DatosEntidad") && {
+          label: "Datos de la entidad",
+          icon: "pi pi-fw pi-bookmark",
+          command: () => {
+            navigate(`/DatosEntidad`);
+          },
+        },
         havePermissionNavBar(user?.rol, "Cargos") && {
           label: "Cargos",
           icon: "pi pi-fw pi-bookmark",

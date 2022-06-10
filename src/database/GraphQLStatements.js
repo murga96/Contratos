@@ -917,23 +917,26 @@ export const removeSeveralCompradores = gql`
 `;
 
 //Datos Entidad
-export const selectAllDatosEntidadEntidades = gql`
+export const selectAllDatosEntidades = gql`
   query findAllDatosEntidad {
     findAllDatosEntidad {
+      compradores{
+        idComprador
+      }
       codigo
-      cuentaUsd
-      codAgenciaUsd
+      nombre
+      compaIa
       agenciaUsd
+      codAgenciaUsd
+      cuentaUsd
       faxAgenciaUsd
-      cuentaMn
-      codAgenciaMn
       agenciaMn
+      codAgenciaMn
+      cuentaMn
       faxAgenciaMn
       codigoEnt
       codigoMincex
       licCComercio
-      nombre
-      compaIa
     }
   }
 `;
@@ -941,27 +944,30 @@ export const selectAllDatosEntidadEntidades = gql`
 export const selectDatosEntidad = gql`
   query selectOneDatosEntidad($id: Int!) {
     findOneDatosEntidad(id: $id) {
+      compradores{
+        idComprador
+      }
       codigo
-      cuentaUsd
-      codAgenciaUsd
+      nombre
+      compaIa
       agenciaUsd
+      codAgenciaUsd
+      cuentaUsd
       faxAgenciaUsd
-      cuentaMn
-      codAgenciaMn
       agenciaMn
+      codAgenciaMn
+      cuentaMn
       faxAgenciaMn
       codigoEnt
       codigoMincex
       licCComercio
-      nombre
-      compaIa
     }
   }
 `;
 
 export const createDatosEntidad = gql`
   mutation createDatosEntidad($createDatosEntidadInput: CreateDatosEntidadInput!) {
-    createCompradore(createDatosEntidadInput: $createDatosEntidadInput) {
+    createDatosEntidad(createDatosEntidadInput: $createDatosEntidadInput) {
       nombre
     }
   }

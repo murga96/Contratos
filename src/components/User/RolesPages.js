@@ -24,6 +24,7 @@ export const roles_pages = {
     "/Proformas/Detalle",
     "/ProformasClausulas",
     "/Compradores",
+    "/DatosEntidad",
   ],
   ROLE_ENTRENADOR: [
     "/calendario",

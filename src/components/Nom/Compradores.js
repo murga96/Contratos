@@ -4,15 +4,11 @@ import { Table } from "../ui/Table";
 import { FilterMatchMode } from "primereact/api";
 import * as yup from "yup";
 import {
-  removeSeveralFormasEntrega,
-  removeFormasEntrega,
-  selectFormasEntrega,
-  updateFormasEntrega,
   selectAllCompradores,
   createCompradores,
   removeCompradores,
   removeSeveralCompradores,
-  selectAllDatosEntidadEntidades,
+  selectAllDatosEntidades,
 } from "../../database/GraphQLStatements";
 import { ProgressSpinner } from "primereact/progressspinner";
 import { TriStateCheckbox } from "primereact/tristatecheckbox";
@@ -59,7 +55,7 @@ export const Compradores = () => {
   //graphQL
   const { data, error, loading } = useQuery(selectAllCompradores);
   const { data: findAllDatosEntidad, loading: loadingE } = useQuery(
-    selectAllDatosEntidadEntidades
+    selectAllDatosEntidades
   );
   const [updateElement, { loadingU, errorU }] = useMutation(createCompradores, {
     refetchQueries: ["selectAllCompradores"],
