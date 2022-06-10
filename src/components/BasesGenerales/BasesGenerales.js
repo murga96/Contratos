@@ -19,7 +19,7 @@ import { Button } from "primereact/button";
 import { MultiSelect } from "primereact/multiselect";
 import { Calendar } from "primereact/calendar";
 import moment from "moment";
-import {generateBGDocumentInternacional, generateBGDocumentNacional, generateBGDocumentExcepcional} from "./../utils"
+import {generateBGDocumentInternacional, generateBGDocumentNacional} from "./../utils"
 
 export const BasesGenerales = () => {
   const navigate = useNavigate();
@@ -281,9 +281,9 @@ export const BasesGenerales = () => {
     if(rowData.tipoDeContrato.tipoContrato.includes("IMPORTACION")){
       generateBGDocumentInternacional(rowData)
     }else if(rowData.tipoDeContrato.tipoContrato.includes("PLAZA")){
-      console.log("PLAZA")
+      generateBGDocumentInternacional(rowData)
     }else if(rowData.tipoDeContrato.tipoContrato.includes("EXCEPCIONAL")){
-      generateBGDocumentExcepcional(rowData)
+      generateBGDocumentInternacional(rowData)
     }else if(rowData.tipoDeContrato.tipoContrato.includes("NAC")){
       generateBGDocumentNacional(rowData)
     }
