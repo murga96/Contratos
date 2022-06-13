@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { fireError } from "../utils";
 import {roles_pages, unathourized_pages} from "./RolesPages";
 
 export const AuthenticateRoute = ({ component: Component, path }) => {
@@ -8,14 +9,14 @@ export const AuthenticateRoute = ({ component: Component, path }) => {
 
   useEffect(() => {
     if (!JSON.parse(localStorage.getItem("user")) && !unathourized_pages.includes(path)) {
-      alert("El usuario no se encuentra autenticado para acceder a la página");
+      fireError("El usuario no se encuentra autenticado para acceder a la página");
       navigate("/inicio");
     } else if (
       !roles_pages[
         JSON.parse(localStorage.getItem("user"))?.rol
       ]?.includes(path)
     ) {
-      alert("El rol del usuario no tiene permisos para acceder a la página");
+      fireError("El rol del usuario no tiene permisos para acceder a la página");
       navigate(-1);
     }
   });

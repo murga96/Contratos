@@ -2,7 +2,44 @@ import Docxtemplater from "docxtemplater";
 import PizZip from "pizzip";
 import PizZipUtils from "pizzip/utils/index.js";
 import { saveAs } from "file-saver";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content"
 
+
+//sweetalert
+
+const MySwal = withReactContent(Swal)
+
+export const fireError = ( message) => {
+    MySwal.fire({
+        icon: "error",
+        title: "Error",
+        text: message,
+        background: "var(--surface-b)",
+        iconColor: "tomato",
+        color: "var(--text-color)",
+        customClass: {
+          confirmButton: 'p-button',
+        },
+        buttonsStyling: false
+      });
+}
+export const fireInfo = ( message) => {
+  MySwal.fire({
+      icon: "success",
+      title: "Información",
+      text: message,
+      background: "var(--surface-b)",
+      // iconColor: "tomato",
+      color: "var(--text-color)",
+      customClass:{
+        confirmButton: 'p-button',
+      },
+      buttonsStyling: false
+    });
+}
+
+//export
 const loadFile = (url, callback) => {
   PizZipUtils.getBinaryContent(url, callback);
 };

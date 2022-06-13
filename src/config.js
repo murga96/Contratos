@@ -9,6 +9,7 @@ import {
 } from "@apollo/client";
 import { onError } from "@apollo/client/link/error";
 import { setContext } from "@apollo/client/link/context";
+import { fireError } from './components/utils';
 
 
 export const setPrimeReactInitialConfig = () => {
@@ -116,7 +117,7 @@ export const setApolloConfig = () => {
   const handlingGraphQLError = (error) => {
     console.log(error);
     if (error.includes("Error: Cannot insert duplicate key row")) {
-      alert(
+      fireError(
         "[Error] No se puede guardar elementos de valor único repetidos en la base de datos. Revise sus datos y restricciones."
       );
     } else if (
@@ -124,20 +125,20 @@ export const setApolloConfig = () => {
         "Error: The DELETE statement conflicted with the REFERENCE constraint"
       )
     ) {
-      alert(
+      fireError(
         "[Error] No se puede eliminar elemento(s) que están siendo utilizados en la base de datos."
       );
     } else if (
       error.includes('Unexpected error value: "Usuario o contraseña incorrectos"')
     ) {
       // return;
-      alert("Usuario o contraseña incorrectos")
+      fireError("Usuario o contraseña incorrectos")
     } else if (error.includes("Unexpected error value:")) {
-      alert(error.split("value: ")[1]);
+      fireError(error.split("value: ")[1]);
     } else if (error.includes("Forbidden resource")) {
-      alert("No tiene autorización para acceder a este recurso");
+      fireError("No tiene autorización para acceder a este recurso");
     }else {
-      alert(`[GraphQL error]: Message: ${error}`);
+      fireError(`[GraphQL error]: Message: ${error}`);
     }
   };
   
@@ -154,11 +155,11 @@ export const setApolloConfig = () => {
       // graphQLErrors = null
       if (networkError) {
         if(networkError.message.includes("Failed to fetch")){
-          alert("Conexión fallida con el servidor")
+          fireError("Conexión fallida con el servidor")
           networkError = null;
         }
         else{
-          alert(`[Network error]: ${networkError}`);
+          fireError(`[Network error]: ${networkError}`);
           networkError = null;
 
         }

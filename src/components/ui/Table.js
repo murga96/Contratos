@@ -13,6 +13,7 @@ import { useNavigate } from "react-router";
 import { saveAs } from "file-saver";
 import { MultiSelect } from "primereact/multiselect";
 import { FilterService } from "primereact/api";
+import { fireError } from "../utils";
 
 export const Table = ({
   value,
@@ -214,7 +215,7 @@ export const Table = ({
     try {
       removeOne[0]({ variables: removeOne[1] });
     } catch (error) {
-      alert(error);
+      fireError(error);
     }
     setDeleteDialog(false);
   };
@@ -236,7 +237,7 @@ export const Table = ({
     try {
       removeSeveral[0]({ variables: removeSeveral[1] });
     } catch (error) {
-      alert(error);
+      fireError(error);
     }
     setDeleteMultipleDialog(false);
   };
@@ -264,7 +265,7 @@ export const Table = ({
       formProps.handle({ variables: formProps.variables });
     } catch (error) {
       console.log("object");
-      alert(error);
+      fireError(error);
     }
     setEditDialog(false);
   };

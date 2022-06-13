@@ -200,18 +200,19 @@ export const Navbar = (url) => {
         },
       ],
     },
+    havePermissionNavBar(user?.rol, "Usuarios") && {
+      label: "Usuarios",
+      icon: "pi pi-fw pi-bookmark",
+      command: () => {
+        navigate(`/Usuarios`);
+      },
+    },
     {
       label: "Configuración",
       icon: "pi pi-fw pi-cog",
-      items: [
-        havePermissionNavBar(user?.rol, "Usuarios") && {
-          label: "Usuarios",
-          icon: "pi pi-fw pi-bookmark",
-          command: () => {
-            navigate(`/Usuarios`);
-          },
-        },
-      ],
+      command: () => {
+        navigate(`/Configuracion`);
+      },
     },
   ];
   const menuUser = [

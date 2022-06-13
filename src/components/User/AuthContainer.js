@@ -6,6 +6,7 @@ import {
   autenticarUsuario,
   refreshToken,
 } from "../../database/GraphQLStatements";
+import { fireError } from "../utils";
 import { useToken } from "./useToken";
 // import { AuthEvents } from '../services/AuthEvents';
 
@@ -25,7 +26,7 @@ function useAuth() {
   });
 
   const onTokenInvalid = () => {
-    alert("El usuario no tiene permiso para acceder al sistema");
+    fireError("El usuario no tiene permiso para acceder al sistema");
     // setUser(null)
     navigate("/login");
   };
@@ -100,8 +101,8 @@ function useAuth() {
         })
         .catch(
           (error) => {
-            alert(error.message);
-          } /* alert("Credenciales inválidas.") */
+            fireError(error.message);
+          } /* fireError("Credenciales inválidas.") */
         );
     else
       refetch({ nombreUsuario: username, contrasena: password })
@@ -124,8 +125,8 @@ function useAuth() {
         })
         .catch(
           (error) => {
-            alert(error.message);
-          } /* alert("Credenciales inválidas.") */
+            fireError(error.message);
+          } /* fireError("Credenciales inválidas.") */
         );
   };
   /* [setToken]
@@ -141,7 +142,7 @@ function useAuth() {
       clearToken();
       localStorage.removeItem("user");
       navigate("/inicio");
-      alert(error.message);
+      fireError(error.message);
     }
   }
 

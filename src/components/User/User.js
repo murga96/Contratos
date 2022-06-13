@@ -15,6 +15,7 @@ import {
 import { ProgressSpinner } from "primereact/progressspinner";
 import { Button } from "primereact/button";
 import { MultiSelect } from "primereact/multiselect";
+import { fireInfo } from "../utils";
 
 export const Users = () => {
   const roles = useQuery(selectAllRoles);
@@ -80,7 +81,7 @@ export const Users = () => {
 
   const forzarPassword = (elem) => {
     forcePassword({ variables: { idUsuario: elem?.idUsuario } });
-    alert(
+    fireInfo(
       "La contraseña del usuario " +
         elem.nombreUsuario +
         " fue modificada a Nombre de usuario + * + Año actual"

@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 import { changePasswordUsuario } from "../../database/GraphQLStatements";
 import { useMutation } from "@apollo/client";
 import { useStateValue } from "../../StateProvider";
+import { fireError } from "../utils";
 
 export const ChangePassword = () => {
   const [{ user }, dispatch] = useStateValue();
@@ -51,7 +52,7 @@ export const ChangePassword = () => {
       });
       navigate("/");
     } catch (error) {
-      alert(error);
+      fireError(error);
     }
     reset();
   };
@@ -137,12 +138,11 @@ export const ChangePassword = () => {
               <Password
                 id={field.name}
                 {...field}
-                className="mb-3"
+                className="w-full mb-3"
                 inputClassName={classNames(
                   { "p-invalid": fieldState.invalid },
                   "w-full"
                 )}
-                className="w-full"
                 toggleMask
                 feedback={false}
               />
@@ -151,10 +151,9 @@ export const ChangePassword = () => {
           {getFormErrorMessage("newPasswordConfirm")}
           <div className="mt-3">
             <Button
-              className="mt-3"
+              className="w-full mt-3"
               type="submit"
               label="Aceptar"
-              className="w-full"
             />
           </div>
         </form>

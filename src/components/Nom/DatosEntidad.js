@@ -15,14 +15,6 @@ export const DatosEntidad = () => {
   //Table
   const filters = {
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-    codigo: {
-      operator: FilterOperator.AND,
-      constraints: [{ value: null, matchMode: FilterMatchMode.CONTAINS }],
-    },
-    codigo: {
-      operator: FilterOperator.AND,
-      constraints: [{ value: null, matchMode: FilterMatchMode.CONTAINS }],
-    },
     nombre: {
       operator: FilterOperator.AND,
       constraints: [{ value: null, matchMode: FilterMatchMode.CONTAINS }],
@@ -77,7 +69,6 @@ export const DatosEntidad = () => {
     },
   };
   let c = [
-    { field: "codigo", header: "Código" },
     { field: "nombre", header: "Nombre" },
     { field: "compaIa", header: "Compañía" },
     { field: "agenciaUsd", header: "Agencia USD" },
@@ -93,10 +84,8 @@ export const DatosEntidad = () => {
     { field: "licCComercio", header: "Licencia comercio" },
   ];
   let emptyElement = {
-    codigo: -1,
     nombre: "",
     compaIa: "",
-    codigo: "",
     agenciaUsd: "",
     codAgenciaUsd: "",
     cuentaUsd: "",
@@ -128,7 +117,6 @@ export const DatosEntidad = () => {
   //Form
   //React-hook-form
   const schema = yup.object().shape({
-    codigo: yup.number().required("Código es requerido"),
     nombre: yup.string().required("Nombre es requerido"),
     compaIa: yup.string().required("Compañía es requerido"),
     cuentaUsd: yup.string().required("Cuenta USD es requerido"),
@@ -145,20 +133,6 @@ export const DatosEntidad = () => {
   });
 
   let dataStruct = [
-    {
-      id: 1,
-      component: "InputNumber",
-      name: "codigo",
-      label: "Código*",
-      defaultValue: "",
-      props: {
-        showButtons: true,
-        min: 1,
-        allowEmpty: false,
-        step: 1,
-        type: "int",
-      },
-    },
     {
       id: 1,
       component: "InputText",

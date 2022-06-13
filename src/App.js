@@ -44,12 +44,11 @@ import { Proforma } from "./components/Proformas/Proforma";
 import { Compradores } from "./components/Nom/Compradores";
 import { DatosEntidad } from "./components/Nom/DatosEntidad";
 import { setApolloConfig, setAxiosConfig, setPrimeReactInitialConfig } from "./config";
+import { Configuracion } from "./components/Configuracion/Configuracion";
 
 function App() {
   setPrimeReactInitialConfig()
   const client = setApolloConfig()
-  
-  console.log(client)
   
   return (
     <div className="App">
@@ -79,6 +78,7 @@ function App() {
                 element={<AuthenticateRoute component={EtapasContratacion} path="/EtapasContratacion"/>}
               />
               <Route path="/Usuarios" element={<AuthenticateRoute component={Users} path="/Usuarios"/>} />
+              <Route path="/Configuracion" element={<AuthenticateRoute component={Configuracion} path="/Configuracion"/>} />
               <Route path="/BasesGenerales">
                 <Route index element={<AuthenticateRoute component={BasesGenerales} path="/BasesGenerales"/>} />
                 <Route

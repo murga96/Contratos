@@ -423,6 +423,32 @@ export const removeSeveralGruposDeCompra = gql`
   }
 `;
 
+//Confifguracion
+export const selectConfiguraciones = gql`
+  query selectConfiguraciones {
+    findAllConfiguracion {
+      idConfig
+      entidad {
+        idEntidad
+        nombre
+      }
+      lugarFirma
+      pathContratosPdf
+      vigenciaContrato
+      alertaVencContratos
+      idEntidad
+    }
+  }
+`;
+
+export const updateConfiguracion = gql`
+  mutation updateConfiguracion($createConfiguracionInput: CreateConfiguracionInput!) {
+    createConfiguracion(createConfiguracionInput: $createConfiguracionInput) {
+      lugarFirma
+    }
+  }
+`;
+
 //Formas de Pago
 export const selectFormasPago = gql`
   query selectAllFormasPago {
@@ -865,7 +891,7 @@ export const selectAllCompradores = gql`
       representante
       domicilio
       entidad {
-        codigo
+        idEntidad
         nombre
       }
       cargo
@@ -920,10 +946,7 @@ export const removeSeveralCompradores = gql`
 export const selectAllDatosEntidades = gql`
   query findAllDatosEntidad {
     findAllDatosEntidad {
-      compradores{
-        idComprador
-      }
-      codigo
+      idEntidad
       nombre
       compaIa
       agenciaUsd
@@ -944,10 +967,7 @@ export const selectAllDatosEntidades = gql`
 export const selectDatosEntidad = gql`
   query selectOneDatosEntidad($id: Int!) {
     findOneDatosEntidad(id: $id) {
-      compradores{
-        idComprador
-      }
-      codigo
+      idEntidad
       nombre
       compaIa
       agenciaUsd
@@ -966,7 +986,9 @@ export const selectDatosEntidad = gql`
 `;
 
 export const createDatosEntidad = gql`
-  mutation createDatosEntidad($createDatosEntidadInput: CreateDatosEntidadInput!) {
+  mutation createDatosEntidad(
+    $createDatosEntidadInput: CreateDatosEntidadInput!
+  ) {
     createDatosEntidad(createDatosEntidadInput: $createDatosEntidadInput) {
       nombre
     }
