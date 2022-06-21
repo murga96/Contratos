@@ -42,9 +42,16 @@ export const Navbar = (url) => {
         navigate(`/BasesGenerales`);
       },
     },
-    havePermissionNavBar(user?.rol, "Contratos") && {
+    {
       label: "Contratos",
       icon: "pi pi-fw pi-bookmark",
+      items: [
+        havePermissionNavBar(user?.rol, "Negociaciones") && {
+          label: "Negociaciones",
+          icon: "pi pi-fw pi-bookmark",
+          command: () => navigate("/Negociaciones"),
+        },
+      ],
     },
     havePermissionNavBar(user?.rol, "Facturas") && {
       label: "Facturas",
@@ -99,14 +106,14 @@ export const Navbar = (url) => {
           label: "Formas",
           icon: "pi pi-fw pi-bookmark",
           items: [
-            havePermissionNavBar(user?.rol, "FormasPago") &&{
+            havePermissionNavBar(user?.rol, "FormasPago") && {
               label: "Formas de pago",
               icon: "pi pi-fw pi-bookmark",
               command: () => {
                 navigate(`/FormasPago`);
               },
             },
-            havePermissionNavBar(user?.rol, "FormasEntrega") &&{
+            havePermissionNavBar(user?.rol, "FormasEntrega") && {
               label: "Formas de entrega",
               icon: "pi pi-fw pi-bookmark",
               command: () => {
@@ -119,14 +126,14 @@ export const Navbar = (url) => {
           label: "Proformas",
           icon: "pi pi-fw pi-bookmark",
           items: [
-            havePermissionNavBar(user?.rol, "Proformas") &&{
+            havePermissionNavBar(user?.rol, "Proformas") && {
               label: "Proformas",
               icon: "pi pi-fw pi-bookmark",
               command: () => {
                 navigate(`/Proformas`);
               },
             },
-            havePermissionNavBar(user?.rol, "ProformasClausulas") &&{
+            havePermissionNavBar(user?.rol, "ProformasClausulas") && {
               label: "Clausulas de proformas",
               icon: "pi pi-fw pi-bookmark",
               command: () => {
@@ -292,26 +299,26 @@ export const Navbar = (url) => {
       </Link>
     );
   };
-  
+
   const recursiveMenuCheck = (item) => {
-    if (Object.keys(item).includes("items")/* has(item, "items") */) {
-        item.items = item.items.filter((i) => i);
-        item.items.forEach( (i) => recursiveMenuCheck(i))      
-    }else {
-        return ;
+    if (Object.keys(item).includes("items") /* has(item, "items") */) {
+      item.items = item.items.filter((i) => i);
+      item.items.forEach((i) => recursiveMenuCheck(i));
+    } else {
+      return;
     }
-  }
+  };
 
   //setting permissions
   const checkPermissionsNavBar = () => {
-      //eliminar los falsos primer nivel
+    //eliminar los falsos primer nivel
+    MenuModel = MenuModel.filter((item) => item);
+    MenuModel = MenuModel.map((item) => {
+      recursiveMenuCheck(item);
+      if (item.items?.length === 0) item = false;
       MenuModel = MenuModel.filter((item) => item);
-      MenuModel = MenuModel.map((item) => {
-          recursiveMenuCheck(item)
-          if(item.items?.length === 0) item = false
-          MenuModel = MenuModel.filter((item) => item);
-          return item
-        });
+      return item;
+    });
   };
   checkPermissionsNavBar();
 

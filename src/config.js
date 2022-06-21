@@ -1,4 +1,4 @@
-import PrimeReact from 'primereact/api';
+import PrimeReact from "primereact/api";
 import { addLocale, locale } from "primereact/api";
 import {
   ApolloClient,
@@ -9,8 +9,7 @@ import {
 } from "@apollo/client";
 import { onError } from "@apollo/client/link/error";
 import { setContext } from "@apollo/client/link/context";
-import { fireError } from './components/utils';
-
+import { fireError } from "./components/utils";
 
 export const setPrimeReactInitialConfig = () => {
   //setting locale
@@ -95,7 +94,7 @@ export const setPrimeReactInitialConfig = () => {
   locale("es");
   //setting ripple effect
   PrimeReact.ripple = true;
-}
+};
 
 export const setApolloConfig = () => {
   //setting default configs for axios
@@ -104,16 +103,16 @@ export const setApolloConfig = () => {
   });
   const authLink = setContext((_, { headers }) => {
     // return the headers to the context so httpLink can read them
-    console.log(localStorage.getItem("token"))
+    console.log(localStorage.getItem("token"));
     return {
       headers: {
         ...headers,
         // authorization: localStorage.getItem("token") ? `Bearer ${localStorage.getItem("token")}` : "",
-        authorization:  `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3VhcmlvIjp7ImlkVXN1YXJpbyI6MTAzNywiaWRFamVjdXRpdm8iOjI5Mywibm9tYnJlVXN1YXJpbyI6ImRhbmllbC5hY29zdGEiLCJjb250cmFzZW5hIjoiOFVTTTEyNG0xWXlIeUU2bWhOOTZTZWNzNEFZNTc5T1NMdzhtY2JCbEUuODlXSDJYaDlLUDIiLCJ1c3VhcmlvUm9sZXMiOlt7ImlkVXN1YXJpb1JvbCI6MTA5NiwiaWRVc3VhcmlvIjoxMDM3LCJpZFJvbCI6MX0seyJpZFVzdWFyaW9Sb2wiOjEwOTUsImlkVXN1YXJpbyI6MTAzNywiaWRSb2wiOjJ9XSwiZWplY3V0aXZvIjp7ImlkRWplY3V0aXZvIjoyOTMsImlkR3J1cG8iOjEsIm5vbWJyZSI6IkRhbmllbCBEYXZpZCBBY29zdGEgSGVycmVyYSIsImlkQ2FyZ28iOjYsImNvcnJlbyI6ImRhbmllbC5hY29zdGFAdHJkY2FyaWJlLmNvLmN1IiwiYWN0aXZvIjp0cnVlfX0sImlhdCI6MTY0ODczOTMxNH0.y2mfS24RqG1U9s4sVBlMWNb1dg4m-4yXNYAa43co8mI`,
+        authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3VhcmlvIjp7ImlkVXN1YXJpbyI6MTAzNywiaWRFamVjdXRpdm8iOjI5Mywibm9tYnJlVXN1YXJpbyI6ImRhbmllbC5hY29zdGEiLCJjb250cmFzZW5hIjoiOFVTTTEyNG0xWXlIeUU2bWhOOTZTZWNzNEFZNTc5T1NMdzhtY2JCbEUuODlXSDJYaDlLUDIiLCJ1c3VhcmlvUm9sZXMiOlt7ImlkVXN1YXJpb1JvbCI6MTA5NiwiaWRVc3VhcmlvIjoxMDM3LCJpZFJvbCI6MX0seyJpZFVzdWFyaW9Sb2wiOjEwOTUsImlkVXN1YXJpbyI6MTAzNywiaWRSb2wiOjJ9XSwiZWplY3V0aXZvIjp7ImlkRWplY3V0aXZvIjoyOTMsImlkR3J1cG8iOjEsIm5vbWJyZSI6IkRhbmllbCBEYXZpZCBBY29zdGEgSGVycmVyYSIsImlkQ2FyZ28iOjYsImNvcnJlbyI6ImRhbmllbC5hY29zdGFAdHJkY2FyaWJlLmNvLmN1IiwiYWN0aXZvIjp0cnVlfX0sImlhdCI6MTY0ODczOTMxNH0.y2mfS24RqG1U9s4sVBlMWNb1dg4m-4yXNYAa43co8mI`,
       },
     };
   });
-  
+
   const handlingGraphQLError = (error) => {
     console.log(error);
     if (error.includes("Error: Cannot insert duplicate key row")) {
@@ -129,37 +128,44 @@ export const setApolloConfig = () => {
         "[Error] No se puede eliminar elemento(s) que están siendo utilizados en la base de datos."
       );
     } else if (
-      error.includes('Unexpected error value: "Usuario o contraseña incorrectos"')
+      error.includes(
+        'Unexpected error value: "Usuario o contraseña incorrectos"'
+      )
     ) {
       // return;
-      fireError("Usuario o contraseña incorrectos")
+      fireError("Usuario o contraseña incorrectos");
     } else if (error.includes("Unexpected error value:")) {
       fireError(error.split("value: ")[1]);
     } else if (error.includes("Forbidden resource")) {
       fireError("No tiene autorización para acceder a este recurso");
-    }else {
+    } else {
       fireError(`[GraphQL error]: Message: ${error}`);
     }
   };
-  
+
   const errorLink = onError(
     ({ graphQLErrors, networkError, response, operation }) => {
-      // console.log(graphQLErrors, networkError, response, operation)
-      if (graphQLErrors) {
-        graphQLErrors.map(({ message /* , locations, path */ }) => {
-          handlingGraphQLError(message);
+      console.log(graphQLErrors, "graphQLErrors");
+      console.log(networkError, "networkError");
+      console.log(response, "response");
+      console.log(operation, "operation");
+      if (graphQLErrors && graphQLErrors.length > 0) {
+        handlingGraphQLError(graphQLErrors[0]?.message);
+        graphQLErrors.map(({ message , locations, path }) => {
           message = null;
           return undefined;
         });
       }
       // graphQLErrors = null
       if (networkError) {
+        networkError.response = null
         if(networkError.message.includes("Failed to fetch")){
           fireError("Conexión fallida con el servidor")
           networkError = null;
         }
         else{
-          fireError(`[Network error]: ${networkError}`);
+          console.log(`[Network error]: ${networkError}`)
+          // fireError(`[Network error]: ${networkError}`);
           networkError = null;
 
         }
@@ -168,15 +174,14 @@ export const setApolloConfig = () => {
       if (response) {
         response.errors = null;
       }
-      // console.log(graphQLErrors, networkError, response, operation)
     }
   );
   const client = new ApolloClient({
-    link: from([errorLink,authLink.concat(httpLink)]),
+    link: from([errorLink, authLink.concat(httpLink)]),
     cache: new InMemoryCache({ addTypename: false }),
     //   onError: (e) => {
     //     console.log(JSON.stringify(e, null, 2))
     //  },
   });
   return client;
-}
+};

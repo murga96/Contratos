@@ -18,7 +18,7 @@ export const Configuracion = () => {
   const [configuracion, setConfiguracion] = useState(null);
   const navigate = useNavigate();
   const [formProps, setFormProps] = useState(null);
-  const { data: findAllConfiguracion, loading: loading } = useQuery(
+  const { data: findAllConfiguracion, loading: loading, error } = useQuery(
     selectConfiguraciones,
     {
       fetchPolicy: "network-only",
@@ -40,12 +40,10 @@ export const Configuracion = () => {
   let dataStruct = null;
 
   const save = (element) => {
-    console.log(element);
-    console.log(configuracion.idEntidad)
-    element.idEntidad = configuracion.idEntidad
+    element.idConfig = configuracion.idConfig
     
     updateBG({ variables: { createConfiguracionInput: element } }).then((resp) =>
-      navigate(-1)
+      navigate("/")
     );
   };
 
@@ -102,7 +100,7 @@ export const Configuracion = () => {
           label: "Vigencia contrato*:",
           props: {
               step: 10,
-              min: 10,
+              min: 1,
               showButtons: true,
               allowEmpty: false,
               type: "int",
@@ -117,7 +115,7 @@ export const Configuracion = () => {
           label: "Vencimiento contrato*:",
           props: {
               step: 10,
-              min: 10,
+              min: 1,
               showButtons: true,
               allowEmpty: false,
               type: "int",
@@ -135,7 +133,7 @@ export const Configuracion = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [configuracion, loading, loadingDE]);
-
+  
   return (
     <div>
       {(!configuracion || loading || loadingDE) && (
@@ -143,7 +141,10 @@ export const Configuracion = () => {
           <ProgressSpinner strokeWidth="3" />
         </div>
       )}
-      {configuracion && formProps && !loading && !loadingDE ? (
+      {error && (
+        <p>{error.message}</p>
+      )}
+      {configuracion && formProps && !loading && !loadingDE && !error ? (
         <div className="p-card p-4 m-5">
           <Form
             ref={formRef}

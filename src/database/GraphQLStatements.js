@@ -389,6 +389,135 @@ export const removeSeveralTiposContenedor = gql`
   }
 `;
 
+//NegociacionesResumen
+export const selectAllNegociacionesResumen = gql`
+  query selectAllNegociacionesResumen {
+    findAllNegociacionResumen {
+      idNegociacion
+      consecutivo
+      noNegociacion
+      fecha
+      comite
+      idTipoCompras
+      grupos {
+        idGrupo
+        grupos
+      }
+      monedas {
+        idMoneda
+        moneda
+      }
+      tiposDeCompras {
+        idTipoCompras
+        compras
+      }
+      negociacionProveedores {
+        idProveedor
+        importe
+        ladi
+        proveedor {
+          codigo
+          compaIa
+        }
+      }
+      mercancias
+      aprobada
+      cancelada
+      nota
+      importeTrd
+      importeGae
+      importeCuc
+      comentarios
+      operacion
+      tasa
+      terminado
+      negociacionProveedores {
+        idNegociacionProveedores
+        importe
+        ladi
+      }
+    }
+  }
+`;
+export const selectOneNegociacionesResumen = gql`
+  query selectOneNegociacionesResumen($idBasesG: Int!) {
+    findOneNegociacionResumen(id: $idBasesG) {
+      idNegociacion
+      consecutivo
+      noNegociacion
+      fecha
+      comite
+      idTipoCompras
+      grupos {
+        idGrupo
+        grupos
+      }
+      monedas {
+        idMoneda
+        moneda
+      }
+      tiposDeCompras {
+        idTipoCompras
+        compras
+      }
+      negociacionProveedores {
+        idProveedor
+        importe
+        ladi
+        idNegociacion
+        proveedor {
+          codigo
+          compaIa
+        }
+      }
+      mercancias
+      aprobada
+      cancelada
+      nota
+      importeTrd
+      importeGae
+      importeCuc
+      comentarios
+      operacion
+      tasa
+      terminado
+      negociacionProveedores {
+        idNegociacionProveedores
+        importe
+        ladi
+      }
+    }
+  }
+`;
+
+export const updateNegociacionResumen = gql`
+  mutation createNegociacionResumen(
+    $createNegociacionResumenInput: CreateNegociacionResumenInput!
+  ) {
+    createNegociacionResumen(
+      createNegociacionResumenInput: $createNegociacionResumenInput
+    ) {
+      consecutivo
+    }
+  }
+`;
+
+export const removeNegociacionResumen = gql`
+  mutation removeNegociacionResumen($id: Int!) {
+    removeNegociacionResumen(id: $id) {
+      consecutivo
+    }
+  }
+`;
+
+export const removeSeveralNegociacionResumen = gql`
+  mutation removeSeveralNegociacionResumen($id: [Int!]!) {
+    removeSeveralNegociacionResumen(id: $id) {
+      consecutivo
+    }
+  }
+`;
+
 //Grupos de Compra
 export const selectGrupos = gql`
   query selectAllGrupos {
@@ -423,7 +552,7 @@ export const removeSeveralGruposDeCompra = gql`
   }
 `;
 
-//Confifguracion
+//Configuracion
 export const selectConfiguraciones = gql`
   query selectConfiguraciones {
     findAllConfiguracion {
@@ -442,7 +571,9 @@ export const selectConfiguraciones = gql`
 `;
 
 export const updateConfiguracion = gql`
-  mutation updateConfiguracion($createConfiguracionInput: CreateConfiguracionInput!) {
+  mutation updateConfiguracion(
+    $createConfiguracionInput: CreateConfiguracionInput!
+  ) {
     createConfiguracion(createConfiguracionInput: $createConfiguracionInput) {
       lugarFirma
     }

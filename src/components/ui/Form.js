@@ -32,11 +32,11 @@ export const Form = forwardRef(({
     <FormProvider {...methods}>
       <form onSubmit={methods.handleSubmit(handle)}>
         <div {...formLayout}>
-          {data.map((item) => {
+          {data.map((item, i) => {
             return (
               <div {...item.fieldLayout}>
                 <Field
-                  key={item.id}
+                  key={i}
                   type={item.component}
                   name={item.name}
                   defaultValue={item.defaultValue}
@@ -52,14 +52,14 @@ export const Form = forwardRef(({
             { buttonsNames[0] && <Button
               label={buttonsNames[0]}
               icon="pi pi-check"
-              className="p-button-text"
+              className="mr-4"
               type="submit"
             />}
             {buttonsNames[1] && <Button
               label={buttonsNames[1]}
               type="button"
               icon="pi pi-times"
-              className="p-button-text"
+              // className="p-button-text"
               onClick={() => cancel()}
             />}
           </div>

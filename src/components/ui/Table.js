@@ -29,6 +29,7 @@ export const Table = ({
   filterDplay,
   filtersValues,
   edit,
+  enableDelete=true,
   exportData,
   removeOne,
   removeSeveral,
@@ -90,12 +91,16 @@ export const Table = ({
   const datatypeChecker = (col, i) => {
     let ret = "";
     const type = value.length > 0 && typeof Object.values(value[0])[i + 1];
+    console.log(type, col.field, "type")
     if (col.type) {
       console.log(col, "object");
       ret = col.type;
     } else if (type === "number") {
       ret = "numeric";
-    } else {
+    } else if (type === "float") {
+      ret = "numeric";
+    }
+     else {
       ret = "text";
     }
     return ret;
@@ -113,7 +118,7 @@ export const Table = ({
   const dynamicColumns = columns.map((col, i) => {
     return (
       <Column
-        key={!col.filterElement ? col.field : undefined}
+        key={i}
         field={col.field}
         header={col.header}
         sortable={
@@ -401,12 +406,12 @@ export const Table = ({
                   : editElement(rowData)
               }
             />
-            <Button
+            {enableDelete && <Button
               icon="pi pi-trash"
               className="p-button-rounded p-button-text p-button-danger"
               data-pr-tooltip="Eliminar"
               onClick={() => confirmDeleteElement(rowData)}
-            />
+            />}
           </div>
         )}
       </div>
@@ -432,13 +437,13 @@ export const Table = ({
               }
             }}
           />
-          <Button
+          {enableDelete && <Button
             label="Eliminar"
             icon="pi pi-trash"
             className="p-button-danger"
             onClick={confirmDeleteSelected}
             disabled={!selectedElement || !selectedElement.length}
-          />
+          />}
         </div>
       );
     else return undefined;
@@ -510,7 +515,7 @@ export const Table = ({
     </React.Fragment>
   );
   return (
-    <div class="p-card p-4">
+    <div className="p-card p-4">
       <Tooltip target=".export-buttons>button" position="bottom" />
       <Tooltip target=".action-table>button" position="bottom" />
       {exportData || edit ? (

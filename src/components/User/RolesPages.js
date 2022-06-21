@@ -26,6 +26,10 @@ export const roles_pages = {
     "/Compradores",
     "/DatosEntidad",
     "/Configuracion",
+    "/Negociaciones",
+    "/Negociaciones/Add",
+    "/Negociaciones/Edit",
+    "/Negociaciones/Detalle",
   ],
   ROLE_ENTRENADOR: [
     "/calendario",

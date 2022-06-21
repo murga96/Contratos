@@ -13,8 +13,10 @@ import { classNames } from "primereact/utils";
 import "./Field.css";
 import { Password } from "primereact/password";
 import { Button } from "primereact/button";
+import { DataTable } from "primereact/datatable";
+import { Column } from "primereact/column";
 
-export const Field = ({ type, name, defaultValue, props, label }) => {
+export const Field = ({ type, name, defaultValue, props, label}) => {
   const {
     control,
     formState: { errors },
@@ -370,6 +372,47 @@ export const Field = ({ type, name, defaultValue, props, label }) => {
           {getFormErrorMessage(name)}
         </div>
       );
+    case "DataTable":
+      return (
+        <div>
+          <label
+            htmlFor={name}
+            className={classNames(
+              { "p-error": errors.email },
+              "block text-900 font-medium mb-2"
+            )}
+          >
+            {label}
+          </label>
+          <Controller
+            name={name}
+            defaultValue={defaultValue}
+            control={control}
+            render={({ field, fieldState }) => {
+              console.log(props.value)
+              return (
+                <DataTable
+                  {...props}
+                  {...field}
+                  value={props.value}
+                  // onChange={(e) => field.onChange(e.target.value)}
+                  id={field.name}
+                  className={classNames(
+                    { "p-invalid": fieldState.invalid },
+                    "w-full mb-2",
+                    props?.className
+                  )}
+                >
+                  {props?.columns.map((item, i) => (
+                    <Column key={i} field={ item[0]} header={item[1]} />
+                  ))}
+                </DataTable>
+              );
+            }}
+          />
+          {getFormErrorMessage(name)}
+        </div>
+      );
     case "label":
       return (
         <label
@@ -398,6 +441,10 @@ export const Field = ({ type, name, defaultValue, props, label }) => {
           <div {...props}>{defaultValue}</div>
         </div>
       );
+    case "Custom":{
+      //defaultValue will be the custom component
+      const DefaultValue = defaultValue
+      return <DefaultValue />}
     case "EmptyCol":
       return <div />;
     default:
