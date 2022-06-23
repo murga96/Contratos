@@ -322,7 +322,8 @@ export const BasesGenerales = () => {
                 <Button
                 icon="pi pi-eye"
                 className="p-button-rounded p-button-text"
-                data-pr-tooltip="Ver"
+                tooltip="Ver"
+                tooltipOptions={{position: "bottom"}}
                 />,
                 (rowData) =>
                 navigate(
@@ -333,7 +334,8 @@ export const BasesGenerales = () => {
                   <Button
                     icon="pi pi-upload"
                     className="p-button-rounded p-button-text"
-                    data-pr-tooltip="Exportar"
+                    tooltip="Exportar"
+                    tooltipOptions={{position: "bottom"}}
                   />,
                   (rowData) =>
                   generateDocument(rowData)

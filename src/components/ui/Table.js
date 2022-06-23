@@ -90,7 +90,7 @@ export const Table = ({
 
   const datatypeChecker = (col, i) => {
     let ret = "";
-    const type = value.length > 0 && typeof Object.values(value[0])[i + 1];
+    const type = value?.length > 0 && typeof Object.values(value[0])[i + 1];
     console.log(type, col.field, "type")
     if (col.type) {
       console.log(col, "object");
@@ -124,7 +124,7 @@ export const Table = ({
         sortable={
           fieldSort === null ? false : true
         } /*  style={{flex: 1,justifyContent: "center"}} */
-        body={bodyChecker}
+        body={col.body ? col.body : bodyChecker}
         dataType={datatypeChecker(col, i)}
         filterField={col.filterField && col.filterField}
         filterElement={
@@ -166,12 +166,12 @@ export const Table = ({
         fp = formProps?.data[1];
       }
     }
-    for (let index = 0; index < formProps.data.length; index++) {
+    const entries = Object.entries(elem);
+    for (let index = 0; index < fp.length; index++) {
       // delete fp[0].defaultValue
-      console.log(formProps.data[index].name)
-      const entries = Object.entries(elem);
-
-        let value = entries[i][1];
+      console.log(fp[index].name)
+      let value = entries[i][1];
+      console.log(typeof value)
         if (Array.isArray(value)) {
           if (value.length > 0) {
             console.log("array");
@@ -186,11 +186,16 @@ export const Table = ({
           } else {
             fp[index].defaultValue = value;
           }
+        }else if (typeof value?.getMonth === "function") {
+          //Es objeto el valor
+          console.log("date");
+          //Obtener el id en vez del nombre (el id siempre ira primero en la consulta graphql)
+          fp[index].defaultValue = moment(value, moment.ISO_8601).toDate();
         } else if (typeof value === "object" && value) {
           //Es objeto el valor
           console.log("object");
           //Obtener el id en vez del nombre (el id siempre ira primero en la consulta graphql)
-          formProps.data[index].defaultValue = Object.values(value)[0];
+          fp[index].defaultValue = Object.values(value)[0];
         } else {
           console.log("normal");
           fp[index].defaultValue = value;
@@ -306,8 +311,10 @@ export const Table = ({
                     .toString()
                 );
               }
+            }else if (typeof get(index, x.dataKey)?.getMonth === "function") {
+              temp.push(moment(get(index, x.dataKey)).format("DD/MM/YYYY"));
             } else {
-              temp.push(get(index, x.dataKey));
+                temp.push(get(index, x.dataKey));
             }
           });
           arr.push(temp);
@@ -320,16 +327,22 @@ export const Table = ({
         //   },
         //   doc
         // )
-        doc.autoTable({
+        let settings = {
           head: [exportColumns.map((i) => i.title)],
           startY: doc.autoTable() + 50,
           margin: { horizontal: 10 },
-          styles: { overflow: "linebreak" },
+          styles: { overflow: "linebreak", minCellWidth: 50 },
           bodyStyles: { valign: "top" },
           theme: "striped",
           showHead: "everyPage",
+          rowPageBreak: 'auto',
+          horizontalPageBreak: true,
           body: arr,
-        });
+        }
+        if(exportColumns.length > 3){
+          settings.horizontalPageBreakRepeat = 0;
+        }
+        doc.autoTable(settings);
 
         doc.save(`${header}.pdf`);
       });

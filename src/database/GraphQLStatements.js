@@ -1248,6 +1248,68 @@ export const removeSeveralProforma = gql`
   }
 `;
 
+//CMarco
+export const selectOneContratoMarco = gql`
+  query selectOneContratoMarco($id: Int!) {
+    findOneContratoMarco(id: $id) {
+      idCMarco
+      fecha
+      monto
+      idProveedor
+      consecutivo
+      contratado
+      pendiente
+      proveedor {
+        codigo
+        compaIa
+      }
+    }
+  }
+`;
+export const selectAllContratoMarco = gql`
+  query selectAllContratoMarco {
+    findAllContratoMarco {
+      idCMarco
+      fecha
+      monto
+      idProveedor
+      consecutivo
+      contratado
+      pendiente
+      proveedor {
+        codigo
+        compaIa
+      }
+    }
+  }
+`;
+
+export const createContratoMarco = gql`
+  mutation createContratoMarco(
+    $createContratoMarcoInput: CreateContratoMarcoInput!
+  ) {
+    createContratoMarco(createContratoMarcoInput: $createContratoMarcoInput) {
+      consecutivo
+    }
+  }
+`;
+
+export const removeContratoMarco = gql`
+  mutation removeContratoMarco($id: Int!) {
+    removeContratoMarco(id: $id) {
+      consecutivo
+    }
+  }
+`;
+
+export const removeSeveralContratoMarco = gql`
+  mutation removeSeveralContratoMarco($id: [Int!]!) {
+    removeSeveralContratoMarco(id: $id) {
+      consecutivo
+    }
+  }
+`;
+
 // ProformaClausula
 export const selectAllProformaClausulas = gql`
   query selectAllProformaClausulas {

@@ -53,6 +53,7 @@ import { Negociaciones } from "./components/Negociaciones/Negociaciones";
 import { Negociacion } from "./components/Negociaciones/Negociacion";
 import { NegociacionAdd } from "./components/Negociaciones/NegociacionAdd";
 import { NegociacionEdit } from "./components/Negociaciones/NegociacionEdit";
+import { CMarco } from "./components/Contratos/CMarco";
 
 function App() {
   setPrimeReactInitialConfig();
@@ -213,6 +214,12 @@ function App() {
                   path="/Usuarios"
                   element={
                     <AuthenticateRoute component={Users} path="/Usuarios" />
+                  }
+                />
+                <Route
+                  path="/ContratoMarco"
+                  element={
+                    <AuthenticateRoute component={CMarco} path="/Usuarios" />
                   }
                 />
                 <Route

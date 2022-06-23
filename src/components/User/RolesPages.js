@@ -26,6 +26,7 @@ export const roles_pages = {
     "/Compradores",
     "/DatosEntidad",
     "/Configuracion",
+    "/ContratoMarco",
     "/Negociaciones",
     "/Negociaciones/Add",
     "/Negociaciones/Edit",

@@ -51,6 +51,11 @@ export const Navbar = (url) => {
           icon: "pi pi-fw pi-bookmark",
           command: () => navigate("/Negociaciones"),
         },
+        havePermissionNavBar(user?.rol, "ContratoMarco") && {
+          label: "Contrato Marco",
+          icon: "pi pi-fw pi-bookmark",
+          command: () => navigate("/ContratoMarco"),
+        },
       ],
     },
     havePermissionNavBar(user?.rol, "Facturas") && {
