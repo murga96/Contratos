@@ -96,7 +96,27 @@ export const BaseGeneralEdit = () => {
         showIcon: true,
         dateFormat: "dd/mm/yy",
       },
-      fieldLayout: { className: "col-3" },
+      fieldLayout: { className: "col-2" },
+    },
+    {
+      id: 4,
+      component: "InputText",
+      name: "noContrato",
+      defaultValue: baseG?.noContrato,
+      label: "No:",
+      props: {
+        disabled: true, className: "disabled"
+      },
+      fieldLayout: { className: "col-2" },
+    },
+    {
+      id: 4,
+      component: "InputText",
+      name: "lugardeFirma",
+      defaultValue: baseG?.lugardeFirma,
+      label: "Firma:",
+      props: {},
+      fieldLayout: { className: "col-2" },
     },
     {
       id: 3,
@@ -110,15 +130,6 @@ export const BaseGeneralEdit = () => {
         optionValue: "pais",
         filter: true,
       },
-      fieldLayout: { className: "col-3" },
-    },
-    {
-      id: 4,
-      component: "InputText",
-      name: "lugardeFirma",
-      defaultValue: baseG?.lugardeFirma,
-      label: "Firma:",
-      props: {},
       fieldLayout: { className: "col-3" },
     },
     {
@@ -161,6 +172,7 @@ export const BaseGeneralEdit = () => {
         options: findAllCompradores?.findAllCompradores,
         optionLabel: "representante",
         optionValue: "idComprador",
+        filter: true,
         onChange: (value) => {
           const comp = findAllCompradores.findAllCompradores.find(
             (item) => item.idComprador === value
@@ -184,6 +196,7 @@ export const BaseGeneralEdit = () => {
         options: findAllIncoterm?.findAllIncoterm,
         optionLabel: "abreviatura",
         optionValue: "idIncoterm",
+        filter: true,
       },
       fieldLayout: { className: "col-2" },
     },
@@ -268,7 +281,7 @@ export const BaseGeneralEdit = () => {
           : "",
       label: "Claúsula:",
       props: {
-        rows: 15,
+        rows: 9,
         onChange: (value) => {
           const tc = formRef?.current.getValue("tipoClausula");
           baseG.basesGeneralesClausulas.find(

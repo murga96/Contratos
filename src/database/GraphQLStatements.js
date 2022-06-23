@@ -875,6 +875,7 @@ export const selectAllBasesGenerales = gql`
       activo
       lugardeFirma
       fecha
+      fechaVencimiento
     }
   }
 `;

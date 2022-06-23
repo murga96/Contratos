@@ -20,6 +20,7 @@ import { MultiSelect } from "primereact/multiselect";
 import { Calendar } from "primereact/calendar";
 import moment from "moment";
 import {generateBGDocumentInternacional, generateBGDocumentNacional} from "./../utils"
+import { TriStateCheckbox } from "primereact/tristatecheckbox";
 
 export const BasesGenerales = () => {
   const navigate = useNavigate();
@@ -169,7 +170,7 @@ export const BasesGenerales = () => {
   };
   const filters = {
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-    consecutivo: {
+    noContrato: {
       operator: FilterOperator.AND,
       constraints: [{ value: null, matchMode: FilterMatchMode.CONTAINS }],
     },
@@ -197,10 +198,22 @@ export const BasesGenerales = () => {
       operator: FilterOperator.AND,
       constraints: [{ value: null, matchMode: FilterMatchMode.DATE_IS }],
     },
+    fechaVencimiento: {
+      operator: FilterOperator.AND,
+      constraints: [{ value: null, matchMode: FilterMatchMode.DATE_IS }],
+    },
+    aprobado: {
+      operator: FilterOperator.AND,
+      constraints: [{ value: null, matchMode: FilterMatchMode.CONTAINS }],
+    },
+    cancelado: {
+      operator: FilterOperator.AND,
+      constraints: [{ value: null, matchMode: FilterMatchMode.CONTAINS }],
+    },
   };
 
   let c = [
-    { field: "consecutivo", header: "Consecutivo" },
+    { field: "noContrato", header: "No." },
     {
       field: "tipoDeContrato.tipoContrato",
       header: "Tipo de Contrato",
@@ -259,6 +272,47 @@ export const BasesGenerales = () => {
         );
       },
     },
+    {
+      field: "fechaVencimiento",
+      header: "Fecha de Vencimiento",
+      type: "date",
+      filterElement1: (options) => {
+        return (
+          <Calendar
+            value={options.value}
+            onChange={(e) => {
+              options.filterApplyCallback(e.value, options.index);
+            }}
+            dateFormat="dd/mm/yy"
+            placeholder="Seleccione una fecha"
+          />
+        );
+      },
+    },
+    {
+      field: "aprobado",
+      header: "Aprobado",
+        filterElement1: (options) => {
+          return (
+            <TriStateCheckbox
+              value={options.value}
+              onChange={(e) => options.filterApplyCallback(e.value)}
+            />
+          );
+        }
+    },
+    {
+      field: "cancelado",
+      header: "Cancelado",
+        filterElement1: (options) => {
+          return (
+            <TriStateCheckbox
+              value={options.value}
+              onChange={(e) => options.filterApplyCallback(e.value)}
+            />
+          );
+        }
+    },
   ];
   let emptyElement = {
     consecutivo: "",
@@ -272,6 +326,7 @@ export const BasesGenerales = () => {
   useEffect(() => {
     basesGenerales.map((bg) => {
       bg.fecha = moment(bg.fecha, moment.ISO_8601).toDate();
+      bg.fechaVencimiento = moment(bg.fechaVencimiento, moment.ISO_8601).toDate();
       return bg;
     });
   });
