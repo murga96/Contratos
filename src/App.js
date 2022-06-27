@@ -30,14 +30,8 @@ import { BaseGeneralAdd } from "./components/BasesGenerales/BaseGeneralAdd";
 import { AuthContainer } from "./components/User/AuthContainer";
 import { AuthenticateRoute } from "./components/User/ProtectedRoute";
 import {
-  ApolloClient,
-  InMemoryCache,
   ApolloProvider,
-  from,
-  HttpLink,
-} from "@apollo/client";
-import { onError } from "@apollo/client/link/error";
-import { setContext } from "@apollo/client/link/context";
+  } from "@apollo/client";
 import { ProformaClausulas } from "./components/Nom/ProformaClausulas";
 import { Proformas } from "./components/Proformas/Proformas";
 import { Proforma } from "./components/Proformas/Proforma";
@@ -45,7 +39,6 @@ import { Compradores } from "./components/Nom/Compradores";
 import { DatosEntidad } from "./components/Nom/DatosEntidad";
 import {
   setApolloConfig,
-  setAxiosConfig,
   setPrimeReactInitialConfig,
 } from "./config";
 import { Configuracion } from "./components/Configuracion/Configuracion";
@@ -54,10 +47,14 @@ import { Negociacion } from "./components/Negociaciones/Negociacion";
 import { NegociacionAdd } from "./components/Negociaciones/NegociacionAdd";
 import { NegociacionEdit } from "./components/Negociaciones/NegociacionEdit";
 import { CMarco } from "./components/Contratos/CMarco";
+import { ProformaContratos } from "./components/Nom/ProformaContratos";
+import moment from "moment";
+import "moment/locale/es"
 
 function App() {
   setPrimeReactInitialConfig();
   const client = setApolloConfig();
+  moment.locale("es")
 
   return (
     <div className="App">
@@ -198,6 +195,15 @@ function App() {
                     <AuthenticateRoute
                       component={ProformaClausulas}
                       path="/ProformasClausulas"
+                    />
+                  }
+                />
+                <Route
+                  path="/ProformasContrato"
+                  element={
+                    <AuthenticateRoute
+                      component={ProformaContratos}
+                      path="/ProformasContrato"
                     />
                   }
                 />

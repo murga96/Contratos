@@ -114,7 +114,6 @@ export const setApolloConfig = () => {
   });
 
   const handlingGraphQLError = (error) => {
-    console.log(error);
     if (error.includes("Error: Cannot insert duplicate key row")) {
       fireError(
         "[Error] No se puede guardar elementos de valor único repetidos en la base de datos. Revise sus datos y restricciones."
@@ -145,13 +144,14 @@ export const setApolloConfig = () => {
 
   const errorLink = onError(
     ({ graphQLErrors, networkError, response, operation }) => {
-      console.log(graphQLErrors, "graphQLErrors");
-      console.log(networkError, "networkError");
-      console.log(response, "response");
-      console.log(operation, "operation");
+      // console.log(graphQLErrors, "graphQLErrors");
+      // console.log(networkError, "networkError");
+      // console.log(response, "response");
+      // console.log(operation, "operation");
       if (graphQLErrors && graphQLErrors.length > 0) {
         handlingGraphQLError(graphQLErrors[0]?.message);
         graphQLErrors.map(({ message , locations, path }) => {
+          console.log(message)
           message = null;
           return undefined;
         });

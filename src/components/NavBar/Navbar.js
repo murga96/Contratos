@@ -145,6 +145,13 @@ export const Navbar = (url) => {
                 navigate(`/ProformasClausulas`);
               },
             },
+            havePermissionNavBar(user?.rol, "ProformasContrato") && {
+              label: "Proformas de Contrato",
+              icon: "pi pi-fw pi-bookmark",
+              command: () => {
+                navigate(`/ProformasContrato`);
+              },
+            },
           ],
         },
         havePermissionNavBar(user?.rol, "GruposCompra") && {

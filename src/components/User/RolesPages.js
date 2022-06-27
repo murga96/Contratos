@@ -23,6 +23,7 @@ export const roles_pages = {
     "/Proformas",
     "/Proformas/Detalle",
     "/ProformasClausulas",
+    "/ProformasContrato",
     "/Compradores",
     "/DatosEntidad",
     "/Configuracion",
