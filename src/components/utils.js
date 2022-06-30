@@ -69,9 +69,14 @@ export const generateProformaDocument= (proforma) => {
           paragraphLoop: true,
           linebreaks: true,
         });
+        let pc = JSON.parse(JSON.stringify(proforma.proformaClausulas))
+        pc = pc.map( (i) => {
+          i.ordenClausula = i.orden
+          return i
+        })
         const o = {
           "tipoContrato": proforma.tipoDeContrato.tipoContrato, 
-          "proformaClausulas": proforma.proformaClausulas.sort(compareProformaClasulas).reverse(),
+          "proformaClausulas":pc.sort(compareProformaClasulas).reverse(),
           "fecha": moment(new Date()).format("dddd") + ", " + moment(new Date()).format("LL"),
         };
         doc.setData(o);

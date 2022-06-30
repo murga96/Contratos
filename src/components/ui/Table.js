@@ -17,6 +17,7 @@ import { fireError } from "../utils";
 
 export const Table = ({
   value,
+  dataKey,
   header,
   size,
   columns,
@@ -30,6 +31,8 @@ export const Table = ({
   filtersValues,
   edit,
   enableDelete=true,
+  expand=false,
+  expandTemplate,
   exportData,
   removeOne,
   removeSeveral,
@@ -41,6 +44,7 @@ export const Table = ({
   const dt = useRef(null);
   const navigate = useNavigate();
   const [selectedElement, setSelectedElement] = useState(null);
+  const [expandedRows, setExpandedRows] = useState(null);
   const [element, setElement] = useState({});
   const [editDialog, setEditDialog] = useState(false);
   const [deleteDialog, setDeleteDialog] = useState(false);
@@ -119,6 +123,7 @@ export const Table = ({
     return (
       <Column
         key={i}
+        fil
         field={col.field}
         header={col.header}
         sortable={
@@ -540,6 +545,7 @@ export const Table = ({
       ) : undefined}
       <DataTable
         value={value}
+        dataKey={dataKey}
         ref={dt}
         size={size}
         exportFilename={header}
@@ -562,9 +568,15 @@ export const Table = ({
         sortOrder={orderSort}
         filterDisplay={filterDplay}
         filters={filtersValues}
+        expandedRows={expand ?  expandedRows : undefined}
+        onRowToggle={expand ?  (e) => setExpandedRows(e.data) : undefined}
+        rowExpansionTemplate={expand ?  expandTemplate : undefined}
       >
-        {selectionType === "multiple" ? (
+        {(selectionType === "multiple" && !expand && enableDelete) ? (
           <Column selectionMode="multiple" exportable={false} />
+        ) : undefined}
+        {expand ? (
+          <Column expander style={{width: '3rem'}} exportable={false} />
         ) : undefined}
         {dynamicColumns}
         {edit || additionalButtons ? (

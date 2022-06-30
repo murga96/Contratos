@@ -72,9 +72,9 @@ export const CMarco = () => {
 
   const filters = {
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-    consecutivo: {
+    noContratoMarco: {
       operator: FilterOperator.AND,
-      constraints: [{ value: null, matchMode: FilterMatchMode.EQUALS }],
+      constraints: [{ value: null, matchMode: FilterMatchMode.CONTAINS }],
     },
     "proveedor.compaIa": {
       operator: FilterOperator.AND,
@@ -123,7 +123,7 @@ export const CMarco = () => {
   };
 
   let c = [
-    { field: "consecutivo", header: "Consecutivo", type: "numeric" },
+    { field: "noContratoMarco", header: "No. Contrato" },
     {
       field: "proveedor.compaIa",
       header: "Proveedor",

@@ -32,7 +32,7 @@ import { AuthenticateRoute } from "./components/User/ProtectedRoute";
 import {
   ApolloProvider,
   } from "@apollo/client";
-import { ProformaClausulas } from "./components/Nom/ProformaClausulas";
+import { ProformaClausulas } from "./components/ProformaClasulas/ProformaClausulas";
 import { Proformas } from "./components/Proformas/Proformas";
 import { Proforma } from "./components/Proformas/Proforma";
 import { Compradores } from "./components/Nom/Compradores";
@@ -47,9 +47,12 @@ import { Negociacion } from "./components/Negociaciones/Negociacion";
 import { NegociacionAdd } from "./components/Negociaciones/NegociacionAdd";
 import { NegociacionEdit } from "./components/Negociaciones/NegociacionEdit";
 import { CMarco } from "./components/Contratos/CMarco";
-import { ProformaContratos } from "./components/Nom/ProformaContratos";
+import { ProformaContratos } from "./components/ProformaClasulas/ProformaContratos";
 import moment from "moment";
 import "moment/locale/es"
+import { Contrato } from "./components/Contratos/Contrato";
+import { ContratoAdd } from "./components/Contratos/ContratoAdd";
+import { ContratoEdit } from "./components/Contratos/ContratoEdit";
 
 function App() {
   setPrimeReactInitialConfig();
@@ -295,6 +298,15 @@ function App() {
                     }
                   />
                   <Route
+                    path="/BasesGenerales/AddContract/"
+                    element={
+                      <AuthenticateRoute
+                        component={ContratoAdd}
+                        path="/BasesGenerales/AddContract"
+                      />
+                    }
+                  />
+                  <Route
                     path="/BasesGenerales/Edit/:BaseGeneral"
                     element={
                       <AuthenticateRoute
@@ -304,11 +316,31 @@ function App() {
                     }
                   />
                   <Route
+                    path="/BasesGenerales/EditContract/:Contrato"
+                    element={
+                      <AuthenticateRoute
+                        component={ContratoEdit}
+                        path="/BasesGenerales/EditContract"
+                      />
+                    }
+                  />
+                  <Route
                     path="/BasesGenerales/Detalle/:BaseGeneral"
                     element={
                       <AuthenticateRoute
                         component={BaseGeneral}
                         path="/BasesGenerales/Detalle"
+                      />
+                    }
+                  />
+                </Route>
+                <Route path="/Contratos">
+                  <Route
+                    path="/Contratos/Detalle/:BaseGeneral"
+                    element={
+                      <AuthenticateRoute
+                        component={Contrato}
+                        path="/Contratos/Detalle"
                       />
                     }
                   />

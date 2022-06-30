@@ -3,6 +3,8 @@ import { useQuery, useMutation } from "@apollo/client";
 import {
   selectAllProforma,
   createProforma,
+  selectAllTiposDeClausulas,
+  removeProformasClausulas,
 } from "../../database/GraphQLStatements";
 import { ProgressSpinner } from "primereact/progressspinner";
 import { Button } from "primereact/button";
@@ -12,8 +14,12 @@ import { InputTextarea } from "primereact/inputtextarea";
 import * as _ from "lodash";
 import { fireInfo, generateProformaDocument } from "../utils";
 import moment from "moment";
+import { Form } from "../ui/Form";
+import { Dialog } from "primereact/dialog";
+import * as yup from "yup";
 
 export const ProformaContratos = () => {
+  const [addClausulaDialog, setAddClausulaDialog] = useState(false);
   const [proformas, setProformas] = useState(null);
   const [proforma, setProforma] = useState(null);
   const [proformaClausula, setProformaClausula] = useState(null);
@@ -25,34 +31,107 @@ export const ProformaContratos = () => {
     onCompleted: (data) =>
       setProformas(JSON.parse(JSON.stringify(data?.findAllProforma))),
   });
+  const { data: dataPC } = useQuery(selectAllTiposDeClausulas, {
+    nextFetchPolicy: "network-only",
+  });
   const [updateElement] = useMutation(createProforma);
+  const [removePC] = useMutation(removeProformasClausulas);
 
   console.log(dataP);
   useEffect(() => {
     console.log(proformaClausula);
   }, [proformaClausula]);
-  
 
   //Form
   //React-hook-form
-  const informeClausulas = () => {generateProformaDocument(proforma)};
-  const guardarClausulas = async() => {
+  const informeClausulas = () => {
+    generateProformaDocument(proforma);
+  };
+  const guardarClausulas = async () => {
     let temp = _.omit(proforma, ["tipoDeContrato", "incoterm"]);
     temp.proformaClausulas = proforma.proformaClausulas.map((element) =>
       _.omit(element, "tiposDeClausulas")
     );
     try {
-      const resp = await updateElement({ variables: { createProformaInput: temp } });
-      console.log(resp)
-      if(resp) {
-        fireInfo("Las claúsulas de las bases generales fueron guardadas correctamente")
+      const resp = await updateElement({
+        variables: { createProformaInput: temp },
+      });
+      console.log(resp);
+      if (resp) {
+        fireInfo(
+          "Las claúsulas de las bases generales fueron guardadas correctamente"
+        );
       }
-      
     } catch (error) {
-      console.log(error)
-      
+      console.log(error);
     }
   };
+  const deleteClausula = () => {
+    removePC({variables: {id: proformaClausula?.idProformaClausula}})
+  };
+
+  const addClausula = ({tipoClausula, orden}) => {
+    proforma.proformaClausulas.push({
+      idProforma: proforma.idProforma,
+      idTipoClausula: tipoClausula.idTipoClausula,
+      orden: orden,
+      clausula: "",
+      tiposDeClausulas: tipoClausula
+    })
+    const lastPC = proforma.proformaClausulas[proforma.proformaClausulas.length -1]
+    setProformaClausula(lastPC)
+    setClausula(lastPC.clausula)
+    setAddClausulaDialog(false)
+  };
+
+  const schemaPC = yup.object().shape({
+    tipoClausula: yup.object().typeError("Seleccione un tipo de clausula"),
+    orden: yup.number().required("Orden es requerido"),
+  });
+
+  console.log(dataPC?.findAllTiposDeClausulas?.filter((pc) => pc.basesG));
+  let dataStructProformaClausula = [
+    {
+      id: 1,
+      component: "Dropdown",
+      name: "tipoClausula",
+      defaultValue: 0,
+      label: "Tipo de cláusula*",
+      props: {
+        options: dataPC?.findAllTiposDeClausulas?.filter(
+          (pc) =>
+            pc.basesG &&
+            proforma?.proformaClausulas?.findIndex((i) => {
+              return i.tiposDeClausulas.idTipoClausula === pc.idTipoClausula;
+            }) === -1
+        ),
+        optionLabel: "nombre",
+        placeholder: "Seleccione un tipo de cláusula",
+      },
+    },
+    {
+      id: 1,
+      component: "InputNumber",
+      name: "orden",
+      defaultValue: 1,
+      label: "Orden*",
+      props: {
+        step: 1,
+        type: "int",
+        allowEmpty: false,
+        showButtons: true,
+        size: 1,
+        min: 1,
+      },
+    },
+  ];
+
+  const formPropsProforma = {
+    data: dataStructProformaClausula,
+    schema: schemaPC,
+    buttonsNames: ["Aceptar"],
+  };
+
   return (
     <div className="p-4">
       {loadingP && (
@@ -84,7 +163,7 @@ export const ProformaContratos = () => {
             />
           </div>
           <div className="col-4 mt-4">
-          <h6 className="mb-3 text-lg">Proforma:</h6>
+            <h6 className="mb-3 text-lg">Proforma:</h6>
             <Dropdown
               className="w-full"
               value={proforma}
@@ -102,7 +181,7 @@ export const ProformaContratos = () => {
           <div className="col-6" />
           {proforma && (
             <div className="col-4 mt-4">
-              <h6 className="mb-3 text-lg">Tipo de claúsula:</h6>
+              <h6 className="mb-3 text-lg">Tipo de cláusula:</h6>
               <Dropdown
                 className="w-full"
                 value={proformaClausula}
@@ -112,13 +191,31 @@ export const ProformaContratos = () => {
                 }}
                 options={proforma?.proformaClausulas}
                 optionLabel="tiposDeClausulas.nombre"
-                placeholder="Seleccione un tipo de clausula"
+                placeholder="Seleccione un tipo de cláusula"
                 filter
               />
             </div>
           )}
           {proforma && (
-            <div className="col-1 mt-4 col-offset-7">
+            <div className="col-1 mt-6 flex align-items-center justify-content-between">
+              <Button
+                className="p-button-rounded"
+                icon="pi pi-plus"
+                tooltip="Adicionar cláusula"
+                tooltipOptions={{ position: "bottom" }}
+                onClick={() => setAddClausulaDialog(true)}
+              />
+              <Button
+                className="p-button-rounded"
+                icon="pi pi-minus"
+                tooltip="Eliminar cláusula"
+                tooltipOptions={{ position: "bottom" }}
+                onClick={deleteClausula}
+              />
+            </div>
+          )}
+          {proforma && (
+            <div className="col-1 mt-4 col-offset-6">
               <h6 className="mb-3 text-lg">Orden:</h6>
               <InputNumber
                 className="w-full"
@@ -129,7 +226,6 @@ export const ProformaContratos = () => {
                 size={1}
                 value={proformaClausula?.orden}
                 onValueChange={(e) => {
-                  console.log("first");
                   let pc = proforma.proformaClausulas.find(
                     (pc) =>
                       pc.idProformaClausula ===
@@ -142,7 +238,7 @@ export const ProformaContratos = () => {
           )}
           {proforma && (
             <div className="col-12">
-              <h6 className="my-3 text-lg">Claúsula:</h6>
+              <h6 className="my-3 text-lg">Cláusula:</h6>
               <InputTextarea
                 className="w-full"
                 rows={12}
@@ -159,6 +255,25 @@ export const ProformaContratos = () => {
               />
             </div>
           )}
+          <Dialog
+            visible={addClausulaDialog}
+            style={{ width: "450px" }}
+            header="Adicionar cláusula"
+            modal
+            breakpoints={{ "992px": "50vw", "768px": "65vw", "572px": "80vw" }}
+            resizable={false}
+            onHide={() => {
+              setAddClausulaDialog(false);
+            }}
+          >
+            <Form
+              data={formPropsProforma?.data}
+              schema={formPropsProforma?.schema}
+              handle={addClausula}
+              cancel={() => setAddClausulaDialog(false)}
+              buttonsNames={formPropsProforma?.buttonsNames}
+            />
+          </Dialog>
         </div>
       ) : undefined}
     </div>
