@@ -7,7 +7,7 @@ import {
   createProformaClausula,
   removeProformasClausulas,
   removeSeveralProformasClausulas,
-  selectAllProforma,
+  // selectAllProforma,
   selectAllProformaClausulas,
   selectAllTiposDeClausulas,
 } from "../../database/GraphQLStatements";
@@ -27,7 +27,7 @@ export const ProformaClausulas = () => {
     refetchQueries: ["selectAllProformaClausulas"],
   });
   const tipoClausula = useQuery(selectAllTiposDeClausulas);
-  const proformas = useQuery(selectAllProforma);
+  // const proformas = useQuery(selectAllProforma);
 
   //Table
   FilterService.register("filterArray", (value, filters) => {
@@ -42,16 +42,16 @@ export const ProformaClausulas = () => {
     return ret;
   });
   const RepresentativeFilterTemplate = ({ options, onChange }) => {
-    return (
-      <MultiSelect
-        value={options.value}
-        options={proformas?.data?.findAllProforma}
-        onChange={onChange}
-        optionLabel="nombreProfoma"
-        placeholder="Seleccione alguna proforma"
-        className="p-column-filter"
-      />
-    );
+    // return (
+    //   <MultiSelect
+    //     value={options.value}
+    //     options={proformas?.data?.findAllProforma}
+    //     onChange={onChange}
+    //     optionLabel="nombreProfoma"
+    //     placeholder="Seleccione alguna proforma"
+    //     className="p-column-filter"
+    //   />
+    // );
   };
   FilterService.register("filterArray1", (value, filters) => {
     let ret = false;
@@ -160,20 +160,20 @@ export const ProformaClausulas = () => {
         type: "int",
       }
     },
-    {
-        id: 3,
-        component: "Dropdown",
-        name: "idProforma",
-        label: "Proforma*",
-        defaultValue: 1,
-        props: {
-            options: proformas.data?.findAllProforma,
-            optionLabel: "nombreProfoma",
-            optionValue: "idProforma",
-            placeholder: "Selecciona una proforma",
-            filter: true,
-        },
-    },
+    // {
+    //     id: 3,
+    //     component: "Dropdown",
+    //     name: "idProforma",
+    //     label: "Proforma*",
+    //     defaultValue: 1,
+    //     props: {
+    //         options: proformas.data?.findAllProforma,
+    //         optionLabel: "nombreProfoma",
+    //         optionValue: "idProforma",
+    //         placeholder: "Selecciona una proforma",
+    //         filter: true,
+    //     },
+    // },
     {
       id: 4,
       component: "InputTextArea",

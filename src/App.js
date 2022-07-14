@@ -33,8 +33,6 @@ import {
   ApolloProvider,
   } from "@apollo/client";
 import { ProformaClausulas } from "./components/ProformaClasulas/ProformaClausulas";
-import { Proformas } from "./components/Proformas/Proformas";
-import { Proforma } from "./components/Proformas/Proforma";
 import { Compradores } from "./components/Nom/Compradores";
 import { DatosEntidad } from "./components/Nom/DatosEntidad";
 import {
@@ -298,7 +296,7 @@ function App() {
                     }
                   />
                   <Route
-                    path="/BasesGenerales/AddContract/"
+                    path="/BasesGenerales/AddContract/:idBaseGeneral"
                     element={
                       <AuthenticateRoute
                         component={ContratoAdd}
@@ -341,26 +339,6 @@ function App() {
                       <AuthenticateRoute
                         component={Contrato}
                         path="/Contratos/Detalle"
-                      />
-                    }
-                  />
-                </Route>
-                <Route path="/Proformas">
-                  <Route
-                    index
-                    element={
-                      <AuthenticateRoute
-                        component={Proformas}
-                        path="/Proformas"
-                      />
-                    }
-                  />
-                  <Route
-                    path="/Proformas/Detalle/:Proforma"
-                    element={
-                      <AuthenticateRoute
-                        component={Proforma}
-                        path="/Proformas/Detalle"
                       />
                     }
                   />

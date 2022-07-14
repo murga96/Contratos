@@ -5,7 +5,6 @@ import {
   selectAllCompradores,
   selectAllIncoterm,
   selectAllPaises,
-  selectAllProforma,
   selectAllProveedores,
   selectAllTipoContrato,
   updateBaseGeneral,
@@ -24,7 +23,7 @@ export const BaseGeneralAdd = () => {
   const [formProps, setFormProps] = useState(null);
   const [editDialog, setEditDialog] = useState(false);
   const [updateBG] = useMutation(updateBaseGeneral);
-  const { data: findAllProforma, loading:loadingP } = useQuery(selectAllProforma);
+  // const { data: findAllProforma, loading:loadingP } = useQuery(selectAllProforma);
   const { data: findAllTipoContrato, loading:loadingTC } = useQuery(selectAllTipoContrato);
   const { data: findAllPaises, loading:loadingPa } = useQuery(selectAllPaises);
   const { data: findAllProveedores, loading:loadingProv } = useQuery(selectAllProveedores);
@@ -337,40 +336,40 @@ export const BaseGeneralAdd = () => {
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [baseG,loadingComp, loadingP, loadingPa, loadingProv, loadingTC, loadingInc]);
+  }, [baseG,loadingComp, loadingPa, loadingProv, loadingTC, loadingInc]);
 
   const schemaP = yup.object().shape({
     proforma: yup.object().typeError("Seleccione una proforma"),
   });
 
   let dataStructProforma = [
-    {
-      id: 12,
-      component: "Dropdown",
-      name: "proforma",
-      defaultValue: 0,
-      label: "Proforma:",
-      props: {
-        options: findAllProforma?.findAllProforma,
-        optionLabel: "nombreProfoma",
-        placeholder: "Seleccione una proforma",
-      },
-    },
+    // {
+    //   id: 12,
+    //   component: "Dropdown",
+    //   name: "proforma",
+    //   defaultValue: 0,
+    //   label: "Proforma:",
+    //   props: {
+    //     options: findAllProforma?.findAllProforma,
+    //     optionLabel: "nombreProfoma",
+    //     placeholder: "Seleccione una proforma",
+    //   },
+    // },
   ];
   const formPropsProforma = {
     data: dataStructProforma,
     schema: schemaP /*, "handle":  updateElement, "variables": { cargo: {} } */,
     buttonsNames: ["Aceptar"],
   };
-  console.log(!baseG || loadingComp || loadingP || loadingPa || loadingProv || loadingTC || loadingInc, "eeeeeeeeee")
+  console.log(!baseG || loadingComp || loadingPa || loadingProv || loadingTC || loadingInc, "eeeeeeeeee")
   return (
     <div>
-      {(!baseG || loadingComp || loadingP || loadingPa || loadingProv || loadingTC || loadingInc) && (
+      {(!baseG || loadingComp || loadingPa || loadingProv || loadingTC || loadingInc) && (
         <div className="flex h-30rem justify-content-center align-items-center">
           <ProgressSpinner strokeWidth="3" />
         </div>
       )}
-      {(baseG && formProps && !loadingComp && !loadingP && !loadingPa && !loadingProv && !loadingTC && !loadingInc) ? (
+      {(baseG && formProps && !loadingComp  && !loadingPa && !loadingProv && !loadingTC && !loadingInc) ? (
         <div className="m-5">
           <Form
             ref={formRef}

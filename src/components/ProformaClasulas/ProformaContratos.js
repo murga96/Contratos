@@ -2,9 +2,11 @@ import React, { useState, useEffect } from "react";
 import { useQuery, useMutation } from "@apollo/client";
 import {
   selectAllProforma,
-  createProforma,
+  // createProforma,
   selectAllTiposDeClausulas,
   removeProformasClausulas,
+  selectAllTipoContrato,
+  selectAllIncoterm,
 } from "../../database/GraphQLStatements";
 import { ProgressSpinner } from "primereact/progressspinner";
 import { Button } from "primereact/button";
@@ -20,24 +22,37 @@ import * as yup from "yup";
 
 export const ProformaContratos = () => {
   const [addClausulaDialog, setAddClausulaDialog] = useState(false);
+  const [tiposDeContratos, setTiposDeContratos] = useState(null);
+  const [selectedTipoDeContrato, setSelectedTipoDeContrato] = useState(null);
+  const [incoterms, setIncoterms] = useState(null);
+  const [selectedIncoterm, setSelectedIncoterm] = useState(null);
   const [proformas, setProformas] = useState(null);
   const [proforma, setProforma] = useState(null);
   const [proformaClausula, setProformaClausula] = useState(null);
   const [clausula, setClausula] = useState(null);
 
   //graphQL
-  const { data: dataP, loadingP } = useQuery(selectAllProforma, {
+  // const { data: dataP, loadingP } = useQuery(selectAllProforma, {
+  //   nextFetchPolicy: "network-only",
+  //   onCompleted: (data) =>
+  //     setProformas(JSON.parse(JSON.stringify(data?.findAllProforma))),
+  // });
+  const { data: dataTC, loadingTC } = useQuery(selectAllTipoContrato, {
     nextFetchPolicy: "network-only",
     onCompleted: (data) =>
-      setProformas(JSON.parse(JSON.stringify(data?.findAllProforma))),
+      setTiposDeContratos(JSON.parse(JSON.stringify(data?.findAllTipoContrato))),
+  });
+  const { data: dataI, loadingI } = useQuery(selectAllIncoterm, {
+    nextFetchPolicy: "network-only",
+    onCompleted: (data) =>
+      setIncoterms(JSON.parse(JSON.stringify(data?.findAllIncoterm))),
   });
   const { data: dataPC } = useQuery(selectAllTiposDeClausulas, {
     nextFetchPolicy: "network-only",
   });
-  const [updateElement] = useMutation(createProforma);
+  // const [updateElement] = useMutation(createProforma);
   const [removePC] = useMutation(removeProformasClausulas);
 
-  console.log(dataP);
   useEffect(() => {
     console.log(proformaClausula);
   }, [proformaClausula]);
@@ -53,15 +68,15 @@ export const ProformaContratos = () => {
       _.omit(element, "tiposDeClausulas")
     );
     try {
-      const resp = await updateElement({
-        variables: { createProformaInput: temp },
-      });
-      console.log(resp);
-      if (resp) {
-        fireInfo(
-          "Las claúsulas de las bases generales fueron guardadas correctamente"
-        );
-      }
+      // const resp = await updateElement({
+      //   variables: { createProformaInput: temp },
+      // });
+      // console.log(resp);
+      // if (resp) {
+      //   fireInfo(
+      //     "Las claúsulas de las bases generales fueron guardadas correctamente"
+      //   );
+      // }
     } catch (error) {
       console.log(error);
     }
@@ -131,15 +146,17 @@ export const ProformaContratos = () => {
     schema: schemaPC,
     buttonsNames: ["Aceptar"],
   };
+  console.log(dataI)
+  console.log(dataTC)
 
   return (
     <div className="p-4">
-      {loadingP && (
+      {false && (
         <div className="flex h-30rem justify-content-center align-items-center">
           <ProgressSpinner strokeWidth="3" />
         </div>
       )}
-      {!loadingP ? (
+      {!false ? (
         <div className="p-card p-4 w-full h-full grid">
           <div className="col-4 text-2xl text-primary flex align-items-end">
             Proformas de Bases Generales
@@ -163,6 +180,22 @@ export const ProformaContratos = () => {
             />
           </div>
           <div className="col-4 mt-4">
+            <h6 className="mb-3 text-lg">Tipo Contrato:</h6>
+            <Dropdown
+              className="w-full"
+              value={selectedTipoDeContrato}
+              onChange={(e) => {
+                setSelectedTipoDeContrato(e.value);
+                setProformaClausula(e.value?.proformaClausulas[0]);
+                setClausula(e.value.proformaClausulas[0].clausula);
+              }}
+              options={tiposDeContratos}
+              optionLabel="nombreProfoma"
+              placeholder="Seleccione una proforma"
+              filter
+            />
+          </div>
+          <div className="col-4 mt-4">
             <h6 className="mb-3 text-lg">Proforma:</h6>
             <Dropdown
               className="w-full"
@@ -172,7 +205,7 @@ export const ProformaContratos = () => {
                 setProformaClausula(e.value?.proformaClausulas[0]);
                 setClausula(e.value.proformaClausulas[0].clausula);
               }}
-              options={proformas}
+              options={tiposDeContratos}
               optionLabel="nombreProfoma"
               placeholder="Seleccione una proforma"
               filter

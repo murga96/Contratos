@@ -46,9 +46,6 @@ export const selectAllTiposDeClausulas = gql`
       idTipoClausula
       nombre
       orden
-      basesG
-      compras
-      cMarco
       excepcional
     }
   }
@@ -60,9 +57,6 @@ export const updateTiposDeClausulas = gql`
       idTipoClausula
       nombre
       orden
-      basesG
-      compras
-      cMarco
       excepcional
     }
   }
@@ -215,7 +209,6 @@ export const selectAllIncoterm = gql`
       idIncoterm
       nombre
       abreviatura
-      nota
       activo
     }
   }
@@ -800,6 +793,29 @@ export const selectAllRoles = gql`
     }
   }
 `;
+//Naviera
+export const selectAllCompaniasNavieras = gql`
+  query selectAllCompaniasNavieras {
+    findAllCompaniasNavieras {
+      id
+      nombre
+      diasdegracia
+    }
+  }
+`;
+//Seguros
+export const selectAllAgenciasAseguradoras = gql`
+  query selectAllAgenciasAseguradoras {
+    findAllAgenciasAseguradoras {
+      idAgenciaS
+      nombre
+      direccion
+      telefono
+      contacto
+      valor
+    }
+  }
+`;
 
 //Bases Generales
 export const selectAllBasesGenerales = gql`
@@ -883,7 +899,6 @@ export const selectAllBasesGenerales = gql`
         idMoneda
         idFormaEntrega
         idNegociacion
-        idFichaCosto
         realizadoPor
         firmadoPor
         modificadoPor
@@ -939,9 +954,6 @@ export const selectAllBasesGenerales = gql`
           consecutivo
           noNegociacion
         }
-        fichaCostoResumen {
-          idFicha
-        }
         ejecutivoRealiza {
           idEjecutivo
           nombre
@@ -984,9 +996,6 @@ export const selectAllBasesGenerales = gql`
         }
         facturaResumen {
           idFactura
-        }
-        fichaCompraResumen {
-          idFicha
         }
         suplementoEmbarques {
           idSuplementoEmbarques
@@ -1317,85 +1326,85 @@ export const selectAllProveedores = gql`
   }
 `;
 
-//Proforma
-export const selectOneProforma = gql`
-  query selectOneProforma($id: Int!) {
-    findOneProforma(id: $id) {
-      idProforma
-      nombreProfoma
-      proformaClausulas {
-        idProformaClausula
-        idProforma
-        idTipoClausula
-        orden
-        clausula
-        tiposDeClausulas {
-          idTipoClausula
-          nombre
-          basesG
-        }
-      }
-      tipoDeContrato {
-        tipoContrato
-      }
-      incoterm {
-        nombre
-        abreviatura
-      }
-      idTipoContrato
-      idIncoterm
-      activa
-      cMarcoF
-    }
-  }
-`;
-export const selectAllProforma = gql`
-  query selectAllProforma {
-    findAllProforma {
-      idProforma
-      nombreProfoma
-      idTipoContrato
-      idIncoterm
-      activa
-      cMarcoF
-      tipoDeContrato {
-        tipoContrato
-      }
-      proformaClausulas {
-        idProformaClausula
-        idProforma
-        idTipoClausula
-        orden
-        clausula
-        tiposDeClausulas {
-          idTipoClausula
-          nombre
-          basesG
-        }
-      }
-      incoterm {
-        nombre
-        abreviatura
-      }
-    }
-  }
-`;
+// //Proforma
+// export const selectOneProforma = gql`
+//   query selectOneProforma($id: Int!) {
+//     findOneProforma(id: $id) {
+//       idProforma
+//       nombreProfoma
+//       proformaClausulas {
+//         idProformaClausula
+//         idProforma
+//         idTipoClausula
+//         orden
+//         clausula
+//         tiposDeClausulas {
+//           idTipoClausula
+//           nombre
+//           basesG
+//         }
+//       }
+//       tipoDeContrato {
+//         tipoContrato
+//       }
+//       incoterm {
+//         nombre
+//         abreviatura
+//       }
+//       idTipoContrato
+//       idIncoterm
+//       activa
+//       cMarcoF
+//     }
+//   }
+// `;
+// export const selectAllProforma = gql`
+//   query selectAllProforma {
+//     findAllProforma {
+//       idProforma
+//       nombreProfoma
+//       idTipoContrato
+//       idIncoterm
+//       activa
+//       cMarcoF
+//       tipoDeContrato {
+//         tipoContrato
+//       }
+//       proformaClausulas {
+//         idProformaClausula
+//         idProforma
+//         idTipoClausula
+//         orden
+//         clausula
+//         tiposDeClausulas {
+//           idTipoClausula
+//           nombre
+//           basesG
+//         }
+//       }
+//       incoterm {
+//         nombre
+//         abreviatura
+//       }
+//     }
+//   }
+// `;
 
-export const createProforma = gql`
-  mutation createProforma($createProformaInput: CreateProformaInput!) {
-    createProforma(createProformaInput: $createProformaInput) {
-      nombreProfoma
-    }
-  }
-`;
+// export const createProforma = gql`
+//   mutation createProforma($createProformaInput: CreateProformaInput!) {
+//     createProforma(createProformaInput: $createProformaInput) {
+//       nombreProfoma
+//     }
+//   }
+// `;
 
-export const removeProforma = gql`
-  mutation removeProforma($id: Int!) {
-    removeProforma(id: $id) {
-      nombreProfoma
-    }
-  }
-`;
+// export const removeProforma = gql`
+//   mutation removeProforma($id: Int!) {
+//     removeProforma(id: $id) {
+//       nombreProfoma
+//     }
+//   }
+// `;
 
 export const removeSeveralProforma = gql`
   mutation removeSeveralProforma($id: [Int!]!) {
@@ -1415,7 +1424,6 @@ export const selectAllContrato = gql`
       idMoneda
       idFormaEntrega
       idNegociacion
-      idFichaCosto
       realizadoPor
       firmadoPor
       modificadoPor
@@ -1475,9 +1483,6 @@ export const selectAllContrato = gql`
         consecutivo
         noNegociacion
       }
-      fichaCostoResumen {
-        idFicha
-      }
       ejecutivoRealiza {
         idEjecutivo
         nombre
@@ -1520,9 +1525,6 @@ export const selectAllContrato = gql`
       }
       facturaResumen {
         idFactura
-      }
-      fichaCompraResumen {
-        idFicha
       }
       suplementoEmbarques {
         idSuplementoEmbarques
@@ -1635,6 +1637,8 @@ export const selectAllContratoMarco = gql`
     }
   }
 `;
+
+
 
 export const createContratoMarco = gql`
   mutation createContratoMarco(

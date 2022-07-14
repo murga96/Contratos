@@ -16,7 +16,7 @@ import { Button } from "primereact/button";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 
-export const Field = ({ type, name, defaultValue, props, label}) => {
+export const Field = ({ type, name, defaultValue, props, label }) => {
   const {
     control,
     formState: { errors },
@@ -167,7 +167,6 @@ export const Field = ({ type, name, defaultValue, props, label}) => {
                   "w-full mb-2",
                   props?.className
                 )}
-                
               />
             )}
           />
@@ -216,10 +215,7 @@ export const Field = ({ type, name, defaultValue, props, label}) => {
         <Button
           type="button"
           {...props}
-          className={classNames(
-            " mb-2",
-            props?.className
-          )}
+          className={classNames(" mb-2", props?.className)}
         />
       );
     case "Dropdown":
@@ -389,7 +385,7 @@ export const Field = ({ type, name, defaultValue, props, label}) => {
             defaultValue={defaultValue}
             control={control}
             render={({ field, fieldState }) => {
-              console.log(props.value)
+              console.log(props.value);
               return (
                 <DataTable
                   {...props}
@@ -404,7 +400,7 @@ export const Field = ({ type, name, defaultValue, props, label}) => {
                   )}
                 >
                   {props?.columns.map((item, i) => (
-                    <Column key={i} field={ item[0]} header={item[1]} />
+                    <Column key={i} field={item[0]} header={item[1]} />
                   ))}
                 </DataTable>
               );
@@ -441,10 +437,11 @@ export const Field = ({ type, name, defaultValue, props, label}) => {
           <div {...props}>{defaultValue}</div>
         </div>
       );
-    case "Custom":{
+    case "Custom": {
       //defaultValue will be the custom component
-      const DefaultValue = defaultValue
-      return <DefaultValue />}
+      const DefaultValue = defaultValue;
+      return DefaultValue ;
+    }
     case "EmptyCol":
       return <div />;
     default:

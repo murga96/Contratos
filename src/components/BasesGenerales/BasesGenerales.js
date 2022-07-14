@@ -30,6 +30,7 @@ import { TriStateCheckbox } from "primereact/tristatecheckbox";
 export const BasesGenerales = () => {
   const navigate = useNavigate();
   const [basesGenerales, setBasesGenerales] = useState([]);
+  const [idBG, setidBG] = useState(-1);
 
   //graphQL
   const { data, error, loading } = useQuery(selectAllBasesGenerales, {
@@ -453,10 +454,10 @@ export const BasesGenerales = () => {
       operator: FilterOperator.AND,
       constraints: [{ value: null, matchMode: FilterMatchMode.CONTAINS }],
     },
-    "moneda.moneda": {
-      operator: FilterOperator.AND,
-      constraints: [{ value: null, matchMode: FilterMatchMode.CONTAINS }],
-    },
+    // "moneda.moneda": {
+    //   operator: FilterOperator.AND,
+    //   constraints: [{ value: null, matchMode: FilterMatchMode.CONTAINS }],
+    // },
     "terminado": {
       operator: FilterOperator.AND,
       constraints: [{ value: null, matchMode: FilterMatchMode.EQUALS }],
@@ -501,13 +502,13 @@ export const BasesGenerales = () => {
       ],
       filterField: "negociacionResumen.noNegociacion",
     },
-    {
-      field: "moneda.moneda",
-      header: "Moneda",
-      filterElement: RepresentativeFilterTemplate1C,
-      filterMatchModeOptions: [{ label: "Moneda", value: "filterMoneda" }],
-      filterField: "moneda.moneda",
-    },
+    // {
+    //   field: "moneda.moneda",
+    //   header: "Moneda",
+    //   filterElement: RepresentativeFilterTemplate1C,
+    //   filterMatchModeOptions: [{ label: "Moneda", value: "filterMoneda" }],
+    //   filterField: "moneda.moneda",
+    // },
     {
       field: "terminado",
       header: "Terminado",
@@ -615,7 +616,7 @@ export const BasesGenerales = () => {
                   ),
                   ],
               ]}
-              editLinks={["AddContract", "EditContract"]}
+              editLinks={[`AddContract/${idBG}`, "EditContract"]}
             />
           </div> 
         ) : //poner cargar
@@ -652,6 +653,7 @@ export const BasesGenerales = () => {
             exportData={true}
             expand={true}
             expandTemplate={contratosT}
+            onRowToggle={(e) => {setidBG(e.data?.idBasesGenerales)}}
             emptyElement={emptyElement}
             additionalButtons={[
               [
@@ -676,7 +678,7 @@ export const BasesGenerales = () => {
                   ),
               ],
             ]}
-            editLinks={["Add", "Edit"]}
+            editLinks={[`Add`, "Edit"]}
           />
         </div>
       ) : //poner cargar

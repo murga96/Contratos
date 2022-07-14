@@ -33,6 +33,7 @@ export const Table = ({
   enableDelete=true,
   expand=false,
   expandTemplate,
+  onRowToggle,
   exportData,
   removeOne,
   removeSeveral,
@@ -569,7 +570,8 @@ export const Table = ({
         filterDisplay={filterDplay}
         filters={filtersValues}
         expandedRows={expand ?  expandedRows : undefined}
-        onRowToggle={expand ?  (e) => setExpandedRows(e.data) : undefined}
+        onRowToggle={expand ?  (e) => {setExpandedRows(e.data);} : undefined}
+        onRowExpand={expand ?  (e) => {onRowToggle(e)} : undefined}
         rowExpansionTemplate={expand ?  expandTemplate : undefined}
       >
         {(selectionType === "multiple" && !expand && enableDelete) ? (

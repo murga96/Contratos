@@ -266,7 +266,7 @@ export const NegociacionAdd = () => {
     }
   };
 
-  const tableComponent = () => {
+  const TableComponent = () => {
     return (
       <DataTable
         value={negociacion?.negociacionProveedores}
@@ -479,7 +479,7 @@ export const NegociacionAdd = () => {
       id: 6,
       component: "Custom",
       name: "customTable",
-      defaultValue: tableComponent,
+      defaultValue: <TableComponent/>,
       fieldLayout: { className: "col-12" },
     },
   ];
@@ -540,6 +540,7 @@ export const NegociacionAdd = () => {
             data={formProps?.data}
             schema={formProps?.schema}
             handle={saveNegociacion}
+            cancel={() => navigate(-1)}
             buttonsNames={formProps?.buttonsNames}
             formLayout={{ className: "grid" }}
           />
