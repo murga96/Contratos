@@ -19,13 +19,11 @@ export const Incoterms = () => {
     "global": { value: null, matchMode: FilterMatchMode.CONTAINS },
     "nombre": { value: null, matchMode: FilterMatchMode.CONTAINS },
     "abreviatura": { value: null, matchMode: FilterMatchMode.CONTAINS },
-    "nota": { value: null, matchMode: FilterMatchMode.CONTAINS },
     "activo": { value: null, matchMode: FilterMatchMode.CONTAINS },
   };
   let c = [
     { field: "nombre", header: "Nombre"},
     { field: "abreviatura", header: "Abreviatura"},
-    { field: "nota", header: "Nota"},
     { field: "activo", header: "Activo",filterElement1: (options) => {
       return (
         <TriStateCheckbox
@@ -35,7 +33,7 @@ export const Incoterms = () => {
       );
     },},
   ];
-  let emptyElement = {"nombre": "", "abreviatura": "", "nota": "",  "activo": false}
+  let emptyElement = {"nombre": "", "abreviatura": "", "activo": false}
 
   //graphQL
   const { data, error, loading } = useQuery(selectAllIncoterm);
@@ -54,7 +52,6 @@ export const Incoterms = () => {
   const schema = yup.object().shape({
     nombre: yup.string().required("Nombre es requerido"),
     abreviatura: yup.string().required("Abreviatura es requerido"),
-    nota: yup.string().required("Nota es requerido"),
     activo: yup.bool(),
   });
 
@@ -71,13 +68,6 @@ export const Incoterms = () => {
       component: "InputText",
       name: "abreviatura",
       label: "Abreviatura*",
-      defaultValue: "",
-    },
-    {
-      id: 6,
-      component: "InputTextArea",
-      name: "nota",
-      label: "Nota*",
       defaultValue: "",
     },
     {
