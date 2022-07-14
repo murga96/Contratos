@@ -18,50 +18,11 @@ export const ClauseTypes = () => {
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
     nombre: { value: null, matchMode: FilterMatchMode.CONTAINS },
     orden: { value: null, matchMode: FilterMatchMode.EQUALS },
-    basesG: { value: null, matchMode: FilterMatchMode.EQUALS },
-    compras: { value: null, matchMode: FilterMatchMode.EQUALS },
-    cMarco: { value: null, matchMode: FilterMatchMode.EQUALS },
     excepcional: { value: null, matchMode: FilterMatchMode.EQUALS },
   };
   let c = [
     { field: "nombre", header: "Nombre" },
     { field: "orden", header: "Orden" },
-    {
-      field: "basesG",
-      header: "Bases Generales",
-      filterElement1: (options) => {
-        return (
-          <TriStateCheckbox
-            value={options.value}
-            onChange={(e) => options.filterApplyCallback(e.value)}
-          />
-        );
-      },
-    },
-    {
-      field: "compras",
-      header: "Compras",
-      filterElement1: (options) => {
-        return (
-          <TriStateCheckbox
-            value={options.value}
-            onChange={(e) => options.filterApplyCallback(e.value)}
-          />
-        );
-      },
-    },
-    {
-      field: "cMarco",
-      header: "Contrato Marco",
-      filterElement1: (options) => {
-        return (
-          <TriStateCheckbox
-            value={options.value}
-            onChange={(e) => options.filterApplyCallback(e.value)}
-          />
-        );
-      },
-    },
     {
       field: "excepcional",
       header: "Excepcional",
@@ -78,9 +39,6 @@ export const ClauseTypes = () => {
   let emptyElement = {
     nombre: "",
     orden: "",
-    basesG: false,
-    compras: false,
-    cMarco: false,
     excepcional: false,
   };
 
@@ -106,9 +64,6 @@ export const ClauseTypes = () => {
       .typeError("Orden tiene que ser de tipo númerico")
       .integer("Orden tiene que ser un número entero")
       .positive("Orden tiene que ser un número positivo"),
-    basesG: yup.bool(),
-    compras: yup.bool(),
-    cMarco: yup.bool(),
     excepcional: yup.bool(),
   });
 
@@ -125,27 +80,6 @@ export const ClauseTypes = () => {
       component: "InputText",
       name: "orden",
       label: "Orden*",
-      defaultValue: "",
-    },
-    {
-      id: 6,
-      component: "CheckBox",
-      name: "basesG",
-      label: "Bases Generales",
-      defaultValue: "",
-    },
-    {
-      id: 8,
-      component: "CheckBox",
-      label: "Compras",
-      name: "compras",
-      defaultValue: "",
-    },
-    {
-      id: 10,
-      component: "CheckBox",
-      name: "cMarco",
-      label: "Contrato Marco",
       defaultValue: "",
     },
     {
