@@ -19,7 +19,6 @@ export const ContratoStep = ({
   dataN,
   dataMoneda,
   dataIncoterms,
-  dataSeguros,
   dataNav,
   dataFE,
   dataEjecutivos,
@@ -74,6 +73,8 @@ export const ContratoStep = ({
     temp.cancelado = false;
     temp.idPais = dataBG?.findOneBasesGenerales?.idPais;
     temp.idBasesGenerales = dataBG?.findOneBasesGenerales?.idBasesGenerales;
+    //TODO Hay que poner el usuario autenticado
+    temp.realizadoPor = contrato?.idEjecutivo
     // temp.contratoClausulas = temp.contratoClausulas.map((i) => {
     //   let t = omit(i, "tipoClausula");
     //   return t;
@@ -93,7 +94,7 @@ export const ContratoStep = ({
     idMoneda: yup.number().typeError("Seleccione una moneda"),
     // idFormaEntrega: yup.number().typeError("Seleccione una forma de entrega"),
     // idNegociacion: yup.object().typeError("Seleccione una negociación"),
-    // realizadoPor: yup.number().typeError("Seleccione un ejecutivo"),
+    // idEjecutivo: yup.number().typeError("Seleccione un ejecutivo"),
     // firmadoPor: yup.number().typeError("Seleccione un comprador"),
     // idIncoterm: yup.number().typeError("Seleccione una condición de compra"),
     // lugarFirma: yup.string().required("Lugar de firma es requerido"),
@@ -272,17 +273,10 @@ export const ContratoStep = ({
     },
     {
       id: 3,
-      component: "Dropdown",
-      name: "idEmpresaSeguro",
-      defaultValue: contrato?.idEmpresaSeguro,
+      component: "InputText",
+      name: "empresaSeguro",
+      defaultValue: contrato?.empresaSeguro,
       label: "Seguros:",
-      props: {
-        options: dataSeguros?.findAllAgenciasAseguradoras,
-        optionLabel: "nombre",
-        optionValue: "idAgenciaS",
-        filter: true,
-        placeholder: "Seleccione un Seguro",
-      },
       fieldLayout: { className: "col-2" },
     },
     {
@@ -303,8 +297,8 @@ export const ContratoStep = ({
     {
       id: 3,
       component: "Dropdown",
-      name: "realizadoPor",
-      defaultValue: contrato?.realizadoPor,
+      name: "idEjecutivo",
+      defaultValue: contrato?.idEjecutivo,
       label: "Ejecutivo:",
       props: {
         options: dataEjecutivos?.findAllEjecutivos,

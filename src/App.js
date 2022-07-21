@@ -191,15 +191,6 @@ function App() {
                   }
                 />
                 <Route
-                  path="/ProformasClausulas"
-                  element={
-                    <AuthenticateRoute
-                      component={ProformaClausulas}
-                      path="/ProformasClausulas"
-                    />
-                  }
-                />
-                <Route
                   path="/ProformasContrato"
                   element={
                     <AuthenticateRoute

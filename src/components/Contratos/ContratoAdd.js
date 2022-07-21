@@ -3,7 +3,6 @@ import { Form } from "../ui/Form";
 import * as yup from "yup";
 import {
   createContrato,
-  selectAllAgenciasAseguradoras,
   selectAllCompaniasNavieras,
   selectAllCompradores,
   selectAllContratoMarco,
@@ -46,8 +45,9 @@ export const ContratoAdd = () => {
       0,
       "",
       "",
+      "ESICUBA",
       null,
-      null,
+      "",
       "",
       "",
       "",
@@ -71,6 +71,7 @@ export const ContratoAdd = () => {
   );
   console.log(contrato)
   
+  
 
   //graphql
   const { data: dataCMarco, loading: loadingCM } = useQuery(
@@ -89,9 +90,6 @@ export const ContratoAdd = () => {
   const { data: dataMoneda, loading: loadingM } = useQuery(selectAllMonedas);
   const { data: dataNav, loading: loadingNav } = useQuery(
     selectAllCompaniasNavieras
-  );
-  const { data: dataSeguros, loading: loadingSeg } = useQuery(
-    selectAllAgenciasAseguradoras
   );
   const [addContrato] = useMutation(createContrato);
   
@@ -115,7 +113,6 @@ export const ContratoAdd = () => {
         loadingInc &&
         loadingM &&
         loadingN &&
-        loadingSeg &&
         loadingC &&
         loadingNav && (
           <div className="flex h-30rem justify-content-center align-items-center">
@@ -130,7 +127,6 @@ export const ContratoAdd = () => {
         loadingM ||
         loadingN ||
         loadingNav ||
-        loadingSeg ||
         loadingC
       ) ? (
         <div>
@@ -150,7 +146,6 @@ export const ContratoAdd = () => {
                 dataN={dataN}
                 dataMoneda={dataMoneda}
                 dataIncoterms={dataIncoterms}
-                dataSeguros={dataSeguros}
                 dataNav={dataNav}
                 dataFE={dataFE}
                 dataEjecutivos={dataEjecutivos}

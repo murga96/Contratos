@@ -55,9 +55,9 @@ const compareProformaClasulas = (a, b) => {
   return 0
 }
 
-export const generateProformaDocument= (proforma) => {
+export const generateProformaDocument= (proformasClausulas, tipoDeContrato, incoterm) => {
   
-  if (proforma) {
+  if (proformasClausulas && tipoDeContrato) {
     loadFile(
       "http://localhost:3001/streaming/proformas",
       function (error, content) {
@@ -69,13 +69,13 @@ export const generateProformaDocument= (proforma) => {
           paragraphLoop: true,
           linebreaks: true,
         });
-        let pc = JSON.parse(JSON.stringify(proforma.proformaClausulas))
+        let pc = JSON.parse(JSON.stringify(proformasClausulas))
         pc = pc.map( (i) => {
           i.ordenClausula = i.orden
           return i
         })
         const o = {
-          "tipoContrato": proforma.tipoDeContrato.tipoContrato, 
+          "tipoContrato": tipoDeContrato.tipoContrato, 
           "proformaClausulas":pc.sort(compareProformaClasulas).reverse(),
           "fecha": moment(new Date()).format("dddd") + ", " + moment(new Date()).format("LL"),
         };
@@ -117,7 +117,7 @@ export const generateProformaDocument= (proforma) => {
           mimeType:
             "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
         }); //Output the document using Data-URI
-        saveAs(out, `${proforma.nombreProfoma} [${proforma.tipoDeContrato.tipoContrato}].docx`);
+        saveAs(out, `${incoterm.abreviatura} [${tipoDeContrato.tipoContrato}].docx`);
       }
     );
   }

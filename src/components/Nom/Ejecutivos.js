@@ -238,7 +238,7 @@ export const Ejecutivos = () => {
             removeOne={[removeTC, { id: -1 }]}
             removeSeveral={[removeSeverTC, { id: -1 }]}
             formProps={formProps}
-            emptyElement={emptyElement}
+            emptyElement={emptyElement}            
           />
         </div>
       ) : //poner cargar

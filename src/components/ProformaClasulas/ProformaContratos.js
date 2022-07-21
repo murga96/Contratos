@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useQuery, useMutation } from "@apollo/client";
+import { useQuery, useMutation, useLazyQuery } from "@apollo/client";
 import {
   selectAllProforma,
   // createProforma,
@@ -7,14 +7,17 @@ import {
   removeProformasClausulas,
   selectAllTipoContrato,
   selectAllIncoterm,
+  selectAllProformaClausulasById,
+  createSeveralProformaClausula,
 } from "../../database/GraphQLStatements";
 import { ProgressSpinner } from "primereact/progressspinner";
 import { Button } from "primereact/button";
+import { confirmDialog } from "primereact/confirmdialog";
 import { Dropdown } from "primereact/dropdown";
 import { InputNumber } from "primereact/inputnumber";
 import { InputTextarea } from "primereact/inputtextarea";
 import * as _ from "lodash";
-import { fireInfo, generateProformaDocument } from "../utils";
+import { fireError, fireInfo, generateProformaDocument } from "../utils";
 import moment from "moment";
 import { Form } from "../ui/Form";
 import { Dialog } from "primereact/dialog";
@@ -22,81 +25,125 @@ import * as yup from "yup";
 
 export const ProformaContratos = () => {
   const [addClausulaDialog, setAddClausulaDialog] = useState(false);
-  const [tiposDeContratos, setTiposDeContratos] = useState(null);
   const [selectedTipoDeContrato, setSelectedTipoDeContrato] = useState(null);
-  const [incoterms, setIncoterms] = useState(null);
   const [selectedIncoterm, setSelectedIncoterm] = useState(null);
-  const [proformas, setProformas] = useState(null);
   const [proforma, setProforma] = useState(null);
+  const [proformasClausulas, setProformasClausulas] = useState(null);
   const [proformaClausula, setProformaClausula] = useState(null);
   const [clausula, setClausula] = useState(null);
 
   //graphQL
-  // const { data: dataP, loadingP } = useQuery(selectAllProforma, {
-  //   nextFetchPolicy: "network-only",
-  //   onCompleted: (data) =>
-  //     setProformas(JSON.parse(JSON.stringify(data?.findAllProforma))),
-  // });
   const { data: dataTC, loadingTC } = useQuery(selectAllTipoContrato, {
     nextFetchPolicy: "network-only",
-    onCompleted: (data) =>
-      setTiposDeContratos(JSON.parse(JSON.stringify(data?.findAllTipoContrato))),
   });
   const { data: dataI, loadingI } = useQuery(selectAllIncoterm, {
     nextFetchPolicy: "network-only",
-    onCompleted: (data) =>
-      setIncoterms(JSON.parse(JSON.stringify(data?.findAllIncoterm))),
   });
-  const { data: dataPC } = useQuery(selectAllTiposDeClausulas, {
+  const { data: dataTClau } = useQuery(selectAllTiposDeClausulas, {
     nextFetchPolicy: "network-only",
   });
-  // const [updateElement] = useMutation(createProforma);
+  const [getProformaClausulasByIds] = useLazyQuery(
+    selectAllProformaClausulasById,
+    {
+      fetchPolicy: "network-only",
+    }
+  );
+  const [updateElements] = useMutation(createSeveralProformaClausula);
   const [removePC] = useMutation(removeProformasClausulas);
 
   useEffect(() => {
-    console.log(proformaClausula);
+    setClausula(proformaClausula?.clausula);
   }, [proformaClausula]);
+
+  const mostrarClausulas = () => {
+    getProformaClausulasByIds({
+      variables: {
+        idTipoContrato: selectedTipoDeContrato.idTipoContrato,
+        idIncoterm: selectedIncoterm.idIncoterm,
+      },
+      onCompleted: (data) => {
+        if (data) {
+          setProformasClausulas(data?.findAllProformaClausulasById);
+          if (
+            data?.findAllProformaClausulasById &&
+            data?.findAllProformaClausulasById?.length > 0
+          )
+            setProformaClausula(data?.findAllProformaClausulasById[0]);
+          else {
+            setProformaClausula(null);
+          }
+        }
+      },
+    });
+  };
 
   //Form
   //React-hook-form
   const informeClausulas = () => {
-    generateProformaDocument(proforma);
+    generateProformaDocument(
+      proformasClausulas,
+      selectedTipoDeContrato,
+      selectedIncoterm
+    );
   };
   const guardarClausulas = async () => {
-    let temp = _.omit(proforma, ["tipoDeContrato", "incoterm"]);
-    temp.proformaClausulas = proforma.proformaClausulas.map((element) =>
+    let tempPC = proformasClausulas.map((element) =>
       _.omit(element, "tiposDeClausulas")
     );
     try {
-      // const resp = await updateElement({
-      //   variables: { createProformaInput: temp },
-      // });
-      // console.log(resp);
-      // if (resp) {
-      //   fireInfo(
-      //     "Las claúsulas de las bases generales fueron guardadas correctamente"
-      //   );
-      // }
+      const resp = await updateElements({
+        variables: { createProformaClausulaInput: tempPC },
+      });
+      console.log(resp);
+      if (resp) {
+        fireInfo(
+          "Las claúsulas de las bases generales fueron guardadas correctamente"
+        );
+      }
     } catch (error) {
       console.log(error);
     }
   };
   const deleteClausula = () => {
-    removePC({variables: {id: proformaClausula?.idProformaClausula}})
+    removePC({ variables: { id: proformaClausula?.idProformaClausula } });
   };
 
-  const addClausula = ({tipoClausula, orden}) => {
-    proforma.proformaClausulas.push({
-      idProforma: proforma.idProforma,
+  //AddClausula
+  const checkIfWeCanAddClausula = () => {
+    return tipoClausulaForAddClausula?.length === 0;
+  };
+
+  const tipoClausulaForAddClausula = () => {
+    return dataTClau?.findAllTiposDeClausulas?.filter((tc) => {
+      if (selectedTipoDeContrato?.tipoContrato === "EXCEPCIONAL") {
+        return (
+          proformasClausulas?.findIndex((pc) => {
+            return pc.tiposDeClausulas.idTipoClausula === tc.idTipoClausula;
+          }) === -1 /* && tc.excepcional */
+        );
+      } else {
+        return (
+          proformasClausulas?.findIndex((pc) => {
+            // if (!pc.excepcional)
+            return pc.tiposDeClausulas.idTipoClausula === tc.idTipoClausula;
+          }) === -1 /* && !tc.excepcional */
+        );
+      }
+    });
+  };
+
+  const addClausula = ({ tipoClausula, orden }) => {
+    proformasClausulas.push({
       idTipoClausula: tipoClausula.idTipoClausula,
       orden: orden,
       clausula: "",
-      tiposDeClausulas: tipoClausula
-    })
-    const lastPC = proforma.proformaClausulas[proforma.proformaClausulas.length -1]
-    setProformaClausula(lastPC)
-    setClausula(lastPC.clausula)
-    setAddClausulaDialog(false)
+      tiposDeClausulas: tipoClausula,
+      idTipoContrato: selectedTipoDeContrato.idTipoContrato,
+      idIncoterm: selectedIncoterm.idIncoterm,
+    });
+    const lastPC = proformasClausulas[proformasClausulas.length - 1];
+    setProformaClausula(lastPC);
+    setAddClausulaDialog(false);
   };
 
   const schemaPC = yup.object().shape({
@@ -104,7 +151,6 @@ export const ProformaContratos = () => {
     orden: yup.number().required("Orden es requerido"),
   });
 
-  console.log(dataPC?.findAllTiposDeClausulas?.filter((pc) => pc.basesG));
   let dataStructProformaClausula = [
     {
       id: 1,
@@ -113,13 +159,7 @@ export const ProformaContratos = () => {
       defaultValue: 0,
       label: "Tipo de cláusula*",
       props: {
-        options: dataPC?.findAllTiposDeClausulas?.filter(
-          (pc) =>
-            pc.basesG &&
-            proforma?.proformaClausulas?.findIndex((i) => {
-              return i.tiposDeClausulas.idTipoClausula === pc.idTipoClausula;
-            }) === -1
-        ),
+        options: tipoClausulaForAddClausula(),
         optionLabel: "nombre",
         placeholder: "Seleccione un tipo de cláusula",
       },
@@ -146,73 +186,105 @@ export const ProformaContratos = () => {
     schema: schemaPC,
     buttonsNames: ["Aceptar"],
   };
-  console.log(dataI)
-  console.log(dataTC)
 
   return (
     <div className="p-4">
-      {false && (
+      {loadingTC && loadingI && (
         <div className="flex h-30rem justify-content-center align-items-center">
           <ProgressSpinner strokeWidth="3" />
         </div>
       )}
-      {!false ? (
+      {dataTC || dataI ? (
         <div className="p-card p-4 w-full h-full grid">
           <div className="col-4 text-2xl text-primary flex align-items-end">
             Proformas de Bases Generales
           </div>
-
-          <div className="col-2 col-offset-4 flex justify-content-end">
-            <Button
-              label="Guardar"
-              icon="pi pi-save"
-              onClick={guardarClausulas}
-              disabled={proforma === null}
-            />
-          </div>
-          <div className="col-2 flex justify-content-end lg:justify-content-center">
-            <Button
-              className="p-button-secondary"
-              label="Previzualizar"
-              icon="pi pi-search"
-              onClick={informeClausulas}
-              disabled={proforma === null}
-            />
-          </div>
+          <div className="col-8" />
           <div className="col-4 mt-4">
             <h6 className="mb-3 text-lg">Tipo Contrato:</h6>
             <Dropdown
               className="w-full"
               value={selectedTipoDeContrato}
               onChange={(e) => {
-                setSelectedTipoDeContrato(e.value);
-                setProformaClausula(e.value?.proformaClausulas[0]);
-                setClausula(e.value.proformaClausulas[0].clausula);
+                if (selectedTipoDeContrato && proformasClausulas)
+                  confirmDialog({
+                    message:
+                      "¿Está seguro que desea cambiar de tipo de contrato? Perderá los datos que no se hayan guardado.",
+                    header: "Confirmación",
+                    icon: "pi pi-exclamation-triangle",
+                    accept: () => {
+                      setSelectedTipoDeContrato(e.value);
+                      setProformasClausulas(null)
+                      setProformaClausula(null)
+                    },
+                  });
+                  else {
+                    setSelectedTipoDeContrato(e.value);
+                  }
               }}
-              options={tiposDeContratos}
-              optionLabel="nombreProfoma"
-              placeholder="Seleccione una proforma"
+              options={dataTC?.findAllTipoContrato}
+              optionLabel="tipoContrato"
+              placeholder="Seleccione un tipo de contrato"
               filter
             />
           </div>
           <div className="col-4 mt-4">
-            <h6 className="mb-3 text-lg">Proforma:</h6>
+            <h6 className="mb-3 text-lg">Condición de Compra:</h6>
             <Dropdown
               className="w-full"
-              value={proforma}
+              value={selectedIncoterm}
               onChange={(e) => {
-                setProforma(e.value);
-                setProformaClausula(e.value?.proformaClausulas[0]);
-                setClausula(e.value.proformaClausulas[0].clausula);
+                if (selectedIncoterm && proformasClausulas)
+                  confirmDialog({
+                    message:
+                      "¿Está seguro que desea cambiar la condición de compra? Perderá los datos que no se hayan guardado.",
+                    header: "Confirmación",
+                    icon: "pi pi-exclamation-triangle",
+                    accept: () => {
+                      setSelectedIncoterm(e.value);
+                      setProformasClausulas(null)
+                      setProformaClausula(null)
+                    },
+                  });
+                  else {
+                    setSelectedIncoterm(e.value);
+                  }
+                // setProformaClausula(e.value?.proformaClausulas[0]);
+                // setClausula(e.value.proformaClausulas[0].clausula);
               }}
-              options={tiposDeContratos}
-              optionLabel="nombreProfoma"
-              placeholder="Seleccione una proforma"
+              options={dataI?.findAllIncoterm}
+              optionLabel="abreviatura"
+              placeholder="Seleccione una condición de compra"
               filter
             />
           </div>
-          <div className="col-6" />
-          {proforma && (
+          {selectedIncoterm && selectedTipoDeContrato && (
+            <div className="col-2 flex align-items-end">
+              <Button
+                className=""
+                tooltip="Mostrar Cláusulas"
+                icon="pi pi-eye"
+                tooltipOptions={{ position: "bottom" }}
+                onClick={mostrarClausulas}
+              />
+              <Button
+                icon="pi pi-save"
+                tooltip="Guardar cláusulas"
+                className="ml-3"
+                tooltipOptions={{ position: "bottom" }}
+                onClick={guardarClausulas}
+                disabled={proformasClausulas === null}
+              />
+              <Button
+                icon="pi pi-search"
+                tooltip="Previzualizar cláusulas"
+                className="ml-3"
+                onClick={informeClausulas}
+                disabled={proformasClausulas === null}
+              />
+            </div>
+          )}
+          {proformasClausulas && (
             <div className="col-4 mt-4">
               <h6 className="mb-3 text-lg">Tipo de cláusula:</h6>
               <Dropdown
@@ -220,34 +292,37 @@ export const ProformaContratos = () => {
                 value={proformaClausula}
                 onChange={(e) => {
                   setProformaClausula(e.value);
-                  setClausula(e.value.clausula);
                 }}
-                options={proforma?.proformaClausulas}
+                options={proformasClausulas}
                 optionLabel="tiposDeClausulas.nombre"
                 placeholder="Seleccione un tipo de cláusula"
                 filter
               />
             </div>
           )}
-          {proforma && (
+          {proformasClausulas && (
             <div className="col-1 mt-6 flex align-items-center justify-content-between">
-              <Button
-                className="p-button-rounded"
-                icon="pi pi-plus"
-                tooltip="Adicionar cláusula"
-                tooltipOptions={{ position: "bottom" }}
-                onClick={() => setAddClausulaDialog(true)}
-              />
-              <Button
-                className="p-button-rounded"
-                icon="pi pi-minus"
-                tooltip="Eliminar cláusula"
-                tooltipOptions={{ position: "bottom" }}
-                onClick={deleteClausula}
-              />
+              {checkIfWeCanAddClausula && (
+                <Button
+                  className="p-button-rounded"
+                  icon="pi pi-plus"
+                  tooltip="Adicionar cláusula"
+                  tooltipOptions={{ position: "bottom" }}
+                  onClick={() => setAddClausulaDialog(true)}
+                />
+              )}
+              {proformasClausulas?.length > 0 && (
+                <Button
+                  className="p-button-rounded"
+                  icon="pi pi-minus"
+                  tooltip="Eliminar cláusula"
+                  tooltipOptions={{ position: "bottom" }}
+                  onClick={deleteClausula}
+                />
+              )}
             </div>
           )}
-          {proforma && (
+          {proformaClausula && (
             <div className="col-1 mt-4 col-offset-6">
               <h6 className="mb-3 text-lg">Orden:</h6>
               <InputNumber
@@ -259,7 +334,7 @@ export const ProformaContratos = () => {
                 size={1}
                 value={proformaClausula?.orden}
                 onValueChange={(e) => {
-                  let pc = proforma.proformaClausulas.find(
+                  let pc = proformasClausulas.find(
                     (pc) =>
                       pc.idProformaClausula ===
                       proformaClausula.idProformaClausula
@@ -269,7 +344,7 @@ export const ProformaContratos = () => {
               />
             </div>
           )}
-          {proforma && (
+          {proformaClausula && (
             <div className="col-12">
               <h6 className="my-3 text-lg">Cláusula:</h6>
               <InputTextarea
@@ -277,7 +352,7 @@ export const ProformaContratos = () => {
                 rows={12}
                 value={clausula}
                 onChange={(e) => {
-                  let pc = proforma.proformaClausulas.find(
+                  let pc = proformasClausulas.find(
                     (pc) =>
                       pc.idProformaClausula ===
                       proformaClausula.idProformaClausula

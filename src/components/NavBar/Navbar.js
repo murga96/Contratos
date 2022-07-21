@@ -132,32 +132,12 @@ export const Navbar = (url) => {
             },
           ],
         },
-        {
+        havePermissionNavBar(user?.rol, "ProformasContrato") && {
           label: "Proformas",
           icon: "pi pi-fw pi-bookmark",
-          items: [
-            havePermissionNavBar(user?.rol, "Proformas") && {
-              label: "Proformas",
-              icon: "pi pi-fw pi-bookmark",
-              command: () => {
-                navigate(`/Proformas`);
-              },
-            },
-            havePermissionNavBar(user?.rol, "ProformasClausulas") && {
-              label: "Clausulas de proformas",
-              icon: "pi pi-fw pi-bookmark",
-              command: () => {
-                navigate(`/ProformasClausulas`);
-              },
-            },
-            havePermissionNavBar(user?.rol, "ProformasContrato") && {
-              label: "Proformas de Contrato",
-              icon: "pi pi-fw pi-bookmark",
-              command: () => {
-                navigate(`/ProformasContrato`);
-              },
-            },
-          ],
+          command: () => {
+            navigate(`/ProformasContrato`);
+          },
         },
         havePermissionNavBar(user?.rol, "GruposCompra") && {
           label: "Grupos de compra",

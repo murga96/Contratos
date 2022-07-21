@@ -23,6 +23,7 @@ export const Table = ({
   columns,
   pagination,
   rowNumbers,
+  totalRecords,
   selectionType,
   sortRemove,
   fieldSort,
@@ -41,6 +42,8 @@ export const Table = ({
   emptyElement,
   additionalButtons,
   editLinks,
+  lazy,
+  lazyApiCall,
 }) => {
   const dt = useRef(null);
   const navigate = useNavigate();
@@ -51,6 +54,14 @@ export const Table = ({
   const [deleteDialog, setDeleteDialog] = useState(false);
   const [deleteMultipleDialog, setDeleteMultipleDialog] = useState(false);
   const [formData, setFormData] = useState(null);
+
+
+  const [loading, setLoading] = useState(false);
+  const [first, setFirst] = useState(0);
+  const [rows, setRows] = useState(rowNumbers?.length > 0 ? rowNumbers[0] : 10);
+  const [sortField, setSortField] = useState(fieldSort);
+  const [sortOrder, setSortOrder] = useState(orderSort);
+
   //header and columns
   const h = <div className="table-header">{header}</div>;
   console.log(value);
@@ -128,7 +139,7 @@ export const Table = ({
         field={col.field}
         header={col.header}
         sortable={
-          fieldSort === null ? false : true
+          sortField === undefined ? false : true
         } /*  style={{flex: 1,justifyContent: "center"}} */
         body={col.body ? col.body : bodyChecker}
         dataType={datatypeChecker(col, i)}
@@ -533,6 +544,33 @@ export const Table = ({
       />
     </React.Fragment>
   );
+   //lazy loading
+   const onPage = (event) => {
+    setLoading(true);
+    setRows(event.rows)
+    setFirst(event.first)
+    //apicall
+    try {
+      lazyApiCall({variables: {take: event.rows, skip: event.first}})
+    }catch(error) {
+      fireError("Ocurrió un error al cargar los datos")
+    }
+    setLoading(false)
+   }
+   const onFilter = (e) => {
+     
+   }
+
+   const onSort = (e) => {
+    setSortField(e.sortField)
+    setSortOrder(e.sortOrder)
+    try {
+      lazyApiCall({variables: {take: rows, skip: first, campo: e.sortField, orden: e.sortOrder}})
+    }catch(error) {
+      fireError("Ocurrió un error al cargar los datos")
+    }
+   }
+   
   return (
     <div className="p-card p-4">
       <Tooltip target=".export-buttons>button" position="bottom" />
@@ -551,11 +589,13 @@ export const Table = ({
         size={size}
         exportFilename={header}
         responsiveLayout="scroll"
-        paginator={value?.length <= rowNumbers[0] ? false : pagination}
-        paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
+        paginator={lazy ? true : value?.length <= rowNumbers[0] ? false : pagination}
+        paginatorTemplate={"FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"}
         currentPageReportTemplate={`{first} - {last} de {totalRecords}`}
         className="p-mt-6"
         rows={rowNumbers[0]}
+        first={first}
+        totalRecords={lazy && totalRecords}
         rowsPerPageOptions={rowNumbers}
         header={h}
         footer={`Filas: ${value ? value.length : 0}`}
@@ -565,14 +605,19 @@ export const Table = ({
           setSelectedElement(e.value);
         }}
         removableSort={sortRemove}
-        sortField={fieldSort}
-        sortOrder={orderSort}
+        sortField={sortField}
+        sortOrder={sortOrder}
         filterDisplay={filterDplay}
         filters={filtersValues}
         expandedRows={expand ?  expandedRows : undefined}
         onRowToggle={expand ?  (e) => {setExpandedRows(e.data);} : undefined}
         onRowExpand={expand ?  (e) => {onRowToggle(e)} : undefined}
         rowExpansionTemplate={expand ?  expandTemplate : undefined}
+        lazy={lazy}
+        onFilter={lazy && onFilter}
+        onSort={lazy && onSort}
+        onPage={lazy && onPage}
+        loading={loading}
       >
         {(selectionType === "multiple" && !expand && enableDelete) ? (
           <Column selectionMode="multiple" exportable={false} />
@@ -631,12 +676,6 @@ export const Table = ({
           )}
         </div>
       </Dialog>
-      {/* Array.isArray(formProps?.data[0])
-              ? Object.keys(element).length === 0 ||
-                !Object.keys(element)[0].includes("pk")
-                ? formProps?.data[1]
-                : formProps?.data[0]
-              : formProps?.data */}
       <Dialog
         visible={editDialog}
         style={{ width: "450px" }}

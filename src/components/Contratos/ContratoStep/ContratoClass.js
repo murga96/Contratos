@@ -9,8 +9,9 @@ export default class Contrato {
   tasaMoneda;
   fechaTasa;
   idIncoterm;
-  idEmpresaSeguro;
+  empresaSeguro;
   idEmpresaNaviera;
+  idEjecutivo;
   realizadoPor;
   producto;
   lugarEntrega;
@@ -42,8 +43,9 @@ export default class Contrato {
     tasaMoneda,
     fechaTasa,
     idIncoterm,
-    idEmpresaSeguro,
+    empresaSeguro,
     idEmpresaNaviera,
+    idEjecutivo,
     realizadoPor,
     producto,
     lugarEntrega,
@@ -74,8 +76,9 @@ export default class Contrato {
     this.tasaMoneda = tasaMoneda;
     this.fechaTasa = fechaTasa;
     this.idIncoterm = idIncoterm;
-    this.idEmpresaSeguro = idEmpresaSeguro;
+    this.empresaSeguro = empresaSeguro;
     this.idEmpresaNaviera = idEmpresaNaviera;
+    this.idEjecutivo = idEjecutivo;
     this.realizadoPor = realizadoPor;
     this.producto = producto;
     this.lugarEntrega = lugarEntrega;

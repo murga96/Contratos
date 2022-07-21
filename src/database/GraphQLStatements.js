@@ -818,8 +818,287 @@ export const selectAllAgenciasAseguradoras = gql`
 `;
 
 //Bases Generales
+// export const selectAllBasesGenerales = gql`
+//   query selectAllBasesGenerales {
+//     findAllBasesGenerales {
+//       idBasesGenerales
+//       consecutivo
+//       noContrato
+//       tipoDeContrato {
+//         idTipoContrato
+//         tipoContrato
+//         encabezado
+//         ambasPartes
+//       }
+//       incoterm {
+//         idIncoterm
+//         nombre
+//         abreviatura
+//       }
+//       proveedor {
+//         codigo
+//         compaIa
+//         cargo
+//         representante
+//         domicilio
+//         cuentaMn
+//         cuentaUsd
+//         agenciaMn
+//         agenciaUsd
+//         cargo
+//       }
+//       pais {
+//         pais
+//         nomb
+//       }
+//       compradores {
+//         idComprador
+//         nombre
+//         representante
+//         domicilio
+//         cargo
+//         entidad {
+//           codigoEnt
+//           cuentaUsd
+//           agenciaUsd
+//           cuentaMn
+//           agenciaMn
+//         }
+//       }
+//       basesGeneralesClausulas {
+//         idBasesGeneralesClausulas
+//         numero
+//         idBasesGenerales
+//         idTipoClausula
+//         tiposDeClausulas {
+//           idTipoClausula
+//           nombre
+//         }
+//         orden
+//         clausula
+//         excepcional
+//         modificado
+//       }
+//       idIncoterm
+//       idPais
+//       idProveedor
+//       idComprador
+//       vigencia
+//       aprobado
+//       cancelado
+//       activo
+//       lugardeFirma
+//       fecha
+//       fechaVencimiento
+//       contratos {
+//         idContrato
+//         idBasesGenerales
+//         idCMarco
+//         idMoneda
+//         idFormaEntrega
+//         idNegociacion
+//         realizadoPor
+//         firmadoPor
+//         modificadoPor
+//         lugarFirma
+//         consecutivo
+//         idIncoterm
+//         cancelado
+//         terminado
+//         modificado
+//         empresaSeguro
+//         idEmpresaNaviera
+//         lugarEntrega
+//         notas
+//         permitirEmbarquesParciales
+//         cantidadEp
+//         permitirEntregas
+//         permitirTrasbordos
+//         producto
+//         noEntregasParciales
+//         fechaElaboracion
+//         fechaInicial
+//         fechaFinal
+//         fechaFirma
+//         fechaRecepcion
+//         fechaArribo
+//         fechaPFirma
+//         financiamiento
+//         tasaMoneda
+//         fechaTasa
+//         pFin
+//         gastosLogisticos
+//         contratoClausulas {
+//           idContratoClausulas
+//           noClausula
+//           contenido
+//         }
+//         contratoMarco {
+//           idCMarco
+//           consecutivo
+//         }
+//         moneda {
+//           idMoneda
+//           moneda
+//           abreviatura
+//         }
+//         formaEntrega {
+//           idFormaEntrega
+//           formaEntrega
+//         }
+//         negociacionResumen {
+//           idNegociacion
+//           consecutivo
+//           noNegociacion
+//         }
+//         ejecutivoRealiza {
+//           idEjecutivo
+//           nombre
+//         }
+//         ejecutivoFirma {
+//           idEjecutivo
+//           nombre
+//         }
+//         ejecutivoModifica {
+//           idEjecutivo
+//           nombre
+//         }
+//         documentacionContratos {
+//           idDocumentacionContrato
+//           documentacion {
+//             idDocumento
+//             nombreFichero
+//             descripcion
+//           }
+//         }
+//         embarques {
+//           idEmbarque
+//           numero
+//           fechaEntrega
+//           terminado
+//           cancelado
+//           porFirmar
+//           flete
+//           seguro
+//           idContrato
+//           qtyCnt
+//           seguro
+//           financiamiento
+//           inspeccion
+//           otros
+//           c40
+//           c20
+//           actSci
+//         }
+//         facturaResumen {
+//           idFactura
+//         }
+//         suplementoEmbarques {
+//           idSuplementoEmbarques
+//         }
+//         suplementoResumen {
+//           idSuplementoResumen
+//         }
+//         suplementoClausulas {
+//           idSuplementoClausulas
+//         }
+//         companiaNaviera {
+//           id
+//           nombre
+//         }
+//         incoterm {
+//           idIncoterm
+//           nombre
+//           abreviatura
+//         }
+//       }
+//       idIncoterm
+//       idPais
+//       idProveedor
+//       idComprador
+//       vigencia
+//       aprobado
+//       cancelado
+//       activo
+//       lugardeFirma
+//       fecha
+//       fechaVencimiento
+//     }
+//   }
+// `;
+
+export const countBasesGenerales = gql`
+  query countBasesGenerales  {
+    countBasesGenerales{
+      cantidad
+    }
+    }
+    `;
+
 export const selectAllBasesGenerales = gql`
-  query selectAllBasesGenerales {
+  query selectAllBasesGenerales($take: Int, $skip: Int) {
+    findAllBasesGenerales(take: $take, skip: $skip) {
+      idBasesGenerales
+      consecutivo
+      noContrato
+      tipoDeContrato {
+        idTipoContrato
+        tipoContrato
+        encabezado
+        ambasPartes
+      }
+      incoterm {
+        idIncoterm
+        nombre
+        abreviatura
+      }
+      proveedor {
+        codigo
+        compaIa
+        cargo
+        representante
+        domicilio
+        cuentaMn
+        cuentaUsd
+        agenciaMn
+        agenciaUsd
+        cargo
+      }
+      pais {
+        pais
+        nomb
+      }
+      compradores {
+        idComprador
+        nombre
+        representante
+        domicilio
+        cargo
+        entidad {
+          codigoEnt
+          cuentaUsd
+          agenciaUsd
+          cuentaMn
+          agenciaMn
+        }
+      }
+      idIncoterm
+      idPais
+      idProveedor
+      idComprador
+      vigencia
+      aprobado
+      cancelado
+      activo
+      lugardeFirma
+      fecha
+      fechaVencimiento
+    }
+  }
+`;
+
+export const selectOneBasesGenerales = gql`
+  query selectOneBasesGenerales($idBasesG: Int!) {
     findAllBasesGenerales {
       idBasesGenerales
       consecutivo
@@ -869,7 +1148,6 @@ export const selectAllBasesGenerales = gql`
         idBasesGeneralesClausulas
         numero
         idBasesGenerales
-        idProformaClausula
         idTipoClausula
         tiposDeClausulas {
           idTipoClausula
@@ -883,7 +1161,6 @@ export const selectAllBasesGenerales = gql`
       idIncoterm
       idPais
       idProveedor
-      idProforma
       idComprador
       vigencia
       aprobado
@@ -905,11 +1182,10 @@ export const selectAllBasesGenerales = gql`
         lugarFirma
         consecutivo
         idIncoterm
-        idPais
         cancelado
         terminado
         modificado
-        idEmpresaSeguro
+        empresaSeguro
         idEmpresaNaviera
         lugarEntrega
         notas
@@ -984,7 +1260,6 @@ export const selectAllBasesGenerales = gql`
           flete
           seguro
           idContrato
-          idEjecutivo
           qtyCnt
           seguro
           financiamiento
@@ -1006,20 +1281,9 @@ export const selectAllBasesGenerales = gql`
         suplementoClausulas {
           idSuplementoClausulas
         }
-        pais {
-          codpais
-          pais
-          nomb
-        }
         companiaNaviera {
           id
           nombre
-        }
-        agenciaAseguradora {
-          idAgenciaS
-          nombre
-          direccion
-          telefono
         }
         incoterm {
           idIncoterm
@@ -1030,7 +1294,6 @@ export const selectAllBasesGenerales = gql`
       idIncoterm
       idPais
       idProveedor
-      idProforma
       idComprador
       vigencia
       aprobado
@@ -1039,83 +1302,6 @@ export const selectAllBasesGenerales = gql`
       lugardeFirma
       fecha
       fechaVencimiento
-    }
-  }
-`;
-
-export const selectOneBasesGenerales = gql`
-  query selectOneBasesGenerales($idBasesG: Int!) {
-    findOneBasesGenerales(id: $idBasesG) {
-      idBasesGenerales
-      consecutivo
-      noContrato
-      tipoDeContrato {
-        idTipoContrato
-        tipoContrato
-        encabezado
-        ambasPartes
-      }
-      incoterm {
-        idIncoterm
-        nombre
-        abreviatura
-      }
-      proveedor {
-        codigo
-        compaIa
-        cargo
-        representante
-        domicilio
-        cuentaMn
-        cuentaUsd
-        agenciaMn
-        agenciaUsd
-        cargo
-      }
-      pais {
-        pais
-        nomb
-      }
-      compradores {
-        idComprador
-        nombre
-        representante
-        domicilio
-        cargo
-        entidad {
-          codigoEnt
-          cuentaUsd
-          agenciaUsd
-          cuentaMn
-          agenciaMn
-        }
-      }
-      basesGeneralesClausulas {
-        idBasesGeneralesClausulas
-        numero
-        idBasesGenerales
-        idProformaClausula
-        idTipoClausula
-        tiposDeClausulas {
-          idTipoClausula
-          nombre
-        }
-        orden
-        clausula
-        excepcional
-        modificado
-      }
-      idIncoterm
-      idPais
-      idProveedor
-      idProforma
-      idComprador
-      vigencia
-      aprobado
-      cancelado
-      activo
-      lugardeFirma
-      fecha
     }
   }
 `;
@@ -1434,7 +1620,7 @@ export const selectAllContrato = gql`
       cancelado
       terminado
       modificado
-      idEmpresaSeguro
+      empresaSeguro
       idEmpresaNaviera
       lugarEntrega
       notas
@@ -1559,6 +1745,139 @@ export const selectAllContrato = gql`
   }
 `;
 
+export const selectOneContratoByIdBaseG = gql`
+  query selectOneContratoByIdBaseG($id: Int!) {
+    findContratosByIdBaseGeneral(id: $id) {
+      idContrato
+      idBasesGenerales
+      idCMarco
+      idMoneda
+      idFormaEntrega
+      idNegociacion
+      realizadoPor
+      firmadoPor
+      modificadoPor
+      lugarFirma
+      consecutivo
+      idIncoterm
+      cancelado
+      terminado
+      modificado
+      empresaSeguro
+      idEmpresaNaviera
+      lugarEntrega
+      notas
+      permitirEmbarquesParciales
+      cantidadEp
+      permitirEntregas
+      permitirTrasbordos
+      producto
+      noEntregasParciales
+      fechaElaboracion
+      fechaInicial
+      fechaFinal
+      fechaFirma
+      fechaRecepcion
+      fechaArribo
+      fechaPFirma
+      financiamiento
+      tasaMoneda
+      fechaTasa
+      pFin
+      gastosLogisticos
+      # contratoClausulas {
+      #   idContratoClausulas
+      #   noClausula
+      #   contenido
+      # }
+      # basesGenerales {
+      #   idBasesGenerales
+      #   noContrato
+      # }
+      contratoMarco {
+        idCMarco
+        consecutivo
+      }
+      moneda {
+        idMoneda
+        moneda
+        abreviatura
+      }
+      formaEntrega {
+        idFormaEntrega
+        formaEntrega
+      }
+      negociacionResumen {
+        idNegociacion
+        consecutivo
+        noNegociacion
+      }
+      ejecutivoRealiza {
+        idEjecutivo
+        nombre
+      }
+      ejecutivoFirma {
+        idEjecutivo
+        nombre
+      }
+      ejecutivoModifica {
+        idEjecutivo
+        nombre
+      }
+      documentacionContratos {
+        idDocumentacionContrato
+        documentacion {
+          idDocumento
+          nombreFichero
+          descripcion
+        }
+      }
+      # embarques {
+      #   idEmbarque
+      #   numero
+      #   fechaEntrega
+      #   terminado
+      #   cancelado
+      #   porFirmar
+      #   flete
+      #   seguro
+      #   idContrato
+      #   idEjecutivo
+      #   qtyCnt
+      #   seguro
+      #   financiamiento
+      #   inspeccion
+      #   otros
+      #   c40
+      #   c20
+      #   actSci
+      # }
+      facturaResumen {
+        idFactura
+      }
+      suplementoEmbarques {
+        idSuplementoEmbarques
+      }
+      suplementoResumen {
+        idSuplementoResumen
+      }
+      suplementoClausulas {
+        idSuplementoClausulas
+      }
+      companiaNaviera {
+        id
+        nombre
+      }
+      incoterm {
+        idIncoterm
+        nombre
+        abreviatura
+      }
+    }
+  }
+`;
+
+//ContratoMarco
 export const selectOneContratos = gql`
   query selectOneContratos($id: Int!) {
     findOneContratos(id: $id) {
@@ -1638,8 +1957,6 @@ export const selectAllContratoMarco = gql`
   }
 `;
 
-
-
 export const createContratoMarco = gql`
   mutation createContratoMarco(
     $createContratoMarcoInput: CreateContratoMarcoInput!
@@ -1685,12 +2002,45 @@ export const selectAllProformaClausulas = gql`
     }
   }
 `;
+export const selectAllProformaClausulasById = gql`
+  query selectAllProformaClausulasById(
+    $idTipoContrato: Int!
+    $idIncoterm: Int!
+  ) {
+    findAllProformaClausulasById(
+      idTipoContrato: $idTipoContrato
+      idIncoterm: $idIncoterm
+    ) {
+      idProformaClausula
+      idTipoClausula
+      idTipoContrato
+      idIncoterm
+      orden
+      clausula
+      tiposDeClausulas {
+        idTipoClausula
+        nombre
+      }
+    }
+  }
+`;
 
 export const createProformaClausula = gql`
   mutation createProformaClausula(
     $createProformaClausulaInput: CreateProformaClausulaInput!
   ) {
     createProformaClausula(
+      createProformaClausulaInput: $createProformaClausulaInput
+    ) {
+      orden
+    }
+  }
+`;
+export const createSeveralProformaClausula = gql`
+  mutation createSeveralProformaClausula(
+    $createProformaClausulaInput: [CreateProformaClausulaInput!]!
+  ) {
+    createSeveralProformaClausula(
       createProformaClausulaInput: $createProformaClausulaInput
     ) {
       orden
