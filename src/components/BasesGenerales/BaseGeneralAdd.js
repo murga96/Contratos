@@ -1,10 +1,13 @@
+import React, { useRef, useState, useEffect } from "react";
 import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import { ProgressSpinner } from "primereact/progressspinner";
-import React, { useRef, useState, useEffect } from "react";
 import {
+  actualizarClausulasFromBaseGeneral,
+  getClausulasFromBaseGeneral,
   selectAllCompradores,
   selectAllIncoterm,
   selectAllPaises,
+  selectAllProformaClausulasById,
   selectAllProveedores,
   selectAllTipoContrato,
   updateBaseGeneral,
@@ -12,34 +15,41 @@ import {
 import { Form } from "../ui/Form";
 import * as yup from "yup";
 import moment from "moment";
-import { Dialog } from "primereact/dialog";
-import _ from "lodash";
+import _, { omit } from "lodash";
 import { useNavigate } from "react-router-dom";
+import { fireError } from "../utils";
+import { confirmDialog } from "primereact/confirmdialog";
 
 export const BaseGeneralAdd = () => {
   const formRef = useRef();
-  const [baseG, setBaseG] = useState(null);
   const navigate = useNavigate();
+  const [baseG, setBaseG] = useState(null);
   const [formProps, setFormProps] = useState(null);
-  const [editDialog, setEditDialog] = useState(false);
-  const [updateBG] = useMutation(updateBaseGeneral);
-  // const { data: findAllProforma, loading:loadingP } = useQuery(selectAllProforma);
-  const { data: findAllTipoContrato, loading:loadingTC } = useQuery(selectAllTipoContrato);
-  const { data: findAllPaises, loading:loadingPa } = useQuery(selectAllPaises);
-  const { data: findAllProveedores, loading:loadingProv } = useQuery(selectAllProveedores);
-  const { data: findAllCompradores, loading:loadingComp } = useQuery(selectAllCompradores);
-  const { data: findAllIncoterm, loading:loadingInc } = useQuery(selectAllIncoterm);
-  console.log(findAllTipoContrato)
-  useEffect(() => {
-    console.log("first render");
-    loadData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
-  const loadData = () => {
+  //GraphQL
+  //Clausulas
+  const [getProformaClausulas] = useLazyQuery(actualizarClausulasFromBaseGeneral, {
+    fetchPolicy: "network-only",
+  });
+  const [getClausulasByIncAndProv] = useLazyQuery(getClausulasFromBaseGeneral, {
+    fetchPolicy: "network-only",
+  });
+  //Dropdowns
+  const { data: findAllTipoContrato, loading: loadingTC } = useQuery(
+    selectAllTipoContrato
+  );
+  const { data: findAllPaises, loading: loadingPa } = useQuery(selectAllPaises);
+  const { data: findAllProveedores, loading: loadingProv } =
+  useQuery(selectAllProveedores);
+  const { data: findAllCompradores, loading: loadingComp } =
+  useQuery(selectAllCompradores);
+  const { data: findAllIncoterm, loading: loadingInc } =
+  useQuery(selectAllIncoterm);
+  //Mutation
+  const [updateBG] = useMutation(updateBaseGeneral);
+
+  useEffect(() => {
     setBaseG({
-      // "idBasesGenerales": 36,
-      // "consecutivo": 1,
       tipoDeContrato: null,
       incoterm: null,
       proveedor: null,
@@ -58,11 +68,12 @@ export const BaseGeneralAdd = () => {
       lugardeFirma: "",
       fecha: null,
     });
-  };
-  let dataStruct = null;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // let dataStruct = null;
 
   const save = (element) => {
-    console.log(element);
     let temp = _.omit(element, [
       "representanteComprador",
       "representanteVendedor",
@@ -71,31 +82,29 @@ export const BaseGeneralAdd = () => {
       "button",
     ]);
 
-    temp.idProforma =
-      baseG.basesGeneralesClausulas?.length > 0 &&
-      baseG.basesGeneralesClausulas[0].idProforma;
-    // temp.consecutivo = baseG.consecutivo;
     temp.vigencia = 720;
     temp.aprobado = false;
     temp.cancelado = false;
     temp.activo = false;
-    temp.basesGeneralesClausulas = _.map(baseG.basesGeneralesClausulas,(i) => {
-      delete i.tiposDeClausulas
-      delete i.idProforma
-      const idTC = findAllTipoContrato.findAllTipoContrato.find((it) => it.tipoContrato==="EXCEPCIONAL")?.idTipoContrato
-      if(idTC) {
-        i.excepcional = baseG.idTipoContrato === idTC ? true : false
-      }else {
-        i.excepcional = false
+    temp.basesGeneralesClausulas = _.map(baseG.basesGeneralesClausulas, (i) => {
+      delete i.tiposDeClausulas;
+      const idTC = findAllTipoContrato.findAllTipoContrato.find(
+        (it) => it.tipoContrato === "EXCEPCIONAL"
+      )?.idTipoContrato;
+      if (idTC) {
+        i.excepcional = baseG.idTipoContrato === idTC ? true : false;
+      } else {
+        i.excepcional = false;
       }
-      return i
+      return i;
     });
     console.log(temp);
-    updateBG({ variables: { createBasesGeneraleInput: temp } }).then((resp) => navigate(-1));
+    updateBG({ variables: { createBasesGeneraleInput: temp } }).then((resp) =>
+      navigate(-1)
+    );
   };
 
   useEffect(() => {
-    console.log("baseG change");
     if (baseG) {
       const schema = yup.object().shape({
         idTipoContrato: yup
@@ -115,7 +124,7 @@ export const BaseGeneralAdd = () => {
           .number()
           .typeError("Debe importar las claúsulas de una proforma"),
       });
-      dataStruct = [
+      let dataStruct = [
         {
           id: 1,
           component: "Dropdown",
@@ -307,7 +316,19 @@ export const BaseGeneralAdd = () => {
             icon: "pi pi-plus",
             className: "p-button-rounded p-button-sm mt-5 ml-1",
             onClick: () => {
-              setEditDialog(true);
+              if (
+                baseG?.basesGeneralesClausulas &&
+                baseG?.basesGeneralesClausulas.length > 0
+              ) {
+                confirmDialog({
+                  message: "Desea eliminar las claúsulas existentes?",
+                  header: "Confirmación",
+                  icon: "pi pi-exclamation-triangle",
+                  accept: () => confirmClausula(),
+                });
+              } else {
+                confirmClausula();
+              }
             },
           },
         },
@@ -330,46 +351,188 @@ export const BaseGeneralAdd = () => {
 
       setFormProps({
         data: dataStruct,
-        schema: schema /*  , "handle": save */,
-        // variables: { tipoContrato: {} },
+        schema: schema,
         buttonsNames: ["Guardar", "Cancelar"], //TODO Poner botones en todos los componentes en vez del texto
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [baseG,loadingComp, loadingPa, loadingProv, loadingTC, loadingInc]);
+  }, [baseG, loadingComp, loadingPa, loadingProv, loadingTC, loadingInc]);
 
-  const schemaP = yup.object().shape({
-    proforma: yup.object().typeError("Seleccione una proforma"),
-  });
-
-  let dataStructProforma = [
-    // {
-    //   id: 12,
-    //   component: "Dropdown",
-    //   name: "proforma",
-    //   defaultValue: 0,
-    //   label: "Proforma:",
-    //   props: {
-    //     options: findAllProforma?.findAllProforma,
-    //     optionLabel: "nombreProfoma",
-    //     placeholder: "Seleccione una proforma",
-    //   },
-    // },
-  ];
-  const formPropsProforma = {
-    data: dataStructProforma,
-    schema: schemaP /*, "handle":  updateElement, "variables": { cargo: {} } */,
-    buttonsNames: ["Aceptar"],
+  const confirmClausula = () => {
+    const idIncoterm = formRef?.current.getValue("idIncoterm");
+    confirmDialog({
+      message:
+        "Usted desea utilizar la Proforma Original seleccione [Si] o las \n Claúsulas del Último contrato Firmado [No]?",
+      header: "Pregunta",
+      style: { width: "55vh" },
+      breakpoints: { "960px": "70vw", "640px": "90vw" },
+      icon: "pi pi-question-circle",
+      accept: () => {
+        const idTipoContrato = formRef?.current.getValue("idTipoContrato");
+        if (idIncoterm !== null && idTipoContrato !== null) {
+          try {
+            getProformaClausulas({
+              variables: {
+                idTipoContrato: idTipoContrato,
+                idIncoterm: idIncoterm,
+              },
+              onCompleted: (data) => {
+                importProformasClausulas(data);
+              },
+            });
+          } catch (error) {
+            console.log(error);
+            fireError("Ocurrió un error al cargar las cláusulas");
+          }
+        } else
+          fireError(
+            "Debe seleccionar un tipo de contrato y una condición de compra antes de importar las cláusulas."
+          );
+      },
+      reject: () => {
+        const idProveedor = formRef?.current.getValue("idProveedor");
+        if (idIncoterm !== null && idProveedor !== null) {
+          try {
+            getClausulasByIncAndProv({
+              variables: {
+                idProveedor: idProveedor,
+                idIncoterm: idIncoterm,
+              },
+              onCompleted: (data) => {
+                importClausulasFromIncAndProv(data);
+              },
+            });
+          } catch (error) {
+            console.log(error);
+            fireError("Ocurrió un error al cargar las cláusulas");
+          }
+        } else
+          fireError(
+            "Debe seleccionar un proveedor y una condición de compra antes de importar las cláusulas."
+          );
+      },
+    });
   };
-  console.log(!baseG || loadingComp || loadingPa || loadingProv || loadingTC || loadingInc, "eeeeeeeeee")
+
+  const actualizarFormClausulas = () => {
+    formProps.data[11] = {
+      id: 12,
+      component: "Dropdown",
+      name: "tipoClausula",
+      defaultValue:
+        baseG?.basesGeneralesClausulas?.length > 0 &&
+        baseG?.basesGeneralesClausulas[0].idTipoClausula,
+      label: "Tipo de Claúsula:",
+      props: {
+        options: baseG?.basesGeneralesClausulas,
+        filter: true,
+        optionLabel: "tiposDeClausulas.nombre",
+        optionValue: "idTipoClausula",
+        onChange: (value) => {
+          formRef?.current.setValues(
+            "clausula",
+            baseG?.basesGeneralesClausulas?.find(
+              (item) => item.idTipoClausula === value
+            ).clausula
+          );
+        },
+        disabled:
+        !baseG?.basesGeneralesClausulas ||
+        baseG?.basesGeneralesClausulas?.length === 0,
+      },
+      fieldLayout: { className: "col-4" },
+    };
+    formProps.data[13] = {
+      id: 14,
+      component: "InputTextArea",
+      name: "clausula",
+      defaultValue:
+        baseG?.basesGeneralesClausulas?.length > 0
+          ? baseG?.basesGeneralesClausulas[0].clausula
+          : "",
+      label: "Claúsula:",
+      props: {
+        rows: 15,
+        disabled:
+          !baseG?.basesGeneralesClausulas ||
+          baseG?.basesGeneralesClausulas?.length === 0,
+        onChange: (value) => {
+          const tc = formRef?.current.getValue("tipoClausula");
+          baseG.basesGeneralesClausulas.find(
+            (i) => i.idTipoClausula === tc
+          ).clausula = formRef?.current.getValue("clausula");
+          console.log(tc, "tc");
+          console.log(baseG, "bg");
+        },
+      },
+      fieldLayout: { className: "col-12" },
+    };
+    formRef?.current.setValues(
+      "tipoClausula",
+      baseG?.basesGeneralesClausulas?.length > 0 &&
+        baseG?.basesGeneralesClausulas[0].idTipoClausula
+    );
+    formRef?.current.setValues(
+      "clausula",
+      baseG?.basesGeneralesClausulas?.length > 0
+        ? baseG?.basesGeneralesClausulas[0].clausula
+        : ""
+    );
+    // setFormProps(JSON.parse(JSON.stringify(formProps)));
+    // setFormProps(formProps);
+  };
+
+  const importClausulasFromIncAndProv = (data) => {
+    if (data?.getClausulasFromBaseGeneral) {
+      const clausulas = data?.getClausulasFromBaseGeneral.map((clausula) =>
+        omit(clausula, [
+          "idIncoterm",
+          "idTipoContrato" /* , 'tiposDeClausulas' */,
+          "idProformaClausula",
+        ])
+      );
+      let temp = {...baseG};
+      temp.basesGeneralesClausulas = JSON.parse(JSON.stringify(clausulas));
+      setBaseG(temp);
+      actualizarFormClausulas();
+    }
+  };
+
+  const importProformasClausulas = (data) => {
+    if (data?.actualizarClausulasFromBaseGeneral) {
+      const clausulas = data?.actualizarClausulasFromBaseGeneral.map((clausula) =>
+        omit(clausula, [
+          "idIncoterm",
+          "idTipoContrato" /* , 'tiposDeClausulas' */,
+          "idProformaClausula",
+        ])
+      );
+      let temp = {...baseG};
+      temp.basesGeneralesClausulas = JSON.parse(JSON.stringify(clausulas));
+      setBaseG(temp);
+      actualizarFormClausulas();
+    }
+  };
+
   return (
     <div>
-      {(!baseG || loadingComp || loadingPa || loadingProv || loadingTC || loadingInc) && (
+      {(!baseG ||
+        loadingComp ||
+        loadingPa ||
+        loadingProv ||
+        loadingTC ||
+        loadingInc) && (
         <div className="flex h-30rem justify-content-center align-items-center">
           <ProgressSpinner strokeWidth="3" />
         </div>
       )}
-      {(baseG && formProps && !loadingComp  && !loadingPa && !loadingProv && !loadingTC && !loadingInc) ? (
+      {baseG &&
+      formProps &&
+      !loadingComp &&
+      !loadingPa &&
+      !loadingProv &&
+      !loadingTC &&
+      !loadingInc ? (
         <div className="m-5">
           <Form
             ref={formRef}
@@ -380,92 +543,6 @@ export const BaseGeneralAdd = () => {
             buttonsNames={formProps.buttonsNames}
             formLayout={{ className: "grid" }}
           />
-          <Dialog
-            visible={editDialog}
-            style={{ width: "450px" }}
-            header="Importar proforma"
-            modal
-            breakpoints={{ "992px": "50vw", "768px": "65vw", "572px": "80vw" }}
-            resizable={false}
-            onHide={() => {
-              setEditDialog(false);
-            }}
-          >
-            <Form
-              data={formPropsProforma?.data}
-              schema={formPropsProforma?.schema}
-              handle={({ proforma }) => {
-                let temp = baseG;
-                temp.basesGeneralesClausulas = JSON.parse(
-                  JSON.stringify(proforma.proformaClausulas)
-                );
-                setBaseG(temp);
-                formProps.data[11] = {
-                  id: 12,
-                  component: "Dropdown",
-                  name: "tipoClausula",
-                  defaultValue:
-                    baseG?.basesGeneralesClausulas?.length > 0 &&
-                    baseG?.basesGeneralesClausulas[0].idTipoClausula,
-                  label: "Tipo de Claúsula:",
-                  props: {
-                    options: baseG?.basesGeneralesClausulas,
-                    filter: true,
-                    optionLabel: "tiposDeClausulas.nombre",
-                    optionValue: "idTipoClausula",
-                    onChange: (value) => {
-                      formRef?.current.setValues(
-                        "clausula",
-                        baseG?.basesGeneralesClausulas?.find(
-                          (item) => item.idTipoClausula === value
-                        ).clausula
-                      );
-                    },
-                    disabled: baseG?.basesGeneralesClausulas ? false : true,
-                  },
-                  fieldLayout: { className: "col-4" },
-                };
-                formProps.data[13] = {
-                  id: 14,
-                  component: "InputTextArea",
-                  name: "clausula",
-                  defaultValue:
-                    baseG?.basesGeneralesClausulas?.length > 0
-                      ? baseG?.basesGeneralesClausulas[0].clausula
-                      : "",
-                  label: "Claúsula:",
-                  props: {
-                    rows: 15,
-                    disabled: baseG?.basesGeneralesClausulas ? false : true,
-                    onChange: (value) => {
-                      const tc = formRef?.current.getValue("tipoClausula");
-                      baseG.basesGeneralesClausulas.find(
-                        (i) => i.idTipoClausula === tc
-                      ).clausula = formRef?.current.getValue("clausula");
-                      console.log(tc, "tc");
-                      console.log(baseG, "bg");
-                    },
-                  },
-                  fieldLayout: { className: "col-12" },
-                };
-                formRef?.current.setValues(
-                  "tipoClausula",
-                  baseG?.basesGeneralesClausulas?.length > 0 &&
-                    baseG?.basesGeneralesClausulas[0].idTipoClausula
-                );
-                formRef?.current.setValues(
-                  "clausula",
-                  baseG?.basesGeneralesClausulas?.length > 0
-                    ? baseG?.basesGeneralesClausulas[0].clausula
-                    : ""
-                );
-                setFormProps(formProps);
-                setEditDialog(false);
-              }}
-              cancel={() => setEditDialog(false)}
-              buttonsNames={formPropsProforma?.buttonsNames}
-            />
-          </Dialog>
         </div>
       ) : undefined}
     </div>

@@ -32,7 +32,7 @@ export const BaseGeneralEdit = () => {
   const { data: dataBG, loading: loadingBG } = useQuery(
     selectOneBasesGenerales,
     {
-      variables: { idBasesG: parseInt(bg.BaseGeneral) },
+      variables: { id: parseInt(bg.BaseGeneral) },
       fetchPolicy: "network-only",
       onCompleted: (data) => {
         setBaseG(JSON.parse(JSON.stringify(data.findOneBasesGenerales)));

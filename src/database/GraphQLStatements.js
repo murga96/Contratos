@@ -1098,8 +1098,8 @@ export const selectAllBasesGenerales = gql`
 `;
 
 export const selectOneBasesGenerales = gql`
-  query selectOneBasesGenerales($idBasesG: Int!) {
-    findAllBasesGenerales {
+  query selectOneBasesGenerales($id: Int!) {
+    findOneBasesGenerales(id: $id) {
       idBasesGenerales
       consecutivo
       noContrato
@@ -1347,7 +1347,7 @@ export const actualizarClausulasFromBaseGeneral = gql`
 `;
 export const getClausulasFromBaseGeneral = gql`
   query getClausulasFromBaseGeneral($idIncoterm: Int!, $idProveedor: Int!) {
-    actualizarClausulasFromBaseGeneral(
+    getClausulasFromBaseGeneral(
       idIncoterm: $idIncoterm
       idProveedor: $idProveedor
     ) {
@@ -1363,6 +1363,7 @@ export const getClausulasFromBaseGeneral = gql`
     }
   }
 `;
+
 //Compradores
 export const selectAllCompradores = gql`
   query selectAllCompradores {
