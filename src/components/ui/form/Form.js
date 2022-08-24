@@ -45,6 +45,13 @@ export const Form = forwardRef(({ schema, handle, footer, children, containerCla
     trigger: () => {
       methods.trigger();
     },
+    clearErrors: (name) => {
+      if(name) {
+        methods.clearErrors(name);
+      }else {
+        methods.clearErrors();
+      }
+    },
   }));
   return (
     <FormProvider {...methods}>

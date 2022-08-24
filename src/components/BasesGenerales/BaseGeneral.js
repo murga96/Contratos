@@ -114,15 +114,15 @@ export const BaseGeneral = ({ idBG }) => {
         options: data?.findOneBasesGenerales.proveedor
           ? [
               {
-                label: data?.findOneBasesGenerales.proveedor.representante,
+                label: `-${data?.findOneBasesGenerales.proveedor.representante}`,
                 value: 0,
               },
               {
-                label: data?.findOneBasesGenerales.proveedor.cargo,
+                label: `-${data?.findOneBasesGenerales.proveedor.cargo}`,
                 value: 1,
               },
               {
-                label: data?.findOneBasesGenerales.proveedor.domicilio,
+                label: `-${data?.findOneBasesGenerales.proveedor.domicilio}`,
                 value: 2,
               },
             ]
@@ -146,15 +146,15 @@ export const BaseGeneral = ({ idBG }) => {
         options: data?.findOneBasesGenerales.compradores
           ? [
               {
-                label: data?.findOneBasesGenerales.compradores.representante,
+                label: `-${data?.findOneBasesGenerales.compradores.representante}`,
                 value: 0,
               },
               {
-                label: data?.findOneBasesGenerales.compradores.cargo,
+                label: `-${data?.findOneBasesGenerales.compradores.cargo}`,
                 value: 1,
               },
               {
-                label: data?.findOneBasesGenerales.compradores.domicilio,
+                label: `-${data?.findOneBasesGenerales.compradores.domicilio}`,
                 value: 2,
               },
             ]

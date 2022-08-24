@@ -1117,14 +1117,16 @@ export const selectOneBasesGenerales = gql`
       proveedor {
         codigo
         compaIa
-        cargo
-        representante
+        siglas
         domicilio
-        cuentaMn
-        cuentaUsd
-        agenciaMn
-        agenciaUsd
+        domicilioSucursal
+        ciudad
+        eMail
+        representante
         cargo
+        pais
+        activo
+        cuentaUsd
       }
       pais {
         pais
@@ -1136,15 +1138,6 @@ export const selectOneBasesGenerales = gql`
         representante
         domicilio
         cargo
-        entidad {
-          idEntidad
-          nombre
-          codigoEnt
-          cuentaUsd
-          agenciaUsd
-          cuentaMn
-          agenciaMn
-        }
         activo
         doble
       }
@@ -1386,6 +1379,19 @@ export const selectAllCompradores = gql`
         cuentaMn
         agenciaMn
       }
+      activo
+      doble
+    }
+  }
+`;
+export const selectAllCompradoresWithoutRelations = gql`
+  query selectAllCompradores {
+    findAllCompradores {
+      idComprador
+      nombre
+      representante
+      domicilio
+      cargo
       activo
       doble
     }

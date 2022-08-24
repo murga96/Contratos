@@ -1,13 +1,13 @@
 import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import { Loading } from "../LoadingComponent";
 import { confirmDialog } from "primereact/confirmdialog";
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState } from "react";
 import { useParams } from "react-router";
 import { useNavigate } from "react-router-dom";
 import {
   actualizarClausulasFromBaseGeneral,
   getClausulasFromBaseGeneral,
-  selectAllCompradores,
+  selectAllCompradoresWithoutRelations,
   selectAllIncoterm,
   selectAllPaises,
   selectAllProveedores,
@@ -58,8 +58,9 @@ export const BaseGeneralEdit = () => {
   const { data: findAllPaises, loading: loadingPa } = useQuery(selectAllPaises);
   const { data: findAllProveedores, loading: loadingProv } =
     useQuery(selectAllProveedores);
-  const { data: findAllCompradores, loading: loadingComp } =
-    useQuery(selectAllCompradores);
+  const { data: findAllCompradores, loading: loadingComp } = useQuery(
+    selectAllCompradoresWithoutRelations
+  );
   const { data: findAllIncoterm, loading: loadingInc } =
     useQuery(selectAllIncoterm);
 
@@ -68,8 +69,8 @@ export const BaseGeneralEdit = () => {
     fecha: yup.date().required("Fecha es requerido"),
     lugardeFirma: yup.string().required("Firma es requerida"),
     idPais: yup.number().required("Seleccione un país"),
-    idProveedor: yup.number().required("Seleccione un vendedor"),
-    idComprador: yup.number().required("Seleccione un comprador"),
+    idProveedor: yup.object(),
+    idComprador: yup.object(),
     idIncoterm: yup.number().required("Seleccione una condición de compra"),
   });
 
@@ -142,24 +143,46 @@ export const BaseGeneralEdit = () => {
       "clausula",
       "noContrato",
     ]);
-    temp.idProforma = baseG.idProforma;
     temp.consecutivo = baseG.consecutivo;
     temp.idBasesGenerales = baseG.idBasesGenerales;
     temp.vigencia = baseG.vigencia;
     temp.aprobado = baseG.aprobado;
     temp.cancelado = baseG.cancelado;
     temp.activo = baseG.activo;
+    temp.idComprador = element.idComprador.idComprador;
+    temp.idProveedor = element.idProveedor.codigo;
     temp.basesGeneralesClausulas = baseG.basesGeneralesClausulas.map((i) =>
       _.omit(i, ["tiposDeClausulas"])
     );
-    console.log(temp);
     updateBG({ variables: { createBasesGeneraleInput: temp } })
       .then((resp) => {
-        fireInfo("La base general ha sido guardada correctamente");
-        navigate(-1)
+        confirmDialog({
+          message: "La base general ha sido guardada correctamente",
+          header: "Información",
+          icon: "pi pi-exclamation-triangle",
+          accept: () => navigate(-1),
+          reject: () => navigate(-1),
+          rejectClassName:"opacity-0"
+        });
       })
       .catch((error) => console.log(error));
   };
+
+  const Footer = () => {
+    return (
+      <div className="flex justify-content-end w-full mt-4">
+        <Button label="Aceptar" icon="pi pi-check"/>
+        <Button className="ml-3" label="Cancelar" icon="pi pi-times" type="button" onClick={() =>
+          confirmDialog({
+          message: "¿Seguro que desea salir, no se guardará la información?",
+          header: "Confirmación",
+          icon: "pi pi-exclamation-triangle",
+          accept: () => navigate(-1),
+        })
+        }/>
+      </div>
+    )
+  }
 
   if (
     !baseG ||
@@ -177,6 +200,7 @@ export const BaseGeneralEdit = () => {
         schema={schema}
         handle={save}
         containerClassName="grid"
+        footer={<Footer />}
       >
         <Field
           label="Tipo de contrato*:"
@@ -253,14 +277,13 @@ export const BaseGeneralEdit = () => {
           label="Vendedor*:"
           name="idProveedor"
           containerClassName="col-4"
-          defaultValue={baseG?.proveedor?.codigo}
+          defaultValue={baseG?.proveedor}
           render={(field) => {
             return (
               <Dropdown
                 {...field}
                 options={findAllProveedores?.findAllProveedores}
                 optionLabel="compaIa"
-                optionValue="codigo"
                 filter
                 virtualScrollerOptions={{ itemSize: 38 }}
                 onChange={(e) => {
@@ -279,22 +302,21 @@ export const BaseGeneralEdit = () => {
           label="Comprador*:"
           name="idComprador"
           containerClassName="col-6"
-          defaultValue={baseG?.compradores.idComprador}
+          defaultValue={baseG?.compradores}
           render={(field) => {
             return (
               <Dropdown
                 {...field}
                 options={findAllCompradores?.findAllCompradores}
                 optionLabel="representante"
-                optionValue="idComprador"
                 filter
                 virtualScrollerOptions={{ itemSize: 38 }}
                 onChange={(e) => {
                   const comp = e.target.value;
-                  // formRef?.current.setValue(
-                  //   "representanteComprador",
-                  //   `-${comp?.cargo}\n-${comp?.domicilio}`
-                  // );
+                  formRef?.current.setValue(
+                    "representanteComprador",
+                    `-${comp?.cargo}\n-${comp?.domicilio}`
+                  );
                   field.onChange(comp);
                 }}
               />
@@ -368,7 +390,6 @@ export const BaseGeneralEdit = () => {
                 disabled={baseG?.basesGeneralesClausulas?.length === 0}
                 options={baseG?.basesGeneralesClausulas}
                 optionLabel="tiposDeClausulas.nombre"
-                // optionValue="idTipoClausula"
                 filter
                 onChange={(e) => {
                   field.onChange(e.target.value);
@@ -396,7 +417,7 @@ export const BaseGeneralEdit = () => {
               ? baseG?.basesGeneralesClausulas[0]?.clausula
               : ""
           }
-          render={(field, watch) => {
+          render={(field) => {
             return (
               <InputTextarea
                 {...field}
