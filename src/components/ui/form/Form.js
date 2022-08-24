@@ -31,7 +31,7 @@ export const Form = forwardRef(({ schema, handle, footer, children, containerCla
       methods.setValue(name, value);
     },
     getValue: (name) => {
-      methods.getValues(name);
+      return methods.getValues(name);
     },
     resetForm: () => {
       methods.reset();

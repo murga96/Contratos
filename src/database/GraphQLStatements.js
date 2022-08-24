@@ -1028,12 +1028,12 @@ export const selectAllAgenciasAseguradoras = gql`
 // `;
 
 export const countBasesGenerales = gql`
-  query countBasesGenerales  {
-    countBasesGenerales{
+  query countBasesGenerales {
+    countBasesGenerales {
       cantidad
     }
-    }
-    `;
+  }
+`;
 
 export const selectAllBasesGenerales = gql`
   query selectAllBasesGenerales($take: Int, $skip: Int) {
@@ -1137,12 +1137,16 @@ export const selectOneBasesGenerales = gql`
         domicilio
         cargo
         entidad {
+          idEntidad
+          nombre
           codigoEnt
           cuentaUsd
           agenciaUsd
           cuentaMn
           agenciaMn
         }
+        activo
+        doble
       }
       basesGeneralesClausulas {
         idBasesGeneralesClausulas
@@ -1372,11 +1376,16 @@ export const selectAllCompradores = gql`
       nombre
       representante
       domicilio
+      cargo
       entidad {
         idEntidad
         nombre
+        codigoEnt
+        cuentaUsd
+        agenciaUsd
+        cuentaMn
+        agenciaMn
       }
-      cargo
       activo
       doble
     }

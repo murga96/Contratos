@@ -56,7 +56,6 @@ function App() {
   setPrimeReactInitialConfig();
   const client = setApolloConfig();
   moment.locale("es")
-
   return (
     <div className="App">
       <Router>

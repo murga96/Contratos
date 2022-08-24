@@ -1,7 +1,6 @@
 import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
-import { ProgressSpinner } from "primereact/progressspinner";
+import { Loading } from "../LoadingComponent";
 import { confirmDialog } from "primereact/confirmdialog";
-import { Toolbar } from "primereact/toolbar";
 import React, { useRef, useState, useEffect } from "react";
 import { useParams } from "react-router";
 import { useNavigate } from "react-router-dom";
@@ -16,39 +15,40 @@ import {
   selectOneBasesGenerales,
   updateBaseGeneral,
 } from "../../database/GraphQLStatements";
-import { Form } from "../ui/Form";
+import { Form } from "../ui/form/Form";
 import * as yup from "yup";
 import moment from "moment";
-import _ from "lodash";
+import _, { cloneDeep } from "lodash";
+import { Field } from "../ui/form/Field";
+import { Dropdown } from "primereact/dropdown";
+import { Calendar } from "primereact/calendar";
+import { InputText } from "primereact/inputtext";
+import { Divider } from "primereact/divider";
+import { InputTextarea } from "primereact/inputtextarea";
+import { Button } from "primereact/button";
+import { useFormContext } from "react-hook-form";
+import { fireError, fireInfo } from "../utils";
 
 export const BaseGeneralEdit = () => {
-  const bg = useParams();
   const formRef = useRef();
   const navigate = useNavigate();
   const [baseG, setBaseG] = useState(null);
-  
-
+  let watchedFields;
   //graphql
-  const { data: dataBG, loading: loadingBG } = useQuery(
-    selectOneBasesGenerales,
+  useQuery(selectOneBasesGenerales, {
+    variables: { id: parseInt(useParams().BaseGeneral) },
+    fetchPolicy: "network-only",
+    onCompleted: (data) => {
+      setBaseG(JSON.parse(JSON.stringify(data.findOneBasesGenerales)));
+    },
+  });
+  const [getClausulasByIdBG] = useLazyQuery(
+    actualizarClausulasFromBaseGeneral,
     {
-      variables: { id: parseInt(bg.BaseGeneral) },
       fetchPolicy: "network-only",
-      onCompleted: (data) => {
-        setBaseG(JSON.parse(JSON.stringify(data.findOneBasesGenerales)));
-      },
     }
   );
-  const [
-    actualizarClausulasProforma,
-    { called: calledActClausula, refetch: refetchActClausula },
-  ] = useLazyQuery(actualizarClausulasFromBaseGeneral, {
-    fetchPolicy: "network-only",
-  });
-  const [
-    getClausulas,
-    { called: calledGetClausula, refetch: refetchGetClausula },
-  ] = useLazyQuery(getClausulasFromBaseGeneral, {
+  const [getClausulasByIncAndProv] = useLazyQuery(getClausulasFromBaseGeneral, {
     fetchPolicy: "network-only",
   });
   const [updateBG] = useMutation(updateBaseGeneral);
@@ -66,248 +66,12 @@ export const BaseGeneralEdit = () => {
   const schema = yup.object().shape({
     idTipoContrato: yup.number().required("Seleccione un tipo de contrato"),
     fecha: yup.date().required("Fecha es requerido"),
-    idPais: yup.number().required("Seleccione un país"),
     lugardeFirma: yup.string().required("Firma es requerida"),
+    idPais: yup.number().required("Seleccione un país"),
     idProveedor: yup.number().required("Seleccione un vendedor"),
     idComprador: yup.number().required("Seleccione un comprador"),
     idIncoterm: yup.number().required("Seleccione una condición de compra"),
   });
-  let dataStruct = [
-    {
-      id: 1,
-      component: "Dropdown",
-      name: "idTipoContrato",
-      defaultValue: baseG?.tipoDeContrato.idTipoContrato,
-      label: "Tipo de contrato*:",
-      props: {
-        options: findAllTipoContrato?.findAllTipoContrato,
-        optionLabel: "tipoContrato",
-        optionValue: "idTipoContrato",
-      },
-      fieldLayout: { className: "col-3" },
-    },
-    {
-      id: 2,
-      component: "Calendar",
-      name: "fecha",
-      defaultValue: moment(baseG?.fecha, moment.ISO_8601).toDate(),
-      label: "Fecha:",
-      props: {
-        showIcon: true,
-        dateFormat: "dd/mm/yy",
-      },
-      fieldLayout: { className: "col-2" },
-    },
-    {
-      id: 4,
-      component: "InputText",
-      name: "noContrato",
-      defaultValue: baseG?.noContrato,
-      label: "No:",
-      props: {
-        disabled: true, className: "disabled"
-      },
-      fieldLayout: { className: "col-2" },
-    },
-    {
-      id: 4,
-      component: "InputText",
-      name: "lugardeFirma",
-      defaultValue: baseG?.lugardeFirma,
-      label: "Firma:",
-      props: {},
-      fieldLayout: { className: "col-2" },
-    },
-    {
-      id: 3,
-      component: "Dropdown",
-      name: "idPais",
-      defaultValue: baseG?.pais.pais,
-      label: "País:",
-      props: {
-        options: findAllPaises?.findAllPaises,
-        optionLabel: "nomb",
-        optionValue: "pais",
-        filter: true,
-      },
-      fieldLayout: { className: "col-3" },
-    },
-    {
-      id: 5,
-      component: "Divider",
-      name: "divider1",
-      fieldLayout: { className: "col-12 grid-nogutter" },
-    },
-    {
-      id: 6,
-      component: "Dropdown",
-      name: "idProveedor",
-      defaultValue: baseG?.proveedor.codigo,
-      label: "Vendedor:",
-      props: {
-        options: findAllProveedores?.findAllProveedores,
-        optionLabel: "compaIa",
-        optionValue: "codigo",
-        filter: true,
-        virtualScrollerOptions: { itemSize: 38 },
-        onChange: (value) => {
-          const prov = findAllProveedores.findAllProveedores.find(
-            (item) => item.codigo === value
-          );
-          formRef?.current.setValues(
-            "representanteVendedor",
-            `-${prov.representante}\n-${prov.cargo}\n-${prov.domicilio}`
-          );
-        },
-      },
-      fieldLayout: { className: "col-4" },
-    },
-    {
-      id: 7,
-      component: "Dropdown",
-      name: "idComprador",
-      defaultValue: baseG?.compradores.idComprador,
-      label: "Comprador:",
-      props: {
-        options: findAllCompradores?.findAllCompradores,
-        optionLabel: "representante",
-        optionValue: "idComprador",
-        filter: true,
-        onChange: (value) => {
-          const comp = findAllCompradores.findAllCompradores.find(
-            (item) => item.idComprador === value
-          );
-          console.log(comp);
-          formRef?.current.setValues(
-            "representanteComprador",
-            `-${comp.cargo}\n-${comp.domicilio}`
-          );
-        },
-      },
-      fieldLayout: { className: "col-6" },
-    },
-    {
-      id: 8,
-      component: "Dropdown",
-      name: "idIncoterm",
-      defaultValue: baseG?.incoterm.idIncoterm,
-      label: "Condición de Compra:",
-      props: {
-        options: findAllIncoterm?.findAllIncoterm,
-        optionLabel: "abreviatura",
-        optionValue: "idIncoterm",
-        filter: true,
-      },
-      fieldLayout: { className: "col-2" },
-    },
-    {
-      id: 9,
-      component: "InputTextArea",
-      name: "representanteVendedor",
-      defaultValue: `-${baseG?.proveedor.representante}\n-${baseG?.proveedor.cargo}\n-${baseG?.proveedor.domicilio}`,
-      label: "Representante:",
-      props: {
-        rows: 5,
-        cols: 5,
-        disabled: true,
-        className: "disabled textArea",
-      },
-      fieldLayout: { className: "col-4" },
-    },
-    {
-      id: 10,
-      component: "InputTextArea",
-      name: "representanteComprador",
-      defaultValue: `-${baseG?.compradores.cargo}\n-${baseG?.compradores.domicilio}`,
-      label: "Representante:",
-      props: {
-        rows: 5,
-        cols: 5,
-        disabled: true,
-        className: "disabled textArea",
-      },
-      fieldLayout: { className: "col-4" },
-    },
-    {
-      id: 11,
-      component: "EmptyCol",
-      fieldLayout: { className: "col-4" },
-    },
-    {
-      id: 12,
-      component: "Dropdown",
-      name: "tipoClausula",
-      defaultValue:
-        baseG?.basesGeneralesClausulas.length > 0 &&
-        baseG?.basesGeneralesClausulas[0].idTipoClausula,
-      label: "Tipo de Claúsula:",
-      props: {
-        options: baseG?.basesGeneralesClausulas,
-        filter: true,
-        optionLabel: "tiposDeClausulas.nombre",
-        optionValue: "idTipoClausula",
-        onChange: (value) => {
-          formRef?.current.setValues(
-            "clausula",
-            baseG?.basesGeneralesClausulas.find(
-              (item) => item.idTipoClausula === value
-            ).clausula
-          );
-        },
-      },
-      fieldLayout: { className: "col-4" },
-    },
-    {
-      id: 13,
-      component: "Button",
-      name: "button",
-      defaultValue: 0,
-      label: " ",
-      props: {
-        icon: "pi pi-plus",
-        className: "p-button-rounded p-button-sm mt-5 ml-1",
-        onClick: () => {
-          confirmDelete();
-        },
-      },
-    },
-    {
-      id: 14,
-      component: "InputTextArea",
-      name: "clausula",
-      defaultValue:
-        baseG?.basesGeneralesClausulas.length > 0
-          ? baseG?.basesGeneralesClausulas[0].clausula
-          : "",
-      label: "Claúsula:",
-      props: {
-        rows: 9,
-        onChange: (value) => {
-          const tc = formRef?.current.getValue("tipoClausula");
-          baseG.basesGeneralesClausulas.find(
-            (i) => i.idTipoClausula === tc
-          ).clausula = formRef?.current.getValue("clausula");
-        },
-      },
-      fieldLayout: { className: "col-12" },
-    },
-  ];
-
-  
-  const [formProps, setFormProps] = useState(null);
-  useEffect(() => {
-    console.log("change bg")
-    if (baseG) {
-      setFormProps({
-        data: dataStruct,
-        schema: schema,
-        buttonsNames: ["Guardar", "Cancelar"], //TODO Poner botones en todos los componentes en vez del texto
-      });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    baseG /* , loadingComp, loadingPa, loadingProv, loadingTC, loadingInc */
-  ]);
 
   //methods
   const confirmDelete = () => {
@@ -327,59 +91,56 @@ export const BaseGeneralEdit = () => {
       breakpoints: { "960px": "70vw", "640px": "90vw" },
       icon: "pi pi-question-circle",
       accept: () => {
-        actualizarClausulasProforma({
+        getClausulasByIdBG({
           variables: { id: baseG.idBasesGenerales },
         }).then(({ data }) => {
           if (data) {
             baseG.basesGeneralesClausulas =
-            data.actualizarClausulasFromBaseGeneral;
-            console.log(data.actualizarClausulasFromBaseGeneral)
-            setBaseG(baseG);
-            formRef?.current.setValues(
-              "tipoClausula",
-              baseG?.basesGeneralesClausulas[0].idTipoClausula
-            );
-            formRef?.current.setValues(
-              "clausula",
-              baseG.basesGeneralesClausulas.find(
-                (item) => item.idTipoClausula === baseG?.basesGeneralesClausulas[0].idTipoClausula
-              ).clausula
-            );
+              data.actualizarClausulasFromBaseGeneral;
+            setBaseG(cloneDeep(baseG));
+            if (baseG.basesGeneralesClausulas.length > 0) {
+              formRef.current?.setValue(
+                "tipoClausula",
+                baseG.basesGeneralesClausulas[0]
+              );
+            }
           }
         });
       },
       reject: () => {
-        getClausulas({
-          variables: {
-            idIncoterm: baseG.incoterm.idIncoterm,
-            idProveedor: baseG.proveedor.codigo,
-          },
-        }).then(({ data }) => {
-          if (data) {
-            const value = formProps["data"][11].defaultValue;
-            baseG.basesGeneralesClausulas = data.getClausulasFromBaseGeneral;
-            setBaseG(baseG);
-            //actualizar campo que se visualiza
-            formRef?.current.setValues(
-              "clausula",
-              baseG.basesGeneralesClausulas.find(
-                (item) => item.idTipoClausula === value
-              ).clausula
-            );
-          }
-        });
+        if (watchedFields[0] && watchedFields[1]) {
+          getClausulasByIncAndProv({
+            variables: {
+              idIncoterm: watchedFields[0],
+              idProveedor: watchedFields[1],
+            },
+          }).then(({ data }) => {
+            if (data) {
+              baseG.basesGeneralesClausulas = data.getClausulasFromBaseGeneral;
+              setBaseG(cloneDeep(baseG));
+              if (baseG.basesGeneralesClausulas.length > 0) {
+                formRef.current?.setValue(
+                  "tipoClausula",
+                  baseG.basesGeneralesClausulas[0]
+                );
+              }
+            }
+          });
+        } else
+          fireError(
+            "Debe seleccionar un vendedor y una condición de compra antes de importar las cláusulas."
+          );
       },
     });
   };
 
   const save = (element) => {
-    console.log(element);
     let temp = _.omit(element, [
       "representanteComprador",
       "representanteVendedor",
       "tipoClausula",
       "clausula",
-      "button",
+      "noContrato",
     ]);
     temp.idProforma = baseG.idProforma;
     temp.consecutivo = baseG.consecutivo;
@@ -393,31 +154,271 @@ export const BaseGeneralEdit = () => {
     );
     console.log(temp);
     updateBG({ variables: { createBasesGeneraleInput: temp } })
-      .then((resp) => navigate(-1))
+      .then((resp) => {
+        fireInfo("La base general ha sido guardada correctamente");
+        navigate(-1)
+      })
       .catch((error) => console.log(error));
   };
 
-
+  if (
+    !baseG ||
+    loadingComp ||
+    loadingInc ||
+    loadingPa ||
+    loadingProv ||
+    loadingTC
+  )
+    return <Loading />;
   return (
-    <div>
-      {!baseG && (
-        <div className="flex h-30rem justify-content-center align-items-center">
-          <ProgressSpinner strokeWidth="3" />
-        </div>
-      )}
-      {baseG && formProps ? (
-        <div className="m-5">
-          <Form
-            ref={formRef}
-            data={formProps.data}
-            schema={formProps.schema}
-            handle={save}
-            cancel={() => navigate(-1)}
-            buttonsNames={formProps.buttonsNames}
-            formLayout={{ className: "grid" }}
-          />
-        </div>
-      ) : undefined}
+    <div className="m-5">
+      <Form
+        ref={formRef}
+        schema={schema}
+        handle={save}
+        containerClassName="grid"
+      >
+        <Field
+          label="Tipo de contrato*:"
+          name="idTipoContrato"
+          containerClassName="col-3"
+          defaultValue={baseG?.tipoDeContrato?.idTipoContrato}
+          render={(field, watch) => {
+            watchedFields = watch(
+              ["idIncoterm", "idProveedor", "tipoClausula"],
+              {
+                idIncoterm: baseG?.idIncoterm,
+                idProveedor: baseG?.proveedor?.codigo,
+                tipoClausula:
+                  baseG?.basesGeneralesClausulas?.length > 0 &&
+                  baseG?.basesGeneralesClausulas[0],
+              }
+            );
+            return (
+              <Dropdown
+                {...field}
+                options={findAllTipoContrato?.findAllTipoContrato}
+                optionLabel="tipoContrato"
+                optionValue="idTipoContrato"
+              />
+            );
+          }}
+        />
+        <Field
+          label="Fecha*:"
+          name="fecha"
+          containerClassName="col-2"
+          defaultValue={moment(baseG?.fecha, moment.ISO_8601).toDate()}
+          render={(field) => {
+            return <Calendar showIcon dateFormat="dd/mm/yy" {...field} />;
+          }}
+        />
+        <Field
+          label="No:"
+          name="noContrato"
+          containerClassName="col-2"
+          defaultValue={baseG?.noContrato}
+          render={(field) => {
+            return <InputText {...field} disabled className="disabled" />;
+          }}
+        />
+        <Field
+          label="Firma*:"
+          name="lugardeFirma"
+          containerClassName="col-2"
+          defaultValue={baseG?.lugardeFirma}
+          render={(field) => {
+            return <InputText {...field} />;
+          }}
+        />
+        <Field
+          label="País*:"
+          name="idPais"
+          containerClassName="col-3"
+          defaultValue={baseG?.pais?.pais}
+          render={(field) => {
+            return (
+              <Dropdown
+                {...field}
+                options={findAllPaises?.findAllPaises}
+                optionLabel="nomb"
+                optionValue="pais"
+                filter
+              />
+            );
+          }}
+        />
+        <Divider />
+        <Field
+          label="Vendedor*:"
+          name="idProveedor"
+          containerClassName="col-4"
+          defaultValue={baseG?.proveedor?.codigo}
+          render={(field) => {
+            return (
+              <Dropdown
+                {...field}
+                options={findAllProveedores?.findAllProveedores}
+                optionLabel="compaIa"
+                optionValue="codigo"
+                filter
+                virtualScrollerOptions={{ itemSize: 38 }}
+                onChange={(e) => {
+                  const prov = e.target.value;
+                  formRef?.current.setValue(
+                    "representanteVendedor",
+                    `-${prov?.representante}\n-${prov?.cargo}\n-${prov?.domicilio}`
+                  );
+                  field.onChange(prov);
+                }}
+              />
+            );
+          }}
+        />
+        <Field
+          label="Comprador*:"
+          name="idComprador"
+          containerClassName="col-6"
+          defaultValue={baseG?.compradores.idComprador}
+          render={(field) => {
+            return (
+              <Dropdown
+                {...field}
+                options={findAllCompradores?.findAllCompradores}
+                optionLabel="representante"
+                optionValue="idComprador"
+                filter
+                virtualScrollerOptions={{ itemSize: 38 }}
+                onChange={(e) => {
+                  const comp = e.target.value;
+                  // formRef?.current.setValue(
+                  //   "representanteComprador",
+                  //   `-${comp?.cargo}\n-${comp?.domicilio}`
+                  // );
+                  field.onChange(comp);
+                }}
+              />
+            );
+          }}
+        />
+        <Field
+          label="Condición de compra*:"
+          name="idIncoterm"
+          containerClassName="col-2"
+          defaultValue={baseG?.idIncoterm}
+          render={(field) => {
+            return (
+              <Dropdown
+                {...field}
+                options={findAllIncoterm?.findAllIncoterm}
+                optionLabel="abreviatura"
+                optionValue="idIncoterm"
+                filter
+              />
+            );
+          }}
+        />
+        <Field
+          label="Representante:"
+          name="representanteVendedor"
+          containerClassName="col-4"
+          defaultValue={`-${baseG?.proveedor?.representante}\n-${baseG?.proveedor?.cargo}\n-${baseG?.proveedor?.domicilio}`}
+          render={(field) => {
+            return (
+              <InputTextarea
+                {...field}
+                rows={5}
+                cols={5}
+                disabled
+                className="disabled textArea w-full"
+              />
+            );
+          }}
+        />
+        <Field
+          label="Representante:"
+          name="representanteComprador"
+          containerClassName="col-4"
+          defaultValue={`-${baseG?.compradores?.cargo}\n-${baseG?.compradores?.domicilio}`}
+          render={(field) => {
+            return (
+              <InputTextarea
+                {...field}
+                rows={5}
+                cols={5}
+                disabled
+                className="disabled textArea w-full"
+              />
+            );
+          }}
+        />
+        <div className="col-4" />
+        <Field
+          label="Tipo de Claúsula*:"
+          name="tipoClausula"
+          containerClassName="col-4"
+          defaultValue={
+            baseG?.basesGeneralesClausulas?.length > 0 &&
+            baseG?.basesGeneralesClausulas[0]
+          }
+          render={(field) => {
+            return (
+              <Dropdown
+                {...field}
+                disabled={baseG?.basesGeneralesClausulas?.length === 0}
+                options={baseG?.basesGeneralesClausulas}
+                optionLabel="tiposDeClausulas.nombre"
+                // optionValue="idTipoClausula"
+                filter
+                onChange={(e) => {
+                  field.onChange(e.target.value);
+                }}
+              />
+            );
+          }}
+        />
+        <Button
+          type="button"
+          icon="pi pi-plus"
+          className="p-button-rounded p-button-sm mt-5 ml-1"
+          onClick={() => {
+            baseG?.basesGeneralesClausulas?.length === 0
+              ? confirmClausula()
+              : confirmDelete();
+          }}
+        />
+        <Field
+          label="Claúsula:"
+          name="clausula"
+          containerClassName="col-12"
+          defaultValue={
+            baseG?.basesGeneralesClausulas?.length > 0
+              ? baseG?.basesGeneralesClausulas[0]?.clausula
+              : ""
+          }
+          render={(field, watch) => {
+            return (
+              <InputTextarea
+                {...field}
+                value={watchedFields[2]?.clausula}
+                rows={9}
+                disabled={baseG?.basesGeneralesClausulas?.length === 0}
+                className={
+                  baseG?.basesGeneralesClausulas?.length === 0
+                    ? "disabled textArea w-full"
+                    : "w-full"
+                }
+                onChange={(e) => {
+                  baseG.basesGeneralesClausulas.find(
+                    (i) => i.idTipoClausula === watchedFields[2]?.idTipoClausula
+                  ).clausula = e.target.value;
+                  field.onChange(e.target.value);
+                }}
+              />
+            );
+          }}
+        />
+      </Form>
     </div>
   );
 };

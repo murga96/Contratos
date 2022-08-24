@@ -39,7 +39,7 @@ export const Field = ({
           name={name}
           defaultValue={defaultValue}
           control={control}
-          render={({ field, fieldState }) => render({...field, ...{className: "w-full mb-2" }}, fieldState, watch)}
+          render={({ field, fieldState }) => render({...field, ...{className: `w-full mb-2 ${fieldState.invalid ? 'p-invalid' : ""}` }}, watch)}
         />
       );
     else return render(register, watch);

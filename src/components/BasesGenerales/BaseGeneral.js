@@ -13,7 +13,7 @@ export const BaseGeneral = ({ idBG }) => {
   const bg = useParams();
   const formRef = useRef();
   const { data, error, loading } = useQuery(selectOneBasesGenerales, {
-    variables: { idBasesG: parseInt(bg.BaseGeneral) },
+    variables: { id: parseInt(bg.BaseGeneral) },
     fetchPolicy: "network-only",
   });
 
