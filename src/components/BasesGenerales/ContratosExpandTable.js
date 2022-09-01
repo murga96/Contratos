@@ -3,49 +3,47 @@ import {
   selectAllEjecutivos,
   selectAllMonedas,
   selectAllNegociacionesResumen,
-  selectFormasEntrega,
   selectOneContratoByIdBaseG,
 } from "../../database/GraphQLStatements";
 import { useQuery } from "@apollo/client";
 import { Table } from "../ui/Table";
 import { FilterMatchMode, FilterService, FilterOperator } from "primereact/api";
-import { ProgressSpinner } from "primereact/progressspinner";
 import { useNavigate } from "react-router";
 import { Button } from "primereact/button";
 import { MultiSelect } from "primereact/multiselect";
 import { Calendar } from "primereact/calendar";
 import moment from "moment";
 import { TriStateCheckbox } from "primereact/tristatecheckbox";
+import { Loading } from "../LoadingComponent";
 
-export const ContratosTable = ({data}) => {
+export const ContratosTable = ({ data }) => {
   const navigate = useNavigate();
-  const [contratos, setContratos] = useState(null)
+  const [contratos, setContratos] = useState(null);
 
   //graphQL
-  useQuery(
-    selectOneContratoByIdBaseG,
-    {
-      variables: {id: data.idBasesGenerales},
-      fetchPolicy: "network-only",
-      onCompleted: (data) => {
-        const contratosTemp = data?.findContratosByIdBaseGeneral.map((i) => {
-          i.fechaElaboracion = moment(i.fechaElaboracion, moment.ISO_8601).toDate();
-          i.fechaArribo = moment(i.fechaArribo, moment.ISO_8601).toDate();
-          i.fechaTasa = moment(i.fechaTasa, moment.ISO_8601).toDate();
-          i.fechaFinal = moment(i.fechaFinal, moment.ISO_8601).toDate();
-          i.fechaFirma = moment(i.fechaFirma, moment.ISO_8601).toDate();
-          i.fechaInicial = moment(i.fechaInicial, moment.ISO_8601).toDate();
-          i.fechaRecepcion = moment(i.fechaRecepcion, moment.ISO_8601).toDate();
-          i.fechaPFirma = moment(i.fechaPFirma, moment.ISO_8601).toDate();
-          return i;
-        });
-        setContratos(contratosTemp)
-      }
-    }
-  );
+  useQuery(selectOneContratoByIdBaseG, {
+    variables: { id: data.idBasesGenerales },
+    fetchPolicy: "network-only",
+    onCompleted: (data) => {
+      const contratosTemp = data?.findContratosByIdBaseGeneral.map((i) => {
+        i.fechaElaboracion = moment(
+          i.fechaElaboracion,
+          moment.ISO_8601
+        ).toDate();
+        i.fechaArribo = moment(i.fechaArribo, moment.ISO_8601).toDate();
+        i.fechaTasa = moment(i.fechaTasa, moment.ISO_8601).toDate();
+        i.fechaFinal = moment(i.fechaFinal, moment.ISO_8601).toDate();
+        i.fechaFirma = moment(i.fechaFirma, moment.ISO_8601).toDate();
+        i.fechaInicial = moment(i.fechaInicial, moment.ISO_8601).toDate();
+        i.fechaRecepcion = moment(i.fechaRecepcion, moment.ISO_8601).toDate();
+        i.fechaPFirma = moment(i.fechaPFirma, moment.ISO_8601).toDate();
+        return i;
+      });
+      setContratos(contratosTemp);
+    },
+  });
   const { data: dataEjecutivos, loading: loadingE } =
     useQuery(selectAllEjecutivos);
-  const { data: dataFE, loading: loadingFE } = useQuery(selectFormasEntrega);
   const { data: dataN, loading: loadingN } = useQuery(
     selectAllNegociacionesResumen
   );
@@ -225,59 +223,48 @@ export const ContratosTable = ({data}) => {
     fecha: "",
   };
 
-    
-    return (
-      <div>
-        {(loadingE || loadingM || loadingN) && (
-          <div className="flex h-30rem justify-content-center align-items-center">
-            <ProgressSpinner strokeWidth="3" />
-          </div>
-        )}
-        {!(loadingE && loadingM && loadingN) ? (
-          <div>
-            <Table
-              value={contratos}
-              header="Contratos"
-              size="small"
-              columns={cC}
-              pagination={true}
-              rowNumbers={[10, 20, 30]}
-              selectionType="multiple"
-              sortRemove
-              orderSort={1}
-              fieldSort="consecutivo"
-              filterDplay="menu"
-              filtersValues={filtersC}
-              edit={true}
-              enableDelete={false}
-              exportData={true}
-              emptyElement={emptyElementC}
-              additionalButtons={[
-                // [
-                //   <Button
-                //     icon="pi pi-upload"
-                //     className="p-button-rounded p-button-text"
-                //     tooltip="Exportar contrato"
-                //     tooltipOptions={{ position: "bottom" }}
-                //   />,
-                //   (rowData) => generateDocument(rowData),
-                // ],
-                [
-                  <Button
-                    icon="pi pi-eye"
-                    className="p-button-rounded p-button-text"
-                    tooltip="Ver contrato"
-                    tooltipOptions={{ position: "bottom" }}
-                  />,
-                  (rowData) =>
-                    navigate(`/Contratos/Detalle/${rowData.idContrato}`),
-                ],
-              ]}
-              editLinks={[`AddContract/${data.idBasesGenerales}`, "EditContract"]}
-            />
-          </div>
-        ) : //poner cargar
-        undefined}
-      </div>
-    );
+  if (!contratos  || loadingE || loadingM || loadingN) return <Loading />;
+  return (
+    <>
+      <Table
+        value={contratos}
+        header="Contratos"
+        size="small"
+        columns={cC}
+        pagination={true}
+        rowNumbers={[10, 20, 30]}
+        selectionType="multiple"
+        sortRemove
+        orderSort={1}
+        fieldSort="consecutivo"
+        filterDplay="menu"
+        filtersValues={filtersC}
+        edit={true}
+        enableDelete={false}
+        exportData={true}
+        emptyElement={emptyElementC}
+        additionalButtons={[
+          // [
+          //   <Button
+          //     icon="pi pi-upload"
+          //     className="p-button-rounded p-button-text"
+          //     tooltip="Exportar contrato"
+          //     tooltipOptions={{ position: "bottom" }}
+          //   />,
+          //   (rowData) => generateDocument(rowData),
+          // ],
+          [
+            <Button
+              icon="pi pi-eye"
+              className="p-button-rounded p-button-text"
+              tooltip="Ver contrato"
+              tooltipOptions={{ position: "bottom" }}
+            />,
+            (rowData) => navigate(`/Contratos/Detalle/${rowData.idContrato}`),
+          ],
+        ]}
+        editLinks={[`AddContract/${data.idBasesGenerales}`, "EditContract"]}
+      />
+    </>
+  );
 };

@@ -4,7 +4,7 @@ import PizZipUtils from "pizzip/utils/index.js";
 import { saveAs } from "file-saver";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content"
-import moment from "moment";
+import moment, { ISO_8601 } from "moment";
 
 
 //sweetalert
@@ -137,6 +137,7 @@ export const generateBGDocumentInternacional = (bg) => {
           paragraphLoop: true,
           linebreaks: true,
         });
+        const fechaConverted = moment(bg.fecha, ISO_8601).toDate()
         const o = {
           "tipoDeContrato.encabezado": bg.tipoDeContrato.encabezado,
           "noContrato": bg.noContrato,
@@ -151,9 +152,9 @@ export const generateBGDocumentInternacional = (bg) => {
           "ambasPartes": bg.tipoDeContrato.ambasPartes,
           "basesGeneralesClausulas": bg.basesGeneralesClausulas,
           "lugardeFirma": bg.lugardeFirma,
-          "dia": bg.fecha.getDate(),
+          "dia": fechaConverted.getDate(),
           "mes": new Date().toLocaleString('es-ES', { month: 'long' }),
-          "anno": bg.fecha.getFullYear(),
+          "anno": fechaConverted.getFullYear(),
         };
         doc.setData(o);
         try {

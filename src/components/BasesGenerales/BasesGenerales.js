@@ -1,7 +1,8 @@
 import React from "react";
 import { useState, useEffect } from "react";
 import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
-import { Table } from "../ui/Table";
+import { columnBodyChecker, Table } from "../ui/table/Table";
+import { Loading } from "../LoadingComponent";
 import { FilterMatchMode, FilterService, FilterOperator } from "primereact/api";
 import {
   selectAllBasesGenerales,
@@ -10,25 +11,21 @@ import {
   selectAllPaises,
   selectAllProveedores,
   selectAllTipoContrato,
-  selectAllEjecutivos,
-  selectAllMonedas,
-  selectAllNegociacionesResumen,
-  selectFormasEntrega,
-  countBasesGenerales,
-  selectOneContratoByIdBaseG,
+  selectOneBasesGenerales,
 } from "../../database/GraphQLStatements";
-import { ProgressSpinner } from "primereact/progressspinner";
 import { useNavigate } from "react-router";
 import { Button } from "primereact/button";
 import { MultiSelect } from "primereact/multiselect";
 import { Calendar } from "primereact/calendar";
-import moment from "moment";
 import {
+  fireError,
   generateBGDocumentInternacional,
   generateBGDocumentNacional,
 } from "./../utils";
 import { TriStateCheckbox } from "primereact/tristatecheckbox";
 import { ContratosTable } from "./ContratosExpandTable";
+import { Column } from "primereact/column";
+import { cloneDeep } from "lodash";
 
 export const BasesGenerales = () => {
   const navigate = useNavigate();
@@ -37,34 +34,26 @@ export const BasesGenerales = () => {
   const [idBG, setidBG] = useState(-1);
 
   //graphQL
-  const { loading: loadingCount } = useQuery(countBasesGenerales, {
-    onCompleted: (data) => {
-      if (data?.countBasesGenerales)
-        setTotalRecords(data?.countBasesGenerales.cantidad);
-    },
-    fetchPolicy: "network-only",
-  });
   const { error, loading } = useQuery(selectAllBasesGenerales, {
     variables: { take: 10, skip: 0 },
     onCompleted: (data) => {
-      setBasesGenerales(
-        JSON.parse(JSON.stringify(data?.findAllBasesGenerales))
-      );
+      setBasesGenerales(data?.findAllBasesGenerales.data);
+      setTotalRecords(data?.findAllBasesGenerales.count);
     },
     fetchPolicy: "network-only",
   });
-  const [getBG, { loading: loadingLazyBG } ]= useLazyQuery(selectAllBasesGenerales, {
+  const [getBG] = useLazyQuery(selectAllBasesGenerales, {
     variables: { take: 10, skip: 0 },
     onCompleted: (data) => {
-      setBasesGenerales(
-        JSON.parse(JSON.stringify(data?.findAllBasesGenerales))
-      );
+      setBasesGenerales(data?.findAllBasesGenerales.data);
+      setTotalRecords(data?.findAllBasesGenerales.count);
     },
     fetchPolicy: "network-only",
   });
-  const { data: findAllTipoContrato, loading: loadingTC } = useQuery(
-    selectAllTipoContrato
-  );
+  const [getOneBG] = useLazyQuery(selectOneBasesGenerales, {
+    fetchPolicy: "network-only",
+  });
+
   const { data: findAllPaises, loading: loadingPa } = useQuery(selectAllPaises);
   const { data: findAllProveedores, loading: loadingProv } =
     useQuery(selectAllProveedores);
@@ -73,29 +62,6 @@ export const BasesGenerales = () => {
   const { data: findAllIncoterm, loading: loadingInc } =
     useQuery(selectAllIncoterm);
 
-  FilterService.register("filterTipoContrato", (value, filters) => {
-    let ret = false;
-    if (filters && value && filters.length > 0) {
-      filters.forEach((filter) => {
-        if (filter.tipoContrato === value) ret = true;
-      });
-    } else {
-      ret = true;
-    }
-    return ret;
-  });
-  const RepresentativeFilterTemplate = ({ options, onChange }) => {
-    return (
-      <MultiSelect
-        value={options.value}
-        options={findAllTipoContrato?.findAllTipoContrato}
-        onChange={onChange}
-        optionLabel="tipoContrato"
-        placeholder="Selecciona los tipos de contratos"
-        className="p-column-filter"
-      />
-    );
-  };
   FilterService.register("filterIncoterm", (value, filters) => {
     let ret = false;
     if (filters && value /* && value.length > 0 */ && filters.length > 0) {
@@ -107,15 +73,18 @@ export const BasesGenerales = () => {
     }
     return ret;
   });
-  const RepresentativeFilterTemplate1 = ({ options, onChange }) => {
+  const FilterTemplateInc = (options) => {
     return (
       <MultiSelect
         value={options.value}
+        onChange={(e) => {
+          return options.filterApplyCallback(e.value);
+        }}
         options={findAllIncoterm?.findAllIncoterm}
-        onChange={onChange}
         optionLabel="abreviatura"
         placeholder="Seleccione los incoterms"
         className="p-column-filter"
+        maxSelectedLabels={1}
       />
     );
   };
@@ -130,15 +99,20 @@ export const BasesGenerales = () => {
     }
     return ret;
   });
-  const RepresentativeFilterTemplate2 = ({ options, onChange }) => {
+  const FilterTemplateProv = (options) => {
     return (
       <MultiSelect
-        value={options.value}
+        value={options?.value}
+        onChange={(e) => {
+          return options.filterApplyCallback(e.value);
+        }}
         options={findAllProveedores?.findAllProveedores}
-        onChange={onChange}
         optionLabel="compaIa"
         placeholder="Seleccione los proveedores"
         className="p-column-filter"
+        maxSelectedLabels={1}
+        filter
+        virtualScrollerOptions={{ itemSize: 38 }}
       />
     );
   };
@@ -153,15 +127,19 @@ export const BasesGenerales = () => {
     }
     return ret;
   });
-  const RepresentativeFilterTemplate3 = ({ options, onChange }) => {
+  const FilterTemplatePais = (options) => {
     return (
       <MultiSelect
-        value={options.value}
+        value={options?.value}
+        onChange={(e) => {
+          return options.filterApplyCallback(e.value);
+        }}
         options={findAllPaises?.findAllPaises}
-        onChange={onChange}
+        maxSelectedLabels={1}
         optionLabel="nomb"
         placeholder="Seleccione los países"
         className="p-column-filter"
+        filter
       />
     );
   };
@@ -176,25 +154,25 @@ export const BasesGenerales = () => {
     }
     return ret;
   });
-  const RepresentativeFilterTemplate4 = ({ options, onChange }) => {
+  const FilterTemplateComp = (options) => {
     return (
       <MultiSelect
-        value={options.value}
+        value={options?.value}
+        onChange={(e) => {
+          return options.filterApplyCallback(e.value);
+        }}
         options={findAllCompradores?.findAllCompradores}
-        onChange={onChange}
+        maxSelectedLabels={1}
         optionLabel="representante"
         placeholder="Seleccione los compradores"
         className="p-column-filter"
+        filter
       />
     );
   };
   const filters = {
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
     noContrato: {
-      operator: FilterOperator.AND,
-      constraints: [{ value: null, matchMode: FilterMatchMode.CONTAINS }],
-    },
-    "tipoDeContrato.tipoContrato": {
       operator: FilterOperator.AND,
       constraints: [{ value: null, matchMode: FilterMatchMode.CONTAINS }],
     },
@@ -232,108 +210,6 @@ export const BasesGenerales = () => {
     },
   };
 
-  let c = [
-    { field: "noContrato", header: "No." },
-    {
-      field: "tipoDeContrato.tipoContrato",
-      header: "Tipo de Contrato",
-      filterElement: RepresentativeFilterTemplate,
-      filterMatchModeOptions: [
-        { label: "Tipo de Contrato", value: "filterTipoContrato" },
-      ],
-      filterField: "tipoDeContrato.tipoContrato",
-    },
-    {
-      field: "incoterm.abreviatura",
-      header: "Incoterm",
-      filterElement: RepresentativeFilterTemplate1,
-      filterMatchModeOptions: [{ label: "Incoterm", value: "filterIncoterm" }],
-      filterField: "incoterm.abreviatura",
-    },
-    {
-      field: "proveedor.compaIa",
-      header: "Proveedor",
-      filterElement: RepresentativeFilterTemplate2,
-      filterMatchModeOptions: [
-        { label: "Proveedor", value: "filterProveedor" },
-      ],
-      filterField: "proveedor.compaIa",
-    },
-    {
-      field: "pais.nomb",
-      header: "País",
-      filterElement: RepresentativeFilterTemplate3,
-      filterMatchModeOptions: [{ label: "País", value: "filterPais" }],
-      filterField: "pais.nomb",
-    },
-    {
-      field: "compradores.representante",
-      header: "Comprador",
-      filterElement: RepresentativeFilterTemplate4,
-      filterMatchModeOptions: [
-        { label: "Comprador", value: "filterComprador" },
-      ],
-      filterField: "compradores.representante",
-    },
-    {
-      field: "fecha",
-      header: "Fecha",
-      type: "date",
-      filterElement1: (options) => {
-        return (
-          <Calendar
-            value={options.value}
-            onChange={(e) => {
-              options.filterApplyCallback(e.value, options.index);
-            }}
-            dateFormat="dd/mm/yy"
-            placeholder="Seleccione una fecha"
-          />
-        );
-      },
-    },
-    {
-      field: "fechaVencimiento",
-      header: "Fecha de Vencimiento",
-      type: "date",
-      filterElement1: (options) => {
-        return (
-          <Calendar
-            value={options.value}
-            onChange={(e) => {
-              options.filterApplyCallback(e.value, options.index);
-            }}
-            dateFormat="dd/mm/yy"
-            placeholder="Seleccione una fecha"
-          />
-        );
-      },
-    },
-    {
-      field: "aprobado",
-      header: "Aprobado",
-      filterElement1: (options) => {
-        return (
-          <TriStateCheckbox
-            value={options.value}
-            onChange={(e) => options.filterApplyCallback(e.value)}
-          />
-        );
-      },
-    },
-    {
-      field: "cancelado",
-      header: "Cancelado",
-      filterElement1: (options) => {
-        return (
-          <TriStateCheckbox
-            value={options.value}
-            onChange={(e) => options.filterApplyCallback(e.value)}
-          />
-        );
-      },
-    },
-  ];
   let emptyElement = {
     consecutivo: "",
     "tipoDeContrato.tipoContrato": "",
@@ -343,95 +219,279 @@ export const BasesGenerales = () => {
     "compradores.nombre": "",
     fecha: "",
   };
-  useEffect(() => {
-    basesGenerales.map((bg) => {
-      bg.fecha = moment(bg.fecha, moment.ISO_8601).toDate();
-      bg.fechaVencimiento = moment(
-        bg.fechaVencimiento,
-        moment.ISO_8601
-      ).toDate();
-      return bg;
-    });
-  });
 
-  const generateDocument = (rowData) => {
-    console.log(rowData);
-    if (rowData.tipoDeContrato.tipoContrato.includes("IMPORTACION")) {
-      generateBGDocumentInternacional(rowData);
-    } else if (rowData.tipoDeContrato.tipoContrato.includes("PLAZA")) {
-      generateBGDocumentInternacional(rowData);
-    } else if (rowData.tipoDeContrato.tipoContrato.includes("EXCEPCIONAL")) {
-      generateBGDocumentInternacional(rowData);
-    } else if (rowData.tipoDeContrato.tipoContrato.includes("NAC")) {
-      generateBGDocumentNacional(rowData);
+  const generateDocument = async(rowData) => {
+    try {
+      const {data} = await getOneBG({variables: {id: rowData?.idBasesGenerales}})
+      const baseG = data?.findOneBasesGenerales
+      if(baseG){
+        if (baseG.tipoDeContrato.tipoContrato.toUpperCase().includes("IMPORTACION")) {
+          generateBGDocumentInternacional(baseG);
+        } else if (baseG.tipoDeContrato.tipoContrato.toUpperCase().includes("PLAZA")) {
+          generateBGDocumentInternacional(baseG);
+        } else if (baseG.tipoDeContrato.tipoContrato.toUpperCase().includes("EXCEPCIONAL")) {
+          generateBGDocumentInternacional(baseG);
+        } else if (baseG.tipoDeContrato.tipoContrato.toUpperCase().includes("NAC")) {
+          generateBGDocumentNacional(baseG);
+        }
+      }
+    } catch (error) {
+      fireError("Ocurrió un error al cargar la Base General")
     }
   };
 
+  const lazyPagesChange = async (lazyParams) => {
+    let filters;
+    if (lazyParams.filters) {
+      filters = cloneDeep(lazyParams.filters);
+      delete filters.global;
+      const keys = Object.keys(filters);
+      keys.forEach((key) => {
+        filters[key] = filters[key]["constraints"][0].value;
+      });
+    }
+    filters.idComprador = filters["compradores.representante"]?.map(
+      (item) => item.idComprador
+    );
+    delete filters["compradores.representante"];
+    filters.idProveedor = filters["proveedor.compaIa"]?.map(
+      (item) => item.codigo
+    );
+    delete filters["proveedor.compaIa"];
+    filters.idPais = filters["pais.nomb"]?.map((item) => item.pais);
+    delete filters["pais.nomb"];
+    filters.idIncoterm = filters["incoterm.abreviatura"]?.map(
+      (item) => item.idIncoterm
+    );
+    delete filters["incoterm.abreviatura"];
+    const v = {
+      variables: {
+        take: lazyParams.rows,
+        skip: lazyParams.first,
+        campo: lazyParams.sortField,
+        orden: lazyParams.sortOrder,
+        where: filters,
+      },
+    };
+    getBG(v);
+  };
+
   // //Contratos Table
+  if (error) return <h5>{error}</h5>;
+  if (loading || loadingComp || loadingInc || loadingPa || loadingProv)
+    return <Loading />;
 
   return (
-    <div>
-      {(loading || loadingCount) && (
-        <div className="flex h-30rem justify-content-center align-items-center">
-          <ProgressSpinner strokeWidth="3" />
-        </div>
-      )}
-      {error && <h5>{error}</h5>}
-      {!(loading || loadingCount) ? (
-        <div>
-          <Table
-            value={basesGenerales}
-            header="Bases Generales"
-            size="small"
-            columns={c}
-            pagination={true}
-            rowNumbers={[10, 20, 30]}
-            selectionType="multiple"
-            sortRemove
-            orderSort={1}
-            fieldSort="consecutivo"
-            filterDplay="menu"
-            filtersValues={filters}
-            edit={true}
-            enableDelete={false}
-            exportData={true}
-            expand={true}
-            expandTemplate={(data) => <ContratosTable data={data}/>}
-            onRowToggle={(e) => {
-              setidBG(e.data?.idBasesGenerales);
-            }}
-            emptyElement={emptyElement}
-            lazy={true}
-            lazyApiCall={getBG}
-            totalRecords={totalRecords}
-            additionalButtons={[
-              [
-                <Button
-                  icon="pi pi-upload"
-                  className="p-button-rounded p-button-text"
-                  tooltip="Exportar"
-                  tooltipOptions={{ position: "bottom" }}
-                />,
-                (rowData) => generateDocument(rowData),
-              ],
-              [
-                <Button
-                  icon="pi pi-eye"
-                  className="p-button-rounded p-button-text"
-                  tooltip="Ver"
-                  tooltipOptions={{ position: "bottom" }}
-                />,
-                (rowData) =>
-                  navigate(
-                    `/BasesGenerales/Detalle/${rowData.idBasesGenerales}`
-                  ),
-              ],
-            ]}
-            editLinks={[`Add`, "Edit"]}
-          />
-        </div>
-      ) : //poner cargar
-      undefined}
-    </div>
+    <>
+      <Table
+        value={basesGenerales}
+        header="Bases Generales"
+        size="small"
+        // columns={c}
+        pagination={true}
+        rowNumbers={[10, 20, 30]}
+        selectionType="multiple"
+        sortRemove
+        orderSort={-1}
+        fieldSort="fecha"
+        filterDplay="menu"
+        filtersValues={filters}
+        edit={true}
+        enableDelete={false}
+        exportData={true}
+        expand={true}
+        expandTemplate={(data) => <ContratosTable data={data} />}
+        onRowToggle={(e) => {
+          setidBG(e.data?.idBasesGenerales);
+        }}
+        emptyElement={emptyElement}
+        lazy={true}
+        lazyApiCall={lazyPagesChange}
+        totalRecords={totalRecords}
+        additionalButtons={[
+          [
+            <Button
+              icon="pi pi-upload"
+              className="p-button-rounded p-button-text"
+              tooltip="Exportar"
+              tooltipOptions={{ position: "bottom" }}
+            />,
+            (rowData) => generateDocument(rowData),
+          ],
+          [
+            <Button
+              icon="pi pi-eye"
+              className="p-button-rounded p-button-text"
+              tooltip="Ver"
+              tooltipOptions={{ position: "bottom" }}
+            />,
+            (rowData) =>
+              navigate(`/BasesGenerales/Detalle/${rowData.idBasesGenerales}`),
+          ],
+        ]}
+        editLinks={[`Add`, "Edit"]}
+      >
+        <Column
+          field="noContrato"
+          header="No."
+          body={columnBodyChecker}
+          sortable
+          filter
+          filterField="noContrato"
+        />
+        <Column
+          field="incoterm.abreviatura"
+          header="Incoterm"
+          body={columnBodyChecker}
+          sortable
+          filter
+          filterElement={FilterTemplateInc}
+          filterMatchModeOptions={[
+            { label: "Incoterm", value: "filterIncoterm" },
+          ]}
+          filterField="incoterm.abreviatura"
+          showFilterOperator={false}
+          showApplyButton={false}
+          showAddButton={false}
+          showFilterMatchModes={false}
+        />
+        <Column
+          field="proveedor.compaIa"
+          header="Proveedor"
+          body={columnBodyChecker}
+          sortable
+          filter
+          filterElement={FilterTemplateProv}
+          filterMatchModeOptions={[
+            { label: "Proveedor", value: "filterProveedor" },
+          ]}
+          filterField="proveedor.compaIa"
+          showFilterOperator={false}
+          showApplyButton={false}
+          showAddButton={false}
+          showFilterMatchModes={false}
+        />
+        <Column
+          field="pais.nomb"
+          header="País"
+          body={columnBodyChecker}
+          sortable
+          filter
+          filterElement={FilterTemplatePais}
+          filterMatchModeOptions={[{ label: "País", value: "filterPais" }]}
+          filterField="pais.nomb"
+          showFilterOperator={false}
+          showApplyButton={false}
+          showAddButton={false}
+          showFilterMatchModes={false}
+        />
+        <Column
+          field="compradores.representante"
+          header="Comprador"
+          body={columnBodyChecker}
+          sortable
+          filter
+          filterElement={FilterTemplateComp}
+          filterMatchModeOptions={[{ label: "Comprador", value: "filterPais" }]}
+          filterField="compradores.representante"
+          showFilterOperator={false}
+          showApplyButton={false}
+          showAddButton={false}
+          showFilterMatchModes={false}
+        />
+        <Column
+          field="fecha"
+          header="Fecha"
+          body={columnBodyChecker}
+          sortable
+          filter
+          dataType="date"
+          filterElement={(options) => {
+            return (
+              <Calendar
+                value={options?.value}
+                onChange={(e) => {
+                  options.filterApplyCallback(e.value, options.index);
+                }}
+                dateFormat="dd/mm/yy"
+                placeholder="Seleccione una fecha"
+              />
+            );
+          }}
+          showFilterOperator={false}
+          showApplyButton={false}
+          showAddButton={false}
+          showFilterMatchModes={false}
+        />
+        <Column
+          field="fechaVencimiento"
+          header="Fecha de vencimiento:"
+          body={columnBodyChecker}
+          sortable
+          filter
+          dataType="date"
+          filterElement={(options) => {
+            return (
+              <Calendar
+                value={options?.value}
+                onChange={(e) => {
+                  options.filterApplyCallback(e.value, options.index);
+                }}
+                dateFormat="dd/mm/yy"
+                placeholder="Seleccione una fecha"
+              />
+            );
+          }}
+          showFilterOperator={false}
+          showApplyButton={false}
+          showAddButton={false}
+          showFilterMatchModes={false}
+        />
+        <Column
+          field="aprobado"
+          header="Aprobado:"
+          body={columnBodyChecker}
+          sortable
+          filter
+          filterElement={(options) => {
+            return (
+              <>
+                <div className="mb-3">Aprobado</div>
+                <TriStateCheckbox
+                  value={options?.value}
+                  onChange={(e) => options.filterApplyCallback(e.value)}
+                />
+              </>
+            );
+          }}
+          showFilterOperator={false}
+          showApplyButton={false}
+          showAddButton={false}
+          showFilterMatchModes={false}
+        />
+        <Column
+          field="cancelado"
+          header="Cancelado:"
+          body={columnBodyChecker}
+          sortable
+          filter
+          filterElement={(options) => {
+            return (
+              <>
+                <div className="mb-3">Aprobado</div>
+                <TriStateCheckbox
+                  value={options?.value}
+                  onChange={(e) => options.filterApplyCallback(e.value)}
+                />
+              </>
+            );
+          }}
+          showFilterOperator={false}
+          showApplyButton={false}
+          showAddButton={false}
+          showFilterMatchModes={false}
+        />
+      </Table>
+    </>
   );
 };

@@ -22,8 +22,8 @@ export const columnBodyChecker = (rowData, item) => {
   if (typeof value === "boolean") {
     //boolean
     return (
-      <i className={value ? "pi pi-check-circle text-red-500 text-xl"
-       : "pi pi-times-circle text-green-500 text-xl"}/>
+      <i className={value ? "pi pi-check-circle text-green-500 text-xl"
+       : "pi pi-times-circle text-pink-500 text-xl"}/>
     )
   }
   else if (defaultDataType === "date") {
@@ -64,12 +64,16 @@ export const Table = ({
   edit,
   expand=false,
   expandTemplate,
+  onRowToggle,
+  lazy,
+  lazyApiCall,
+  totalRecords,
   exportData,
   removeOne,
   removeSeveral,
   renderForm,
   actionSubmit,
-  emptyElement,
+  enableDelete=true,
   additionalButtons,
   editLinks,
 }) => {
@@ -83,22 +87,13 @@ export const Table = ({
   const [editDialog, setEditDialog] = useState(false);
   const { exportPdf, exportExcel } = useExport(children, value, header);
 
-  //header and columns
-  const h = <div className="table-header">{header}</div>;
-
-  //First column component
-  const firstColumn = () => {
-    //expanded table
-    if(expand) 
-      return (<Column expander style={{width: '3rem'}} exportable={false} />)
-    //checkbox multiple selection 
-    else if(selectionType === "multiple")
-      return (<Column selectionMode="multiple" exportable={false} />)
-  }
-
-  const changeValuesFormData = (elem) => {
-    setDefaultValues(omit(elem,Object.keys(elem)[0]))
-  };
+  const [loading, setLoading] = useState(false);
+  const [first, setFirst] = useState(0);
+  const [rows, setRows] = useState(rowNumbers?.length > 0 ? rowNumbers[0] : 10);
+  const [sortField, setSortField] = useState(fieldSort);
+  const [sortOrder, setSortOrder] = useState(orderSort);
+  const [filters, setFilters] = useState(filtersValues);
+  
 
   //delete elements
   const confirmDialogDelete = (element) => {
@@ -163,6 +158,81 @@ export const Table = ({
     }
     setEditDialog(false);
   };
+
+  //header and columns
+  const h = <div className="table-header">{header}</div>;
+
+  //First column component
+  const firstColumn = () => {
+    //expanded table
+    if(expand) 
+      return (<Column expander style={{width: '3rem'}} exportable={false} />)
+    //checkbox multiple selection 
+    else if(selectionType === "multiple" && enableDelete)
+      return (<Column selectionMode="multiple" exportable={false} />)
+  }
+
+  const changeValuesFormData = (elem) => {
+    setDefaultValues(omit(elem,Object.keys(elem)[0]))
+  };
+
+  //lazy loading
+  const onPage = (event) => {
+    setLoading(true);
+    setFirst(event.first)
+    setRows(event.rows)
+    //apicall
+    try {
+      lazyApiCall({
+        first: event.first,
+        rows: event.rows,
+        page: event.page,
+        sortField: sortField,
+        sortOrder: sortOrder,
+        filters: filters
+    })
+    }catch(error) {
+      fireError("Ocurrió un error al cargar los datos")
+    }
+    setLoading(false)
+   }
+   const onFilter = (event) => {
+    setLoading(true);
+    setFilters(event.filters)
+    setFirst(0)
+    //apicall
+    try {
+      lazyApiCall({
+        first: 0,
+        rows: rows,
+        sortField: sortField,
+        sortOrder: sortOrder,
+        filters: event.filters
+    })
+    }catch(error) {
+      fireError("Ocurrió un error al cargar los datos")
+    }
+    setLoading(false)
+   }
+
+   const onSort = (event) => {
+    setLoading(true)
+    setSortField(event.sortField)
+    setSortOrder(event.sortOrder)
+    setFirst(0)
+    try {
+      lazyApiCall({
+        first: 0,
+        rows: rows,
+        sortField: event.sortField,
+        sortOrder: event.sortOrder,
+        filters: filters
+    })
+    }catch(error) {
+      fireError("Ocurrió un error al cargar los datos")
+    }
+    setLoading(false)
+   }
   
   const actionBodyTemplate = (rowData) => {
     return (
@@ -183,12 +253,13 @@ export const Table = ({
                   : editElement(rowData)
               }
             />
+            {enableDelete && 
             <Button
               icon="pi pi-trash"
               className="p-button-rounded p-button-text p-button-danger"
               data-pr-tooltip="Eliminar"
               onClick={() => confirmDialogDelete(rowData)}
-            />
+            />}
           </div>
         )}
       </div>
@@ -209,15 +280,17 @@ export const Table = ({
                   onClick={() => newElement()}
                 />
               </div>
-              <div class="col-12 md:col-6">
-                <Button
-                  label="Eliminar"
-                  icon="pi pi-trash"
-                  className="p-button-danger w-8rem"
-                  onClick={confirmDialogBulkDelete}
-                  disabled={!selectedElement || !selectedElement.length}
-                />
-              </div>
+              {enableDelete && 
+                <div class="col-12 md:col-6">
+                  <Button
+                    label="Eliminar"
+                    icon="pi pi-trash"
+                    className="p-button-danger w-8rem"
+                    onClick={confirmDialogBulkDelete}
+                    disabled={!selectedElement || !selectedElement.length}
+                  />
+                </div>
+                }
             </div>
           )}
         </>
@@ -227,9 +300,7 @@ export const Table = ({
   const rightToolbarTemplate = () => {
     if (exportData)
       return (
-        <>
-          {exportData && (
-              <div className="export-buttons grid w-7rem sm:w-auto">
+              <div className="export-buttons grid w-9rem sm:w-auto">
                 <div className="col-6 sm:col-4 md:col-4">
                   <Button
                     type="button"
@@ -256,10 +327,7 @@ export const Table = ({
                     data-pr-tooltip="PDF"
                   />
                 </div>
-              </div>   
-            )
-          }
-        </>
+              </div>
       );
     else return undefined;
   };
@@ -281,11 +349,13 @@ export const Table = ({
         size={size}
         exportFilename={header}
         responsiveLayout="scroll"
-        paginator={value?.length <= rowNumbers[0] ? false : pagination}
+        paginator={lazy ? true : value?.length <= rowNumbers[0] ? false : pagination}
         paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
         currentPageReportTemplate={`{first} - {last} de {totalRecords}`}
         className="p-mt-6"
         rows={rowNumbers[0]}
+        first={first}
+        totalRecords={lazy && totalRecords}
         rowsPerPageOptions={rowNumbers}
         header={h}
         footer={`Filas: ${value ? value.length : 0}`}
@@ -295,13 +365,19 @@ export const Table = ({
           setSelectedElement(e.value);
         }}
         removableSort={sortRemove}
-        sortField={fieldSort}
-        sortOrder={orderSort}
+        sortField={sortField}
+        sortOrder={sortOrder}
         filterDisplay={filterDplay}
-        filters={filtersValues}
+        filters={filters}
         expandedRows={expand && expandedRows}
         onRowToggle={expand ? (e) => setExpandedRows(e.data) : undefined}
+        onRowExpand={expand ?  (e) => {onRowToggle(e)} : undefined}
         rowExpansionTemplate={expand && expandTemplate}
+        lazy={lazy}
+        onFilter={lazy && onFilter}
+        onSort={lazy && onSort}
+        onPage={lazy && onPage}
+        loading={loading}
       >
         {firstColumn()}
         {children}
@@ -313,12 +389,14 @@ export const Table = ({
           ></Column>
         )}
       </DataTable>
-      <DialogComponent 
-        title={ !isInEditMode ? "Insertar" : "Detalles"}
-        visible={editDialog} 
-        hide={() => setEditDialog(false)} >
-          {renderForm(saveElement, defaultValues)}
-      </DialogComponent>
+     {renderForm &&
+        <DialogComponent 
+          title={ !isInEditMode ? "Insertar" : "Detalles"}
+          visible={editDialog} 
+          hide={() => setEditDialog(false)} >
+            {renderForm(saveElement, defaultValues)}
+        </DialogComponent>
+      }
     </div>
   );
 };

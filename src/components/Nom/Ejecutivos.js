@@ -87,7 +87,7 @@ export const Ejecutivos = () => {
       operator: FilterOperator.AND,
       constraints: [{ value: null, matchMode: FilterMatchMode.CONTAINS }],
     },
-    "cargo.cargo": {
+    "cargo": {
       operator: FilterOperator.AND,
       constraints: [{ value: null, matchMode: FilterMatchMode.CONTAINS }],
     },
@@ -108,7 +108,7 @@ export const Ejecutivos = () => {
       header: "Cargo",
       filterElement: RepresentativeFilterTemplate,
       filterMatchModeOptions: [{ label: "Cargos", value: "filterArray" }],
-      filterField: "cargo.cargo",
+      filterField: "cargo",
     },
     {
       field: "grupo.grupos",

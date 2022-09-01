@@ -183,6 +183,12 @@ export const BaseGeneralEdit = () => {
       </div>
     )
   }
+  console.log(!baseG,
+    loadingComp,
+    loadingInc,
+    loadingPa,
+    loadingProv,
+    loadingTC)
 
   if (
     !baseG ||

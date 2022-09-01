@@ -1027,61 +1027,89 @@ export const selectAllAgenciasAseguradoras = gql`
 //   }
 // `;
 
-export const countBasesGenerales = gql`
-  query countBasesGenerales {
-    countBasesGenerales {
-      cantidad
+export const selectAllBasesGenerales = gql`
+  query selectAllBasesGenerales(
+    $take: Int
+    $skip: Int
+    $orden: Int
+    $campo: String
+    $where: FilterBasesGeneralesInput
+  ) {
+    findAllBasesGenerales(
+      take: $take
+      skip: $skip
+      orden: $orden
+      campo: $campo
+      where: $where
+    ) {
+      count
+      data {
+        idBasesGenerales
+        consecutivo
+        noContrato
+        tipoDeContrato {
+          idTipoContrato
+          tipoContrato
+          encabezado
+          ambasPartes
+        }
+        incoterm {
+          idIncoterm
+          nombre
+          abreviatura
+        }
+        proveedor {
+          codigo
+          compaIa
+          cargo
+          representante
+          domicilio
+          cuentaMn
+          cuentaUsd
+          agenciaMn
+          agenciaUsd
+          cargo
+        }
+        pais {
+          pais
+          nomb
+        }
+        compradores {
+          idComprador
+          nombre
+          representante
+          domicilio
+          cargo
+          entidad {
+            codigoEnt
+            cuentaUsd
+            agenciaUsd
+            cuentaMn
+            agenciaMn
+          }
+        }
+        idIncoterm
+        idPais
+        idProveedor
+        idComprador
+        vigencia
+        aprobado
+        cancelado
+        activo
+        lugardeFirma
+        fecha
+        fechaVencimiento
+      }
     }
   }
 `;
 
-export const selectAllBasesGenerales = gql`
-  query selectAllBasesGenerales($take: Int, $skip: Int) {
-    findAllBasesGenerales(take: $take, skip: $skip) {
+export const selectOneBasesGenerales = gql`
+  query selectOneBasesGenerales($id: Int!) {
+    findOneBasesGenerales(id: $id) {
       idBasesGenerales
       consecutivo
       noContrato
-      tipoDeContrato {
-        idTipoContrato
-        tipoContrato
-        encabezado
-        ambasPartes
-      }
-      incoterm {
-        idIncoterm
-        nombre
-        abreviatura
-      }
-      proveedor {
-        codigo
-        compaIa
-        cargo
-        representante
-        domicilio
-        cuentaMn
-        cuentaUsd
-        agenciaMn
-        agenciaUsd
-        cargo
-      }
-      pais {
-        pais
-        nomb
-      }
-      compradores {
-        idComprador
-        nombre
-        representante
-        domicilio
-        cargo
-        entidad {
-          codigoEnt
-          cuentaUsd
-          agenciaUsd
-          cuentaMn
-          agenciaMn
-        }
-      }
       idIncoterm
       idPais
       idProveedor
@@ -1093,16 +1121,6 @@ export const selectAllBasesGenerales = gql`
       lugardeFirma
       fecha
       fechaVencimiento
-    }
-  }
-`;
-
-export const selectOneBasesGenerales = gql`
-  query selectOneBasesGenerales($id: Int!) {
-    findOneBasesGenerales(id: $id) {
-      idBasesGenerales
-      consecutivo
-      noContrato
       tipoDeContrato {
         idTipoContrato
         tipoContrato
@@ -1155,150 +1173,6 @@ export const selectOneBasesGenerales = gql`
         excepcional
         modificado
       }
-      idIncoterm
-      idPais
-      idProveedor
-      idComprador
-      vigencia
-      aprobado
-      cancelado
-      activo
-      lugardeFirma
-      fecha
-      fechaVencimiento
-      contratos {
-        idContrato
-        idBasesGenerales
-        idCMarco
-        idMoneda
-        idFormaEntrega
-        idNegociacion
-        realizadoPor
-        firmadoPor
-        modificadoPor
-        lugarFirma
-        consecutivo
-        idIncoterm
-        cancelado
-        terminado
-        modificado
-        empresaSeguro
-        idEmpresaNaviera
-        lugarEntrega
-        notas
-        permitirEmbarquesParciales
-        cantidadEp
-        permitirEntregas
-        permitirTrasbordos
-        producto
-        noEntregasParciales
-        fechaElaboracion
-        fechaInicial
-        fechaFinal
-        fechaFirma
-        fechaRecepcion
-        fechaArribo
-        fechaPFirma
-        financiamiento
-        tasaMoneda
-        fechaTasa
-        pFin
-        gastosLogisticos
-        contratoClausulas {
-          idContratoClausulas
-          noClausula
-          contenido
-        }
-        contratoMarco {
-          idCMarco
-          consecutivo
-        }
-        moneda {
-          idMoneda
-          moneda
-          abreviatura
-        }
-        formaEntrega {
-          idFormaEntrega
-          formaEntrega
-        }
-        negociacionResumen {
-          idNegociacion
-          consecutivo
-          noNegociacion
-        }
-        ejecutivoRealiza {
-          idEjecutivo
-          nombre
-        }
-        ejecutivoFirma {
-          idEjecutivo
-          nombre
-        }
-        ejecutivoModifica {
-          idEjecutivo
-          nombre
-        }
-        documentacionContratos {
-          idDocumentacionContrato
-          documentacion {
-            idDocumento
-            nombreFichero
-            descripcion
-          }
-        }
-        embarques {
-          idEmbarque
-          numero
-          fechaEntrega
-          terminado
-          cancelado
-          porFirmar
-          flete
-          seguro
-          idContrato
-          qtyCnt
-          seguro
-          financiamiento
-          inspeccion
-          otros
-          c40
-          c20
-          actSci
-        }
-        facturaResumen {
-          idFactura
-        }
-        suplementoEmbarques {
-          idSuplementoEmbarques
-        }
-        suplementoResumen {
-          idSuplementoResumen
-        }
-        suplementoClausulas {
-          idSuplementoClausulas
-        }
-        companiaNaviera {
-          id
-          nombre
-        }
-        incoterm {
-          idIncoterm
-          nombre
-          abreviatura
-        }
-      }
-      idIncoterm
-      idPais
-      idProveedor
-      idComprador
-      vigencia
-      aprobado
-      cancelado
-      activo
-      lugardeFirma
-      fecha
-      fechaVencimiento
     }
   }
 `;
