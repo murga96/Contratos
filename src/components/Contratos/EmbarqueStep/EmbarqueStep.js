@@ -1,37 +1,31 @@
-import { Accordion, AccordionTab } from "primereact/accordion";
 import { Button } from "primereact/button";
-import React, { useState, useRef } from "react";
-import { Form } from "../../ui/Form";
-import * as yup from "yup";
+import React, { useState, useRef, useEffect } from "react";
 import { cloneDeep } from "lodash";
+import { Dropdown } from "primereact/dropdown";
+import { Embarque } from "./Embarque";
 
-export const EmbarqueStep = ({
+export const EmbarquesStep = ({
   contrato,
   setContrato,
   activeIndex,
   setActiveIndex,
 }) => {
   console.log(contrato);
-  const [activeIndexAcordion, setActiveIndexAcordion] = useState(0);
-  const [embarquesObj, setEmbarquesObj] = useState(cloneDeep(contrato?.embarques));
+  const [embarques, setEmbarques] = useState(contrato?.embarques);
+  const [selectedEmbarque, setSelectedEmbarque] = useState(null);
+  const formRef = useRef(null);
+
+
   //FormPropsEmbarques
-  const handleEmbarques = (data) => {
-    contrato.embarques.push(data);
-    // embarquesObj.push(data);
-    setContrato(cloneDeep(contrato));
+  const handleNext = async (e) => {
+    if (await formRef.current?.trigger()) {
+      console.log(embarques);
+      let temp = cloneDeep(contrato);
+      contrato.embarques = embarques;
+      setContrato(temp);
+      //Enviar consulta
+    }
   };
-  const [dataStruct, setDataStruct] = useState([
-    {
-      id: 12,
-      component: "InputText",
-      name: "test",
-      defaultValue: embarquesObj[embarquesObj?.length - 1]?.test,
-      label: "Test:",
-    },
-  ]);
-  const schemaE = yup.object().shape({
-    test: yup.string().required("Seleccione una moneda"),
-  });
 
   const ButtonsEmbarqueComponent = () => (
     <div className="flex justify-content-end mt-3">
@@ -40,75 +34,75 @@ export const EmbarqueStep = ({
         className="mr-4"
         type="button"
         onClick={(e) => {
+          setContrato({ ...contrato, embarques: [] });
           setActiveIndex(activeIndex - 1);
         }}
       />
-      <Button label="Siguiente" type="submit" />
+      <Button
+        className={`${embarques.length === 0 && "p-disabled"}`}
+        label="Siguiente"
+        onClick={handleNext}
+      />
     </div>
   );
-  const [embarques, setEmbarques] = useState([
-    {
-      ref: useRef(null),
-      form: {
-        data: dataStruct,
-        schema: schemaE,
-        handle: handleEmbarques,
-        buttonsNames: [],
-      },
-    },
-  ]);
 
-  const addEmbarque = () => {
-    embarquesObj.push({ test: "test " + embarquesObj?.length });
-    setContrato(cloneDeep(contrato));
-    setActiveIndexAcordion(embarquesObj?.length - 1)
-    setDataStruct(dataStruct)
-    embarques.push({
-      ref: React.createRef(null),
-      form: {
-        data: dataStruct,
-        schema: schemaE,
-        handle: (data) => console.log(data),
-        buttonsNames: [],
-      },
-    });
-    setEmbarques(cloneDeep(embarques));
+  const addEmbarque = async () => {
+    //Garantizar que al introducir un embarque que no sea el inicial hayas inroducido todos los datos
+    if (embarques.length > 0) {
+      formRef.current.submit()
+      if(!(await formRef.current.trigger()))
+        return;
+    }
+    let temp = { numero: embarques.length + 1}
+    setEmbarques([...embarques, temp]);
+    setSelectedEmbarque(temp)
   };
-
-  const accordionTabChange = async (e) => {
-    let c = true;
-    // await embarques[activeIndexAcordion].ref.current?.handleSubmit(
-    //   handleEmbarques,
-    //   (e) => {
-    //     c = false;
-    //   }
-    // );
-    if (c) setActiveIndexAcordion(e.index);
+  const removeEmbarque = () => {
+    setEmbarques((current) =>
+      current.filter((emb) => emb.numero !== selectedEmbarque.numero)
+    );
   };
-
+  const onChangeEmbarque = async (e) => {
+    if (await formRef.current.trigger()) {
+      console.log('cambio')
+    setSelectedEmbarque(e.target.value);
+      // formRef.current.submit()
+    }
+  };
+  console.log(embarques);
   return (
-    <div className="p-4">
-      <div className="flex justify-content-end my-3">
-        <Button label="Añadir" className="mr-3" onClick={addEmbarque} />
-        <Button label="Eliminar" />
+    <div className="p-4 ">
+      <div className="flex justify-content-start my-3">
+        <Dropdown
+          className={`${embarques.length === 0 && "p-disabled"}`}
+          value={selectedEmbarque}
+          onChange={onChangeEmbarque}
+          options={embarques}
+          optionLabel="numero"
+          valueTemplate={(option) => <div>Embarque {option?.numero}</div>}
+          itemTemplate={(option) => <div>Embarque {option?.numero}</div>}
+        />
+        <Button
+          className="p-button-sm mx-3 p-button-rounded"
+          icon="pi pi-plus"
+          onClick={addEmbarque}
+        />
+        {embarques.length > 0 && (
+          <Button
+            className="p-button-sm p-button-rounded"
+            icon="pi pi-minus"
+            onClick={removeEmbarque}
+          />
+        )}
       </div>
-      <Accordion
-        activeIndex={activeIndexAcordion}
-        onTabChange={accordionTabChange}
-      >
-        {embarques.map((embarque, j) => (
-          <AccordionTab header={`Embarque ${j + 1}`}>
-            <Form
-              ref={embarque.ref}
-              data={embarque.form?.data}
-              schema={embarque.form?.schema}
-              handle={embarque.form?.handle}
-              buttonsNames={embarque.form?.buttonsNames}
-              formLayout={{ className: "grid" }}
-            />
-          </AccordionTab>
-        ))}
-      </Accordion>
+      {selectedEmbarque && (
+        <Embarque
+          embarque={selectedEmbarque}
+          setEmbarques={setEmbarques}
+          ref={formRef}
+        />
+      )}
+
       <ButtonsEmbarqueComponent />
     </div>
   );

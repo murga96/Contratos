@@ -42,8 +42,15 @@ export const Form = forwardRef(({ schema, handle, footer, children, containerCla
     setFocus: (name, options) => {
       methods.setFocus(name, options);
     },
-    trigger: () => {
-      methods.trigger();
+    submit: () => {
+      methods.handleSubmit(handle)()
+    },
+    trigger: (name) => {
+      if(name) {
+        return methods.trigger(name);
+      }else {
+       return methods.trigger();
+      }
     },
     clearErrors: (name) => {
       if(name) {

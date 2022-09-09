@@ -1,8 +1,5 @@
-import React, { useState, useEffect, useRef } from "react";
-import { Form } from "../ui/Form";
-import * as yup from "yup";
+import React, { useState } from "react";
 import {
-  createContrato,
   selectAllCompaniasNavieras,
   selectAllCompradores,
   selectAllContratoMarco,
@@ -12,27 +9,20 @@ import {
   selectAllNegociacionesResumen,
   selectFormasEntrega,
 } from "../../database/GraphQLStatements";
-import { useNavigate, useParams } from "react-router-dom";
-import { useMutation, useQuery } from "@apollo/client";
-import { ProgressSpinner } from "primereact/progressspinner";
-import { Button } from "primereact/button";
+import { useParams } from "react-router-dom";
+import {  useQuery } from "@apollo/client";
 import { Steps } from "primereact/steps";
-import { Accordion, AccordionTab } from "primereact/accordion";
-import { cloneDeep, omit } from "lodash";
 import { ContratoStep } from "./ContratoStep/ContratoStep";
 import "./AddContract.css";
 import Contrato from "./ContratoStep/ContratoClass";
-import { EmbarqueStep } from "./EmbarqueStep/EmbarqueStep";
+import { EmbarquesStep } from "./EmbarqueStep/EmbarqueStep";
+import { Loading } from "../LoadingComponent";
 
 export const ContratoAdd = () => {
   const idBg = useParams().idBaseGeneral;
-  //Anexos props
-  const formRefE = useRef(null);
-  const formRefN = useRef(null);
-  const navigate = useNavigate();
 
   //Embarques props
-  const [activeIndex, setActiveIndex] = useState(0);
+  const [activeIndex, setActiveIndex] = useState(1);
   const [contrato, setContrato] = useState(
     new Contrato(
       "",
@@ -69,9 +59,6 @@ export const ContratoAdd = () => {
       []
     )
   );
-  console.log(contrato)
-  
-  
 
   //graphql
   const { data: dataCMarco, loading: loadingCM } = useQuery(
@@ -91,8 +78,8 @@ export const ContratoAdd = () => {
   const { data: dataNav, loading: loadingNav } = useQuery(
     selectAllCompaniasNavieras
   );
-  const [addContrato] = useMutation(createContrato);
-  
+  // const [addContrato] = useMutation(createContrato);
+
   const interactiveItems = [
     {
       label: "Anexos",
@@ -104,62 +91,53 @@ export const ContratoAdd = () => {
       label: "Notas",
     },
   ];
+  if (
+    loadingCM ||
+    loadingE ||
+    loadingFE ||
+    loadingInc ||
+    loadingM ||
+    loadingN ||
+    loadingC ||
+    loadingNav
+  )
+    return <Loading />;
 
   return (
     <div className="p-3">
-      {loadingCM &&
-        loadingE &&
-        loadingFE &&
-        loadingInc &&
-        loadingM &&
-        loadingN &&
-        loadingC &&
-        loadingNav && (
-          <div className="flex h-30rem justify-content-center align-items-center">
-            <ProgressSpinner strokeWidth="3" />
-          </div>
+      <h1 className="mb-4 text-primary text-4xl">Nuevo Contrato</h1>
+      <div className="p-card p-5">
+        <Steps
+          model={interactiveItems}
+          className="steps flex justify-content-center"
+          activeIndex={activeIndex}
+          onSelect={(e) => setActiveIndex(e.index)}
+        />
+        {activeIndex === 0 && (
+          <ContratoStep
+            idBg={idBg}
+            dataCMarco={dataCMarco}
+            dataFirman={dataFirman}
+            dataN={dataN}
+            dataMoneda={dataMoneda}
+            dataIncoterms={dataIncoterms}
+            dataNav={dataNav}
+            dataFE={dataFE}
+            dataEjecutivos={dataEjecutivos}
+            contrato={contrato}
+            setContrato={setContrato}
+            setActiveIndex={setActiveIndex}
+          />
         )}
-      {!(
-        loadingCM ||
-        loadingE ||
-        loadingFE ||
-        loadingInc ||
-        loadingM ||
-        loadingN ||
-        loadingNav ||
-        loadingC
-      ) ? (
-        <div>
-          <h1 className="mb-4 text-primary text-4xl">Nuevo Contrato</h1>
-          <div className="p-card p-5">
-            <Steps
-              model={interactiveItems}
-              className="steps flex justify-content-center"
-              activeIndex={activeIndex}
-              onSelect={(e) => setActiveIndex(e.index)}
-            />
-            {activeIndex === 0 && (
-              <ContratoStep
-                idBg={idBg}
-                dataCMarco={dataCMarco}
-                dataFirman={dataFirman}
-                dataN={dataN}
-                dataMoneda={dataMoneda}
-                dataIncoterms={dataIncoterms}
-                dataNav={dataNav}
-                dataFE={dataFE}
-                dataEjecutivos={dataEjecutivos}
-                contrato={contrato}
-                setContrato={setContrato}
-                setActiveIndex={setActiveIndex}
-              />
-            )}
-            {activeIndex === 1 && (
-              <EmbarqueStep contrato={contrato} setContrato={setContrato} activeIndex={activeIndex} setActiveIndex={setActiveIndex}  />
-            )}
-          </div>
-        </div>
-      ) : undefined}
+        {activeIndex === 1 && (
+          <EmbarquesStep
+            contrato={contrato}
+            setContrato={setContrato}
+            activeIndex={activeIndex}
+            setActiveIndex={setActiveIndex}
+          />
+        )}
+      </div>
     </div>
   );
 };

@@ -33,6 +33,7 @@ export const Field = ({
 
   //Render field function
   const renderFieldByType = () => {
+    console.log(name)
     if (isControlled)
       return (
         <Controller

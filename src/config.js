@@ -3,7 +3,6 @@ import { addLocale, locale } from "primereact/api";
 import {
   ApolloClient,
   InMemoryCache,
-  ApolloProvider,
   from,
   HttpLink,
 } from "@apollo/client";

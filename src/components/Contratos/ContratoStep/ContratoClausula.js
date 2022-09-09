@@ -2,24 +2,20 @@ import { Button } from "primereact/button";
 import { Dropdown } from "primereact/dropdown";
 import { InputNumber } from "primereact/inputnumber";
 import { InputTextarea } from "primereact/inputtextarea";
-import { Dialog } from "primereact/dialog";
-import React, { useState } from "react";
-import { Form } from "../../ui/Form";
-import * as yup from "yup";
-import { useQuery } from "@apollo/client";
-import { selectAllTiposDeClausulas } from "../../../database/GraphQLStatements";
+import React, { useEffect, useState } from "react";
 
-export const ContratoClausula = ({
-  contratoClausulas,
-  setAddClausulaDialog,
-  selectedContratoClausula,
-  setSelectedContratoClausula,
-}) => {
-  console.log(contratoClausulas);
+export const ContratoClausula = ({ contratoClausulas, selectedContratoClausula, setSelectedContratoClausula, setAddClausulaDialog }) => {
   const [contenido, setContenido] = useState(
     selectedContratoClausula?.contenido
   );
+  console.log(contratoClausulas);
+  useEffect(() => {
+    setContenido(selectedContratoClausula?.contenido);
+  }, [selectedContratoClausula]);
 
+  
+
+  //form ClausulasComponent
   const deleteClausula = () => {
     let index = contratoClausulas?.findIndex(
       (cc) => selectedContratoClausula === cc
@@ -29,9 +25,11 @@ export const ContratoClausula = ({
       ? setSelectedContratoClausula(contratoClausulas[0])
       : setSelectedContratoClausula(null);
   };
+  
 
+ 
   return (
-    <div className="grid">
+    <div className="grid w-full">
       <div className="col-4">
         <label className="block text-900 font-medium mb-2">
           Tipo de cláusula:
@@ -102,6 +100,7 @@ export const ContratoClausula = ({
           />
         </div>
       )}
+        
     </div>
   );
 };
