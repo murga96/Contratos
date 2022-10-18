@@ -59,7 +59,7 @@ export const generateProformaDocument= (proformasClausulas, tipoDeContrato, inco
   
   if (proformasClausulas && tipoDeContrato) {
     loadFile(
-      "http://localhost:3001/streaming/proformas",
+      `${process.env.REACT_APP_URL_API_R}/streaming/proformas`,
       function (error, content) {
         if (error) {
           throw error;
@@ -127,7 +127,7 @@ export const generateBGDocumentInternacional = (bg) => {
   console.log(bg);
   if (bg) {
     loadFile(
-      "http://localhost:3001/streaming/base-general-internacional",
+      `${process.env.REACT_APP_URL_API_R}/streaming/base-general-internacional`,
       function (error, content) {
         if (error) {
           throw error;
@@ -204,7 +204,7 @@ export const generateBGDocumentNacional = (bg) => {
   console.log(bg);
   if (bg) {
     loadFile(
-      "http://localhost:3001/streaming/base-general-nacional",
+      `${process.env.REACT_APP_URL_API_R}/streaming/base-general-nacional`,
       function (error, content) {
         if (error) {
           throw error;

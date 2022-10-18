@@ -573,6 +573,16 @@ export const updateConfiguracion = gql`
   }
 `;
 
+//Apartir de
+export const selectAllApartirDe = gql`
+  query selectAllApartirDe {
+    findAllPagosAPartirDe {
+    idPartir
+    aPartirDe
+  }
+  }
+`;
+
 //Formas de Pago
 export const selectFormasPago = gql`
   query selectAllFormasPago {
@@ -1486,6 +1496,17 @@ export const removeSeveralProforma = gql`
   mutation removeSeveralProforma($id: [Int!]!) {
     removeSeveralProforma(id: $id) {
       nombreProfoma
+    }
+  }
+`;
+
+//Embalajes
+export const selectAllEmbalajes = gql`
+  query selectAllEmbalajes {
+    findAllEmbalajes {
+      idEmbalaje
+      descripcion
+      abreviatura
     }
   }
 `;

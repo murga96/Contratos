@@ -21,11 +21,12 @@ const DefaultFooter = ({isGrid}) => {
  *  permite campos de componentes controlados y no contralados.
  *
  */
-export const Form = forwardRef(({ schema, handle, footer, children, containerClassName={} }, ref) => {
+export const Form = forwardRef(({ schema, handle, footer, children, containerClassName={}, defaultValues={} }, ref) => {
   const methods = useForm({
+    defaultValues: defaultValues,
     resolver: yupResolver(schema),
   });
-  console.log("Form render");
+  // console.log("Form render");
   useImperativeHandle(ref, () => ({
     setValue: (name, value) => {
       methods.setValue(name, value);
@@ -42,7 +43,7 @@ export const Form = forwardRef(({ schema, handle, footer, children, containerCla
     setFocus: (name, options) => {
       methods.setFocus(name, options);
     },
-    submit: () => {
+    submit: async() => {
       methods.handleSubmit(handle)()
     },
     trigger: (name) => {

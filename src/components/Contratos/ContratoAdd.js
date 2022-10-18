@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import {
+  createContrato,
   selectAllCompaniasNavieras,
   selectAllCompradores,
   selectAllContratoMarco,
@@ -8,9 +9,10 @@ import {
   selectAllMonedas,
   selectAllNegociacionesResumen,
   selectFormasEntrega,
+  selectOneBasesGenerales,
 } from "../../database/GraphQLStatements";
 import { useParams } from "react-router-dom";
-import {  useQuery } from "@apollo/client";
+import {  useMutation, useQuery } from "@apollo/client";
 import { Steps } from "primereact/steps";
 import { ContratoStep } from "./ContratoStep/ContratoStep";
 import "./AddContract.css";
@@ -64,6 +66,18 @@ export const ContratoAdd = () => {
   const { data: dataCMarco, loading: loadingCM } = useQuery(
     selectAllContratoMarco
   );
+  const { data: dataBG, loading: loadingBG} = useQuery(
+    selectOneBasesGenerales,
+    {
+      variables: { id: parseInt(idBg) },
+      fetchPolicy: "network-only",
+      // onCompleted: (data) =>
+      //   formRefA?.current?.setValue(
+      //     "noContrato",
+      //     dataBG?.findOneBasesGenerales?.noContrato
+      //   ),
+    }
+  );
   const { data: dataEjecutivos, loading: loadingE } =
     useQuery(selectAllEjecutivos);
   const { data: dataFirman, loading: loadingC } =
@@ -78,7 +92,7 @@ export const ContratoAdd = () => {
   const { data: dataNav, loading: loadingNav } = useQuery(
     selectAllCompaniasNavieras
   );
-  // const [addContrato] = useMutation(createContrato);
+  const [addContrato] = useMutation(createContrato);
 
   const interactiveItems = [
     {
@@ -91,7 +105,29 @@ export const ContratoAdd = () => {
       label: "Notas",
     },
   ];
+
+  const embarqueInitValues = {
+    fechaEntrega: "",
+    // idContrato: number | null
+    // numero: "",
+    descuento: 0,
+    terminado: "",
+    cancelado: false,
+    porFirmar: false,
+    qtyCnt: 0,
+    flete: 0,
+    seguro: 0,
+    financiamiento: 0,
+    idEmpresaNaviera: "",
+    inspeccion: 0,
+    otros: 0,
+    c40: 0,
+    c20: 0,
+    actSci: false,
+  };
+
   if (
+    loadingBG ||
     loadingCM ||
     loadingE ||
     loadingFE ||
@@ -115,7 +151,7 @@ export const ContratoAdd = () => {
         />
         {activeIndex === 0 && (
           <ContratoStep
-            idBg={idBg}
+            dataBG={dataBG}
             dataCMarco={dataCMarco}
             dataFirman={dataFirman}
             dataN={dataN}
@@ -131,10 +167,11 @@ export const ContratoAdd = () => {
         )}
         {activeIndex === 1 && (
           <EmbarquesStep
+            bg={dataBG?.findOneBasesGenerales}
             contrato={contrato}
-            setContrato={setContrato}
-            activeIndex={activeIndex}
+            initValues = {embarqueInitValues} 
             setActiveIndex={setActiveIndex}
+            addContrato={addContrato}
           />
         )}
       </div>

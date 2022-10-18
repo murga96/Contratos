@@ -271,7 +271,7 @@ export const Table = ({
       return (
         <>
           {edit && (
-            <div class="grid w-9rem sm:w-auto">
+            <div class="grid w-17rem sm:w-auto">
               <div class="col-12 md:col-6">
                 <Button
                   label="Nuevo"

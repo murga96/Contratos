@@ -3,7 +3,6 @@ import { confirmDialog } from "primereact/confirmdialog";
 import React, { useRef, useState, useEffect } from "react";
 import {
   selectAllTiposDeClausulas,
-  selectOneBasesGenerales,
 } from "../../../database/GraphQLStatements";
 import { Form } from "../../ui/form/Form";
 import * as yup from "yup";
@@ -26,7 +25,7 @@ import { DialogComponent } from "../../ui/dialog";
 
 
 export const ContratoStep = ({
-  idBg,
+  dataBG,
   dataCMarco,
   dataFirman,
   dataN,
@@ -60,18 +59,18 @@ export const ContratoStep = ({
   }, [negociacion]);
 
   //graphql
-  const { data: dataBG} = useQuery(
-    selectOneBasesGenerales,
-    {
-      variables: { id: parseInt(idBg) },
-      fetchPolicy: "network-only",
-      onCompleted: (data) =>
-        formRefA?.current?.setValue(
-          "noContrato",
-          dataBG?.findOneBasesGenerales?.noContrato
-        ),
-    }
-  );
+  // const { data: dataBG} = useQuery(
+  //   selectOneBasesGenerales,
+  //   {
+  //     variables: { id: parseInt(idBg) },
+  //     fetchPolicy: "network-only",
+  //     onCompleted: (data) =>
+  //       formRefA?.current?.setValue(
+  //         "noContrato",
+  //         dataBG?.findOneBasesGenerales?.noContrato
+  //       ),
+  //   }
+  // );
   const { data: dataTC, loading: loadingTC } = useQuery(
     selectAllTiposDeClausulas
   );
@@ -335,6 +334,7 @@ export const ContratoStep = ({
               <InputNumber
                 {...field}
                 className={classNames(field.className, "mr-8")}
+                onChange={(e) => field.onChange(e.value)}
                 step={1}
                 size={1}
                 min={0}
@@ -509,6 +509,7 @@ export const ContratoStep = ({
               <InputNumber
                 {...field}
                 className={classNames(field.className, "mr-8")}
+                onChange={(e) => field.onChange(e.value)}
                 step={1}
                 size={1}
                 min={0}
@@ -529,6 +530,7 @@ export const ContratoStep = ({
               <InputNumber
                 {...field}
                 className={classNames(field.className, "mr-8")}
+                onChange={(e) => field.onChange(e.value)}
                 step={1000}
                 size={1}
                 min={0}
@@ -568,6 +570,7 @@ export const ContratoStep = ({
               <InputNumber
                 {...field}
                 className={classNames(field.className, "mr-8")}
+                onChange={(e) => field.onChange(e.value)}
                 step={1000}
                 size={1}
                 min={0}
